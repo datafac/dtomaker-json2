@@ -1,10 +1,10 @@
 # DTOMaker
 
-[![Build-Deploy](https://github.com/datafac/dtomaker-core/actions/workflows/dotnet.yml/badge.svg)](https://github.com/datafac/dtomaker-core/actions/workflows/dotnet.yml)
-[![CodeQL](https://github.com/datafac/dtomaker-core/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/datafac/dtomaker-core/actions/workflows/github-code-scanning/codeql)
+[![Build-Deploy](https://github.com/datafac/dtomaker-json/actions/workflows/dotnet.yml/badge.svg)](https://github.com/datafac/dtomaker-json/actions/workflows/dotnet.yml)
+[![CodeQL](https://github.com/datafac/dtomaker-json/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/datafac/dtomaker-json/actions/workflows/github-code-scanning/codeql)
 ![NuGet Version](https://img.shields.io/nuget/v/DTOMaker.Models)
 ![NuGet Downloads](https://img.shields.io/nuget/dt/DTOMaker.Models)
-![GitHub License](https://img.shields.io/github/license/Datafac/dtomaker-core)
+![GitHub License](https://img.shields.io/github/license/Datafac/dtomaker-json)
 
 *Warning: This is pre-release software under active development. Breaking changes may occur.*
 
@@ -17,7 +17,6 @@ serialization schemes:
 and related types.
 
 <!--TOC-->
-- [DTOMaker](#dtomaker)
   - [Workflow](#workflow)
 - [Included Packages](#included-packages)
   - [DTOMaker.Models](#dtomaker.models)

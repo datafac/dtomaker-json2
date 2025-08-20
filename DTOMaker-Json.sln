@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.JsonNewtonSoft", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.JsonNewtonSoft.Tests", "DTOMaker.JsonNewtonSoft.Tests\DTOMaker.JsonNewtonSoft.Tests.csproj", "{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.Core", "DTOMaker.SrcGen.Core\DTOMaker.SrcGen.Core.csproj", "{34A532C9-A797-4809-955A-E98508454E40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.JsonSystemText", "DTOMaker.SrcGen.JsonSystemText\DTOMaker.SrcGen.JsonSystemText.csproj", "{DDC31E38-1E90-4259-9B07-5EA523F3649A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +59,14 @@ Global
 		{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34A532C9-A797-4809-955A-E98508454E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34A532C9-A797-4809-955A-E98508454E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34A532C9-A797-4809-955A-E98508454E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34A532C9-A797-4809-955A-E98508454E40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
