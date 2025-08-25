@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-namespace DTOMaker.JsonNewtonSoft.Tests
+namespace DTOMaker.JsonSystemText.Tests
 {
     public class CustomTypesTests
     {
@@ -39,7 +39,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
 
             // custom generation checks
             generatorResult.GeneratedSources.Length.ShouldBe(1);
-            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.MyDTO.JsonNewtonSoft.g.cs");
+            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.MyDTO.JsonSystemText.g.cs");
         }
 
         [Fact]

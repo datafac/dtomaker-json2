@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-namespace DTOMaker.JsonNewtonSoft.Tests
+namespace DTOMaker.JsonSystemText.Tests
 {
     public class RecursiveGraphTests
     {
@@ -76,13 +76,13 @@ namespace DTOMaker.JsonNewtonSoft.Tests
 
             // custom generation checks
             generatorResult.GeneratedSources.Length.ShouldBe(7);
-            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.BooleanNode.JsonNewtonSoft.g.cs");
-            generatorResult.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.DoubleNode.JsonNewtonSoft.g.cs");
-            generatorResult.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.Int64Node.JsonNewtonSoft.g.cs");
-            generatorResult.GeneratedSources[3].HintName.ShouldBe("MyOrg.Models.Node.JsonNewtonSoft.g.cs");
-            generatorResult.GeneratedSources[4].HintName.ShouldBe("MyOrg.Models.NumericNode.JsonNewtonSoft.g.cs");
-            generatorResult.GeneratedSources[5].HintName.ShouldBe("MyOrg.Models.StringNode.JsonNewtonSoft.g.cs");
-            generatorResult.GeneratedSources[6].HintName.ShouldBe("MyOrg.Models.Tree.JsonNewtonSoft.g.cs");
+            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.BooleanNode.JsonSystemText.g.cs");
+            generatorResult.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.DoubleNode.JsonSystemText.g.cs");
+            generatorResult.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.Int64Node.JsonSystemText.g.cs");
+            generatorResult.GeneratedSources[3].HintName.ShouldBe("MyOrg.Models.Node.JsonSystemText.g.cs");
+            generatorResult.GeneratedSources[4].HintName.ShouldBe("MyOrg.Models.NumericNode.JsonSystemText.g.cs");
+            generatorResult.GeneratedSources[5].HintName.ShouldBe("MyOrg.Models.StringNode.JsonSystemText.g.cs");
+            generatorResult.GeneratedSources[6].HintName.ShouldBe("MyOrg.Models.Tree.JsonSystemText.g.cs");
         }
 
         [Fact]

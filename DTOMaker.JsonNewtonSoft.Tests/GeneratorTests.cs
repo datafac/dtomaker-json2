@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-namespace DTOMaker.JsonNewtonSoft.Tests
+namespace DTOMaker.JsonSystemText.Tests
 {
     public class GeneratorTests
     {
@@ -35,7 +35,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             GeneratedSourceResult outputSource = generatorResult.GeneratedSources[0];
 
             // custom generation checks
-            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonNewtonSoft.g.cs");
+            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, outputSource.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -65,7 +65,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             GeneratedSourceResult outputSource = generatorResult.GeneratedSources[0];
 
             // custom generation checks
-            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonNewtonSoft.g.cs");
+            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, outputSource.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -96,7 +96,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             GeneratedSourceResult outputSource = generatorResult.GeneratedSources[0];
 
             // custom generation checks
-            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonNewtonSoft.g.cs");
+            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, outputSource.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -133,11 +133,11 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             generatorResult.GeneratedSources.Length.ShouldBe(2);
             {
                 GeneratedSourceResult outputSource = generatorResult.GeneratedSources[0];
-                outputSource.HintName.ShouldBe("MyOrg.Models.MyFirstDTO.JsonNewtonSoft.g.cs");
+                outputSource.HintName.ShouldBe("MyOrg.Models.MyFirstDTO.JsonSystemText.g.cs");
             }
             {
                 GeneratedSourceResult outputSource = generatorResult.GeneratedSources[1];
-                outputSource.HintName.ShouldBe("MyOrg.Models.MyOtherDTO.JsonNewtonSoft.g.cs");
+                outputSource.HintName.ShouldBe("MyOrg.Models.MyOtherDTO.JsonSystemText.g.cs");
                 string outputCode = string.Join(Environment.NewLine, outputSource.SourceText.Lines.Select(tl => tl.ToString()));
                 await Verifier.Verify(outputCode);
             }
@@ -168,7 +168,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             GeneratedSourceResult outputSource = generatorResult.GeneratedSources[0];
 
             // custom generation checks
-            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonNewtonSoft.g.cs");
+            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, outputSource.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -200,7 +200,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             GeneratedSourceResult outputSource = generatorResult.GeneratedSources[0];
 
             // custom generation checks
-            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonNewtonSoft.g.cs");
+            outputSource.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, outputSource.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }

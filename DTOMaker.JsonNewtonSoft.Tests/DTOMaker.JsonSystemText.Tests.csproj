@@ -14,11 +14,10 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="DataFac.Memory" Version="0.14.4" />
+		<PackageReference Include="DataFac.Memory" Version="0.15.2" />
 		<PackageReference Include="DTOMaker.Models" Version="0.69.10" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.12.0" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Shouldly" Version="4.3.0" />
 		<PackageReference Include="Verify" Version="30.7.3" />
 		<PackageReference Include="Verify.Xunit" Version="30.7.3" />
@@ -30,7 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\DTOMaker.JsonNewtonSoft\DTOMaker.JsonNewtonSoft.csproj" />
-	  <ProjectReference Include="..\DTOMaker.Runtime.JsonNewtonSoft\DTOMaker.Runtime.JsonNewtonSoft.csproj" />
+	  <ProjectReference Include="..\DTOMaker.JsonNewtonSoft\DTOMaker.JsonSystemText.csproj" />
+	  <ProjectReference Include="..\DTOMaker.Runtime.JsonSystemText\DTOMaker.Runtime.JsonSystemText.csproj" />
 	</ItemGroup>
 </Project>

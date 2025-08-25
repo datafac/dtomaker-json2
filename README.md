@@ -10,32 +10,10 @@
 
 A collection of model-driven compile-time source generators for quickly creating DTOs (Data Transport Objects) supporting the following
 serialization schemes:
-- JSON (NewtonSoft)
-- MessagePack
-- MemBlocks
+- JSON
 
 and related types.
 
-<!--TOC-->
-  - [Workflow](#workflow)
-- [Included Packages](#included-packages)
-  - [DTOMaker.Models](#dtomaker.models)
-  - [DTOMaker.JsonNewtonSoft](#dtomaker.jsonnewtonsoft)
-  - [DTOMaker.MessagePack](#dtomaker.messagepack)
-  - [DTOMaker.Models.MessagePack](#dtomaker.models.messagepack)
-  - [DTOMaker.MemBlocks](#dtomaker.memblocks)
-  - [DTOMaker.Models.MemBlocks](#dtomaker.models.memblocks)
-  - [DTOMaker.CSPoco](#dtomaker.cspoco)
-  - [DTOMaker.Runtime](#dtomaker.runtime)
-- [Model features](#model-features)
-  - [MemBlocks features](#memblocks-features)
-- [!Limitations](#limitations)
-  - [Single compilation unit](#single-compilation-unit)
-- [Development](#development)
-  - [In progress](#in-progress)
-  - [Coming soon](#coming-soon)
-  - [Coming later](#coming-later)
-<!--/TOC-->
 
 ## Workflow
 ```mermaid
@@ -80,29 +58,8 @@ public sealed class MyFirstDTO : EntityBase, IMyFirstDTO, IEquatable<MyFirstDTO>
 
 This repo includes the following packages:
 
-## DTOMaker.Models
-Attributes for defining simple data models as interfaces in C#.
-
-## DTOMaker.JsonNewtonSoft
-A source generator that creates DTOs (Data Transport Objects) that are serializable to JSON 
-using the Newtonsoft.Json package.
-
-## DTOMaker.MessagePack
-A source generator that creates MessagePack DTOs (Data Transport Objects).
-See https://github.com/MessagePack-CSharp/MessagePack-CSharp.
-## DTOMaker.Models.MessagePack
-Additional attributes used by the DTOMaker.MessagePack source generator, to manage
-MessagePack entity and member keys.
-
-## DTOMaker.MemBlocks
-Generates DTOs whose internal data is a single memory block (Memory\<byte\>). Property getters and setters decode and encode
-values directly to the block with little-endian (default) or big-endian byte ordering.
-## DTOMaker.Models.MemBlocks
-Additional attributes used by the DTOMaker.MemBlocks source generator, to 
-manage entity and member memory layout.
-
-## DTOMaker.CSPoco
-Generates basic POCOs (Plain Old C# Objects) that implement the model interfaces.
+## DTOMaker.JsonSystemText
+A source generator that creates DTOs (Data Transport Objects) that are serializable to JSON.
 
 ## DTOMaker.Runtime
 Common types used at runtime by DTOMaker generated entities.

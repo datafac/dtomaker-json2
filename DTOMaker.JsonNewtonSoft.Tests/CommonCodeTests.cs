@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-namespace DTOMaker.JsonNewtonSoft.Tests
+namespace DTOMaker.JsonSystemText.Tests
 {
     public class CommonCodeTests
     {
@@ -39,7 +39,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             GeneratedSourceResult source = generatorResult.GeneratedSources[0];
 
             // custom generation checks
-            source.HintName.ShouldBe("MyOrg.Models.MyBase.JsonNewtonSoft.g.cs");
+            source.HintName.ShouldBe("MyOrg.Models.MyBase.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -72,7 +72,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             GeneratedSourceResult source = generatorResult.GeneratedSources[1];
 
             // custom generation checks
-            source.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonNewtonSoft.g.cs");
+            source.HintName.ShouldBe("MyOrg.Models.MyDTO.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }

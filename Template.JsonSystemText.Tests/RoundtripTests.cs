@@ -1,14 +1,13 @@
-using DTOMaker.Runtime.JsonNewtonSoft;
-using Newtonsoft.Json;
+using DTOMaker.Runtime.JsonSystemText;
 using Shouldly;
 using System;
 using System.Linq;
-using T_NameSpace_.JsonNewtonSoft;
+using T_NameSpace_.JsonSystemText;
 using Xunit;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 
-namespace Template.JsonNewtonSoft.Tests
+namespace Template.JsonSystemText.Tests
 {
     public class RoundtripTests
     {
@@ -22,7 +21,7 @@ namespace Template.JsonNewtonSoft.Tests
             orig.BaseField1 = 321;
             orig.T_RequiredScalarMemberName_ = 123;
             orig.T_VectorMemberName_ = new int[] { 1, 2, 3 };
-            //todo orig.T_RequiredEntityMemberName_ = new T_MemberTypeNameSpace_.JsonNewtonSoft.T_MemberTypeImplName_() { Field1 = 456L };
+            //todo orig.T_RequiredEntityMemberName_ = new T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_() { Field1 = 456L };
             orig.T_RequiredBinaryMemberName_ = largeBinary;
             orig.T_NullableBinaryMemberName_ = smallBinary;
             orig.Freeze();
@@ -55,8 +54,8 @@ namespace Template.JsonNewtonSoft.Tests
             orig.T_NullableBinaryMemberName_ = smallBinary;
             orig.Freeze();
 
-            string buffer = orig.SerializeToJson<T_BaseNameSpace_.JsonNewtonSoft.T_BaseName_>();
-            var recd = buffer.DeserializeFromJson<T_BaseNameSpace_.JsonNewtonSoft.T_BaseName_>();
+            string buffer = orig.SerializeToJson<T_BaseNameSpace_.JsonSystemText.T_BaseName_>();
+            var recd = buffer.DeserializeFromJson<T_BaseNameSpace_.JsonSystemText.T_BaseName_>();
 
             recd.ShouldNotBeNull();
             recd.ShouldBeOfType<T_EntityImplName_>();

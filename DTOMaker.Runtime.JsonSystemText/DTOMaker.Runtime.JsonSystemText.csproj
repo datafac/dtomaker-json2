@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net8.0;net9.0</TargetFrameworks>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
@@ -13,7 +13,7 @@
 		<Product>DTOMaker</Product>
 		<Authors>DataFac Contributors</Authors>
 		<Title>DTOMaker Core</Title>
-		<Description>Runtime types for DTOMaker.JsonNewtonSoft entities</Description>
+		<Description>Runtime types for DTOMaker.JsonSystemText entities</Description>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<EnableNETAnalyzers>True</EnableNETAnalyzers>
@@ -35,7 +35,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="System.Memory" Version="4.6.3" />
 	</ItemGroup>
 

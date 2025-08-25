@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
-namespace DTOMaker.JsonNewtonSoft
+namespace DTOMaker.JsonSystemText
 {
     [Generator(LanguageNames.CSharp)]
     public class JsonNSSourceGenerator : SourceGeneratorBase
@@ -60,7 +60,7 @@ namespace DTOMaker.JsonNewtonSoft
                 var generator = new EntityGenerator(language);
                 string sourceText = generator.GenerateSourceText(entityScope);
 
-                context.AddSource($"{entity.TFN.FullName}.JsonNewtonSoft.g.cs", sourceText);
+                context.AddSource($"{entity.TFN.FullName}.JsonSystemText.g.cs", sourceText);
             }
         }
     }

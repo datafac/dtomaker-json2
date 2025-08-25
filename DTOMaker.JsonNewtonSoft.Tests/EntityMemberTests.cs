@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-namespace DTOMaker.JsonNewtonSoft.Tests
+namespace DTOMaker.JsonSystemText.Tests
 {
     public class EntityMemberTests
     {
@@ -49,9 +49,9 @@ namespace DTOMaker.JsonNewtonSoft.Tests
 
             // custom generation checks
             generatorResult.GeneratedSources.Length.ShouldBe(3);
-            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.DomainA.MyDTO1.JsonNewtonSoft.g.cs");
-            generatorResult.GeneratedSources[1].HintName.ShouldBe("MyOrg.DomainB.MyDTO1.JsonNewtonSoft.g.cs");
-            generatorResult.GeneratedSources[2].HintName.ShouldBe("MyOrg.DomainC.MyDTO2.JsonNewtonSoft.g.cs");
+            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.DomainA.MyDTO1.JsonSystemText.g.cs");
+            generatorResult.GeneratedSources[1].HintName.ShouldBe("MyOrg.DomainB.MyDTO1.JsonSystemText.g.cs");
+            generatorResult.GeneratedSources[2].HintName.ShouldBe("MyOrg.DomainC.MyDTO2.JsonSystemText.g.cs");
         }
 
         [Fact]

@@ -17,21 +17,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{EA84EF
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "DTOMaker.Core.Shared", "DTOMaker.Core.Shared\DTOMaker.Core.Shared.shproj", "{AF5E10B1-3CB5-4C67-87C2-E8E8918CE3CD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JsonNewtonSoft", "JsonNewtonSoft", "{E78920CA-2F19-4656-BD87-5C893C8734DD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JsonSystemText", "JsonSystemText", "{E78920CA-2F19-4656-BD87-5C893C8734DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.Runtime.JsonNewtonSoft", "DTOMaker.Runtime.JsonNewtonSoft\DTOMaker.Runtime.JsonNewtonSoft.csproj", "{224E1A80-C3E6-64F1-5F56-AC020D47329A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.JsonSystemText", "DTOMaker.JsonNewtonSoft\DTOMaker.JsonSystemText.csproj", "{6FAF8BEB-249B-976E-1E62-CB2F453352D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.JsonNewtonSoft", "Template.JsonNewtonSoft\Template.JsonNewtonSoft.csproj", "{508E8316-BF0B-DD8C-EABB-BB7D665ABCBF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.JsonNewtonSoft.Tests", "Template.JsonNewtonSoft.Tests\Template.JsonNewtonSoft.Tests.csproj", "{21C6E32A-74F2-29B8-0104-93D8BC055B1F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.JsonNewtonSoft", "DTOMaker.JsonNewtonSoft\DTOMaker.JsonNewtonSoft.csproj", "{6FAF8BEB-249B-976E-1E62-CB2F453352D4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.JsonNewtonSoft.Tests", "DTOMaker.JsonNewtonSoft.Tests\DTOMaker.JsonNewtonSoft.Tests.csproj", "{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.JsonSystemText.Tests", "DTOMaker.JsonNewtonSoft.Tests\DTOMaker.JsonSystemText.Tests.csproj", "{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.Core", "DTOMaker.SrcGen.Core\DTOMaker.SrcGen.Core.csproj", "{34A532C9-A797-4809-955A-E98508454E40}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.JsonSystemText", "DTOMaker.SrcGen.JsonSystemText\DTOMaker.SrcGen.JsonSystemText.csproj", "{DDC31E38-1E90-4259-9B07-5EA523F3649A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.JsonSystemText", "Template.JsonSystemText\Template.JsonSystemText.csproj", "{A76F8839-0FF2-7474-3DD8-E9B6D68A0537}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.JsonSystemText.Tests", "Template.JsonSystemText.Tests\Template.JsonSystemText.Tests.csproj", "{F99B6E2D-90C3-5E3F-2260-E5E969F13742}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.Runtime.JsonSystemText", "DTOMaker.Runtime.JsonSystemText\DTOMaker.Runtime.JsonSystemText.csproj", "{7689868B-20EE-A2C1-7280-CC002A2D8DAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,18 +39,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{224E1A80-C3E6-64F1-5F56-AC020D47329A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{224E1A80-C3E6-64F1-5F56-AC020D47329A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{224E1A80-C3E6-64F1-5F56-AC020D47329A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{224E1A80-C3E6-64F1-5F56-AC020D47329A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{508E8316-BF0B-DD8C-EABB-BB7D665ABCBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{508E8316-BF0B-DD8C-EABB-BB7D665ABCBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{508E8316-BF0B-DD8C-EABB-BB7D665ABCBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{508E8316-BF0B-DD8C-EABB-BB7D665ABCBF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{21C6E32A-74F2-29B8-0104-93D8BC055B1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21C6E32A-74F2-29B8-0104-93D8BC055B1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21C6E32A-74F2-29B8-0104-93D8BC055B1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21C6E32A-74F2-29B8-0104-93D8BC055B1F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6FAF8BEB-249B-976E-1E62-CB2F453352D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6FAF8BEB-249B-976E-1E62-CB2F453352D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FAF8BEB-249B-976E-1E62-CB2F453352D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,15 +55,24 @@ Global
 		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A76F8839-0FF2-7474-3DD8-E9B6D68A0537}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A76F8839-0FF2-7474-3DD8-E9B6D68A0537}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A76F8839-0FF2-7474-3DD8-E9B6D68A0537}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A76F8839-0FF2-7474-3DD8-E9B6D68A0537}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F99B6E2D-90C3-5E3F-2260-E5E969F13742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F99B6E2D-90C3-5E3F-2260-E5E969F13742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F99B6E2D-90C3-5E3F-2260-E5E969F13742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F99B6E2D-90C3-5E3F-2260-E5E969F13742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7689868B-20EE-A2C1-7280-CC002A2D8DAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7689868B-20EE-A2C1-7280-CC002A2D8DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7689868B-20EE-A2C1-7280-CC002A2D8DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7689868B-20EE-A2C1-7280-CC002A2D8DAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AF5E10B1-3CB5-4C67-87C2-E8E8918CE3CD} = {EA84EF56-0D96-4A7A-9D2C-083AE6C49B62}
-		{224E1A80-C3E6-64F1-5F56-AC020D47329A} = {E78920CA-2F19-4656-BD87-5C893C8734DD}
-		{508E8316-BF0B-DD8C-EABB-BB7D665ABCBF} = {E78920CA-2F19-4656-BD87-5C893C8734DD}
-		{21C6E32A-74F2-29B8-0104-93D8BC055B1F} = {E78920CA-2F19-4656-BD87-5C893C8734DD}
 		{6FAF8BEB-249B-976E-1E62-CB2F453352D4} = {E78920CA-2F19-4656-BD87-5C893C8734DD}
 		{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6} = {E78920CA-2F19-4656-BD87-5C893C8734DD}
 	EndGlobalSection

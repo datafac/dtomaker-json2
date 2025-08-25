@@ -1,13 +1,13 @@
 using DataFac.Memory;
-using DTOMaker.Runtime.JsonNewtonSoft;
+using DTOMaker.Runtime.JsonSystemText;
 using MessagePack;
-using Newtonsoft.Json;
 using Shouldly;
 using System;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Xunit;
 
-namespace Template.JsonNewtonSoft.Tests
+namespace Template.JsonSystemText.Tests
 {
     internal interface ISimple
     {
@@ -29,10 +29,10 @@ namespace Template.JsonNewtonSoft.Tests
 
     internal sealed class SimpleNS : ISimple
     {
-        [JsonProperty("fieldOne")]
+        [JsonPropertyName("fieldOne")]
         public int Field1 { get; set; }
 
-        [JsonProperty("fieldTwo")]
+        [JsonPropertyName("fieldTwo")]
         public byte[] Field2 { get; set; } = Array.Empty<byte>();
 
         Octets ISimple.Field2 => Octets.UnsafeWrap(Field2);
@@ -51,9 +51,11 @@ namespace Template.JsonNewtonSoft.Tests
         public int Id { get; set; }
     }
 
+    [JsonDerivedType(typeof(ParentNS), 1)]
+    [JsonDerivedType(typeof(Child1NS), 2)]
     internal class ParentNS : IParent
     {
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
     }
 
@@ -71,7 +73,7 @@ namespace Template.JsonNewtonSoft.Tests
 
     internal sealed class Child1NS : ParentNS, IChild1
     {
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
     }
 

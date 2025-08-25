@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
 
-namespace DTOMaker.JsonNewtonSoft
+namespace DTOMaker.JsonSystemText
 {
     internal class JsonNSSyntaxReceiver : SyntaxReceiverBase
     {

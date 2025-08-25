@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
-namespace DTOMaker.Runtime.JsonNewtonSoft
+namespace DTOMaker.Runtime.JsonSystemText
 {
     public abstract class EntityBase : IEntityBase, IEquatable<EntityBase>
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-namespace DTOMaker.JsonNewtonSoft.Tests
+namespace DTOMaker.JsonSystemText.Tests
 {
     public class PolymorphismTests
     {
@@ -61,7 +61,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             generatorResult.Diagnostics.ShouldBeEmpty();
             generatorResult.GeneratedSources.Length.ShouldBe(7);
             GeneratedSourceResult source = generatorResult.GeneratedSources[0];
-            source.HintName.ShouldBe("MyOrg.Models.Equilateral.JsonNewtonSoft.g.cs");
+            source.HintName.ShouldBe("MyOrg.Models.Equilateral.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -74,7 +74,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             generatorResult.Diagnostics.ShouldBeEmpty();
             generatorResult.GeneratedSources.Length.ShouldBe(7);
             GeneratedSourceResult source = generatorResult.GeneratedSources[1];
-            source.HintName.ShouldBe("MyOrg.Models.Polygon.JsonNewtonSoft.g.cs");
+            source.HintName.ShouldBe("MyOrg.Models.Polygon.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -87,7 +87,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             generatorResult.Diagnostics.ShouldBeEmpty();
             generatorResult.GeneratedSources.Length.ShouldBe(7);
             GeneratedSourceResult source = generatorResult.GeneratedSources[2];
-            source.HintName.ShouldBe("MyOrg.Models.Quadrilateral.JsonNewtonSoft.g.cs");
+            source.HintName.ShouldBe("MyOrg.Models.Quadrilateral.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -100,7 +100,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             generatorResult.Diagnostics.ShouldBeEmpty();
             generatorResult.GeneratedSources.Length.ShouldBe(7);
             GeneratedSourceResult source = generatorResult.GeneratedSources[3];
-            source.HintName.ShouldBe("MyOrg.Models.Rectangle.JsonNewtonSoft.g.cs");
+            source.HintName.ShouldBe("MyOrg.Models.Rectangle.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -113,7 +113,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             generatorResult.Diagnostics.ShouldBeEmpty();
             generatorResult.GeneratedSources.Length.ShouldBe(7);
             GeneratedSourceResult source = generatorResult.GeneratedSources[4];
-            source.HintName.ShouldBe("MyOrg.Models.RightTriangle.JsonNewtonSoft.g.cs");
+            source.HintName.ShouldBe("MyOrg.Models.RightTriangle.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -126,7 +126,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             generatorResult.Diagnostics.ShouldBeEmpty();
             generatorResult.GeneratedSources.Length.ShouldBe(7);
             GeneratedSourceResult source = generatorResult.GeneratedSources[5];
-            source.HintName.ShouldBe("MyOrg.Models.Square.JsonNewtonSoft.g.cs");
+            source.HintName.ShouldBe("MyOrg.Models.Square.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }
@@ -139,7 +139,7 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             generatorResult.Diagnostics.ShouldBeEmpty();
             generatorResult.GeneratedSources.Length.ShouldBe(7);
             GeneratedSourceResult source = generatorResult.GeneratedSources[6];
-            source.HintName.ShouldBe("MyOrg.Models.Triangle.JsonNewtonSoft.g.cs");
+            source.HintName.ShouldBe("MyOrg.Models.Triangle.JsonSystemText.g.cs");
             string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-namespace DTOMaker.JsonNewtonSoft.Tests
+namespace DTOMaker.JsonSystemText.Tests
 {
     public class MultiDomainTests
     {
@@ -35,8 +35,8 @@ namespace DTOMaker.JsonNewtonSoft.Tests
 
             // custom generation checks
             generatorResult.GeneratedSources.Length.ShouldBe(2);
-            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.DomainA.MyDTO.JsonNewtonSoft.g.cs");
-            generatorResult.GeneratedSources[1].HintName.ShouldBe("MyOrg.DomainB.MyDTO.JsonNewtonSoft.g.cs");
+            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.DomainA.MyDTO.JsonSystemText.g.cs");
+            generatorResult.GeneratedSources[1].HintName.ShouldBe("MyOrg.DomainB.MyDTO.JsonSystemText.g.cs");
         }
 
         [Fact]

@@ -1,6 +1,6 @@
 ﻿using DTOMaker.Gentime;
 
-namespace DTOMaker.JsonNewtonSoft
+namespace DTOMaker.JsonSystemText
 {
     public sealed class JsonNSModelScopeMember : ModelScopeMember
     {

@@ -1,7 +1,7 @@
 ﻿using DTOMaker.Gentime;
 using Microsoft.CodeAnalysis;
 
-namespace DTOMaker.JsonNewtonSoft
+namespace DTOMaker.JsonSystemText
 {
     internal sealed class JsonNSEntity : TargetEntity
     {

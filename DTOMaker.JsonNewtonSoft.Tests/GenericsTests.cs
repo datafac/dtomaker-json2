@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-namespace DTOMaker.JsonNewtonSoft.Tests
+namespace DTOMaker.JsonSystemText.Tests
 {
     public class GenericsTests
     {
@@ -42,9 +42,9 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             grr.Diagnostics.ShouldBeEmpty();
 
             grr.GeneratedSources.Length.ShouldBe(3);
-            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.MyDTO2.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.MyDTO3.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.Pair_2_Int64_String.JsonNewtonSoft.g.cs");
+            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.MyDTO2.JsonSystemText.g.cs");
+            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.MyDTO3.JsonSystemText.g.cs");
+            grr.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.Pair_2_Int64_String.JsonSystemText.g.cs");
         }
 
         [Fact]
@@ -100,8 +100,8 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             grr.Diagnostics.ShouldBeEmpty();
 
             grr.GeneratedSources.Length.ShouldBe(2);
-            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.Monoid_1_Boolean.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.MyDTO.JsonNewtonSoft.g.cs");
+            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.Monoid_1_Boolean.JsonSystemText.g.cs");
+            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.MyDTO.JsonSystemText.g.cs");
         }
 
         [Fact]
@@ -325,9 +325,9 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             grr.Diagnostics.ShouldBeEmpty();
 
             grr.GeneratedSources.Length.ShouldBe(3);
-            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.Monoid_1_Other.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.MyDTO.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.Other.JsonNewtonSoft.g.cs");
+            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.Monoid_1_Other.JsonSystemText.g.cs");
+            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.MyDTO.JsonSystemText.g.cs");
+            grr.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.Other.JsonSystemText.g.cs");
         }
 
         [Fact]
@@ -388,8 +388,8 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             grr.Diagnostics.ShouldBeEmpty();
 
             grr.GeneratedSources.Length.ShouldBe(2);
-            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.MyTree.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.Tree_2_String_Octets.JsonNewtonSoft.g.cs");
+            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.MyTree.JsonSystemText.g.cs");
+            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.Tree_2_String_Octets.JsonSystemText.g.cs");
         }
 
         [Fact]
@@ -447,12 +447,12 @@ namespace DTOMaker.JsonNewtonSoft.Tests
             grr.Diagnostics.ShouldBeEmpty();
 
             grr.GeneratedSources.Length.ShouldBe(6);
-            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.Base_1_Int64.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.Base_1_Octets.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.MyPoco1.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[3].HintName.ShouldBe("MyOrg.Models.MyPoco2.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[4].HintName.ShouldBe("MyOrg.Models.Poco_2_String_Int64.JsonNewtonSoft.g.cs");
-            grr.GeneratedSources[5].HintName.ShouldBe("MyOrg.Models.Poco_2_String_Octets.JsonNewtonSoft.g.cs");
+            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.Base_1_Int64.JsonSystemText.g.cs");
+            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.Base_1_Octets.JsonSystemText.g.cs");
+            grr.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.MyPoco1.JsonSystemText.g.cs");
+            grr.GeneratedSources[3].HintName.ShouldBe("MyOrg.Models.MyPoco2.JsonSystemText.g.cs");
+            grr.GeneratedSources[4].HintName.ShouldBe("MyOrg.Models.Poco_2_String_Int64.JsonSystemText.g.cs");
+            grr.GeneratedSources[5].HintName.ShouldBe("MyOrg.Models.Poco_2_String_Octets.JsonSystemText.g.cs");
         }
 
         [Fact]
