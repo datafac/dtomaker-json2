@@ -36,7 +36,8 @@ namespace Template.JsonSystemText.Tests
             copy.T_RequiredScalarMemberName_.ShouldBe(orig.T_RequiredScalarMemberName_);
             copy.T_VectorMemberName_.AsSpan().SequenceEqual(orig.T_VectorMemberName_.AsSpan()).ShouldBeTrue();
             copy.T_RequiredBinaryMemberName_.AsSpan().SequenceEqual(orig.T_RequiredBinaryMemberName_.AsSpan()).ShouldBeTrue();
-            copy.ShouldBe(orig);
+            copy.Equals(orig).ShouldBeTrue();
+            //copy.ShouldBe(orig);
             copy.GetHashCode().ShouldBe(orig.GetHashCode());
         }
 

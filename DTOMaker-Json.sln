@@ -13,16 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		version.json = version.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{EA84EF56-0D96-4A7A-9D2C-083AE6C49B62}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "DTOMaker.Core.Shared", "DTOMaker.Core.Shared\DTOMaker.Core.Shared.shproj", "{AF5E10B1-3CB5-4C67-87C2-E8E8918CE3CD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JsonSystemText", "JsonSystemText", "{E78920CA-2F19-4656-BD87-5C893C8734DD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.JsonSystemText", "DTOMaker.JsonNewtonSoft\DTOMaker.JsonSystemText.csproj", "{6FAF8BEB-249B-976E-1E62-CB2F453352D4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.JsonSystemText.Tests", "DTOMaker.JsonNewtonSoft.Tests\DTOMaker.JsonSystemText.Tests.csproj", "{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.Core", "DTOMaker.SrcGen.Core\DTOMaker.SrcGen.Core.csproj", "{34A532C9-A797-4809-955A-E98508454E40}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.JsonSystemText", "DTOMaker.SrcGen.JsonSystemText\DTOMaker.SrcGen.JsonSystemText.csproj", "{DDC31E38-1E90-4259-9B07-5EA523F3649A}"
@@ -33,20 +23,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.JsonSystemText.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.Runtime.JsonSystemText", "DTOMaker.Runtime.JsonSystemText\DTOMaker.Runtime.JsonSystemText.csproj", "{7689868B-20EE-A2C1-7280-CC002A2D8DAB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.JsonSystemText.Tests", "DTOMaker.SrcGen.JsonSystemText.Tests\DTOMaker.SrcGen.JsonSystemText.Tests.csproj", "{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6FAF8BEB-249B-976E-1E62-CB2F453352D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6FAF8BEB-249B-976E-1E62-CB2F453352D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6FAF8BEB-249B-976E-1E62-CB2F453352D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6FAF8BEB-249B-976E-1E62-CB2F453352D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{34A532C9-A797-4809-955A-E98508454E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{34A532C9-A797-4809-955A-E98508454E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34A532C9-A797-4809-955A-E98508454E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,20 +51,15 @@ Global
 		{7689868B-20EE-A2C1-7280-CC002A2D8DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7689868B-20EE-A2C1-7280-CC002A2D8DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7689868B-20EE-A2C1-7280-CC002A2D8DAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{AF5E10B1-3CB5-4C67-87C2-E8E8918CE3CD} = {EA84EF56-0D96-4A7A-9D2C-083AE6C49B62}
-		{6FAF8BEB-249B-976E-1E62-CB2F453352D4} = {E78920CA-2F19-4656-BD87-5C893C8734DD}
-		{02EC9D88-05C4-A0B4-D333-57DF6B40F1F6} = {E78920CA-2F19-4656-BD87-5C893C8734DD}
-	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2C984986-C2C9-4136-A2D4-1A5FE9BDF8F0}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		DTOMaker.Core.Shared\DTOMaker.Core.Shared.projitems*{6faf8beb-249b-976e-1e62-cb2f453352d4}*SharedItemsImports = 5
-		DTOMaker.Core.Shared\DTOMaker.Core.Shared.projitems*{af5e10b1-3cb5-4c67-87c2-e8e8918ce3cd}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

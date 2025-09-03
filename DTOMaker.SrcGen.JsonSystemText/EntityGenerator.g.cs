@@ -25,7 +25,7 @@ Emit("using DTOMaker.Runtime.JsonSystemText;");
 Emit("using System;");
 Emit("using System.Linq;");
 Emit("using System.Text.Json.Serialization;");
-Emit("");
+Emit("using T_NameSpace_.JsonSystemText;");
 Emit("");
 if (false) {
 Emit("using T_MemberType_ = System.Int32;");
@@ -35,7 +35,7 @@ Emit("    public interface IT_MemberTypeIntfName_ { }");
 Emit("}");
 Emit("namespace T_MemberTypeNameSpace_.JsonSystemText");
 Emit("{");
-Emit("    public class T_MemberTypeImplName_ : EntityBase, IT_MemberTypeIntfName_");
+Emit("    public class T_MemberTypeImplName_ : EntityBase, IT_MemberTypeIntfName_, IEquatable<T_MemberTypeImplName_>");
 Emit("    {");
 Emit("        protected override int OnGetEntityId() => 3;");
 Emit("");
@@ -52,6 +52,18 @@ Emit("        public static T_MemberTypeImplName_ CreateFrom(IT_MemberTypeIntfNa
 Emit("        public T_MemberTypeImplName_() { }");
 Emit("        public T_MemberTypeImplName_(IT_MemberTypeIntfName_ source) { }");
 Emit("        protected override IEntityBase OnPartCopy() => throw new NotImplementedException();");
+Emit("");
+Emit("        public override int GetHashCode() => 0;");
+Emit("        public bool Equals(T_MemberTypeImplName_? other)");
+Emit("        {");
+Emit("            if (ReferenceEquals(this, other)) return true;");
+Emit("            if (other is null) return false;");
+Emit("            if (!base.Equals(other)) return false;");
+Emit("            return true;");
+Emit("        }");
+Emit("        public override bool Equals(object? obj) => obj is T_MemberTypeImplName_ other && Equals(other);");
+Emit("        public static bool operator ==(T_MemberTypeImplName_? left, T_MemberTypeImplName_? right) => left is not null ? left.Equals(right) : (right is null);");
+Emit("        public static bool operator !=(T_MemberTypeImplName_? left, T_MemberTypeImplName_? right) => left is not null ? !left.Equals(right) : (right is not null);");
 Emit("    }");
 Emit("}");
 Emit("namespace T_BaseNameSpace_");
@@ -60,6 +72,8 @@ Emit("    public interface IT_BaseName_ : IEntityBase { }");
 Emit("}");
 Emit("namespace T_BaseNameSpace_.JsonSystemText");
 Emit("{");
+Emit("    [JsonPolymorphic]");
+Emit("    [JsonDerivedType(typeof(T_NameSpace_.JsonSystemText.T_EntityImplName_), 1)]");
 Emit("    public class T_BaseName_ : EntityBase, IT_BaseName_, IEquatable<T_BaseName_>");
 Emit("    {");
 Emit("        protected override int OnGetEntityId() => 2;");
@@ -111,6 +125,13 @@ Emit("}");
 }
 Emit("namespace T_NameSpace_.JsonSystemText");
 Emit("{");
+    if (entity.DerivedEntityCount > 0) {
+Emit("    [JsonPolymorphic]");
+    foreach (var derived in entity.DerivedEntities) {
+    using var _ = NewScope(derived);
+Emit("    [JsonDerivedType(typeof(T_EntityImplName_))]");
+    }
+    }
 Emit("    public partial class T_EntityImplName_ : T_BaseNameSpace_.JsonSystemText.T_BaseName_, IT_EntityIntfName_, IEquatable<T_EntityImplName_>");
 Emit("    {");
 Emit("        // Derived entities: T_DerivedEntityCount_");
@@ -293,14 +314,12 @@ Emit("        private T_MemberType_ _T_RequiredScalarMemberName_ = T_MemberDefau
 Emit("        [Obsolete(\"T_MemberObsoleteMessage_\", T_MemberObsoleteIsError_)]");
         }
         if (member.IsNullable) {
-Emit("        [JsonPropertyName(\"T_MemberJsonName_\")]");
 Emit("        public T_MemberType_? T_NullableScalarMemberName_");
 Emit("        {");
 Emit("            get => _T_NullableScalarMemberName_;");
 Emit("            set => _T_NullableScalarMemberName_ = IfNotFrozen(value);");
 Emit("        }");
         } else {
-Emit("        [JsonPropertyName(\"T_MemberJsonName_\")]");
 Emit("        public T_MemberType_ T_RequiredScalarMemberName_");
 Emit("        {");
 Emit("            get => _T_RequiredScalarMemberName_;");
@@ -314,7 +333,6 @@ Emit("        private T_MemberType_[] _T_VectorMemberName_ = Array.Empty<T_Membe
         if (member.IsObsolete) {
 Emit("        [Obsolete(\"T_MemberObsoleteMessage_\", T_MemberObsoleteIsError_)]");
         }
-Emit("        [JsonPropertyName(\"T_MemberJsonName_\")]");
 Emit("        public T_MemberType_[] T_VectorMemberName_");
 Emit("        {");
 Emit("            get => _T_VectorMemberName_;");
@@ -330,7 +348,6 @@ Emit("        }");
         if (member.IsNullable) {
 Emit("        [JsonIgnore]");
 Emit("        private T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_? _T_NullableEntityMemberName_;");
-Emit("        [JsonPropertyName(\"T_MemberJsonName_\")]");
 Emit("        public T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_? T_NullableEntityMemberName_");
 Emit("        {");
 Emit("            get => _T_NullableEntityMemberName_;");
@@ -344,7 +361,6 @@ Emit("        }");
         } else {
 Emit("        [JsonIgnore]");
 Emit("        private T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_ _T_RequiredEntityMemberName_ = T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_.Empty;");
-Emit("        [JsonPropertyName(\"T_MemberJsonName_\")]");
 Emit("        public T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_ T_RequiredEntityMemberName_");
 Emit("        {");
 Emit("            get => _T_RequiredEntityMemberName_;");
@@ -361,7 +377,6 @@ Emit("        }");
         if (member.IsNullable) {
 Emit("        [JsonIgnore]");
 Emit("        private byte[]? _T_NullableBinaryMemberName_;");
-Emit("        [JsonPropertyName(\"T_MemberJsonName_\")]");
 Emit("        public byte[]? T_NullableBinaryMemberName_");
 Emit("        {");
 Emit("            get => _T_NullableBinaryMemberName_;");
@@ -375,7 +390,6 @@ Emit("        }");
         } else {
 Emit("        [JsonIgnore]");
 Emit("        private byte[] _T_RequiredBinaryMemberName_ = Array.Empty<byte>();");
-Emit("        [JsonPropertyName(\"T_MemberJsonName_\")]");
 Emit("        public byte[] T_RequiredBinaryMemberName_");
 Emit("        {");
 Emit("            get => _T_RequiredBinaryMemberName_;");
@@ -392,7 +406,6 @@ Emit("        }");
         if (member.IsNullable) {
 Emit("        [JsonIgnore]");
 Emit("        private string? _T_NullableStringMemberName_;");
-Emit("        [JsonPropertyName(\"T_MemberJsonName_\")]");
 Emit("        public string? T_NullableStringMemberName_");
 Emit("        {");
 Emit("            get => _T_NullableStringMemberName_;");
@@ -401,7 +414,6 @@ Emit("        }");
         } else {
 Emit("        [JsonIgnore]");
 Emit("        private string _T_RequiredStringMemberName_ = string.Empty;");
-Emit("        [JsonPropertyName(\"T_MemberJsonName_\")]");
 Emit("        public string T_RequiredStringMemberName_");
 Emit("        {");
 Emit("            get => _T_RequiredStringMemberName_;");

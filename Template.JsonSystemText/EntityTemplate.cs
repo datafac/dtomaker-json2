@@ -15,7 +15,7 @@ using DTOMaker.Runtime.JsonSystemText;
 using System;
 using System.Linq;
 using System.Text.Json.Serialization;
-
+using T_NameSpace_.JsonSystemText;
 
 //##if (false) {
 using T_MemberType_ = System.Int32;
@@ -25,7 +25,7 @@ namespace T_MemberTypeNameSpace_
 }
 namespace T_MemberTypeNameSpace_.JsonSystemText
 {
-    public class T_MemberTypeImplName_ : EntityBase, IT_MemberTypeIntfName_
+    public class T_MemberTypeImplName_ : EntityBase, IT_MemberTypeIntfName_, IEquatable<T_MemberTypeImplName_>
     {
         protected override int OnGetEntityId() => 3;
 
@@ -42,6 +42,18 @@ namespace T_MemberTypeNameSpace_.JsonSystemText
         public T_MemberTypeImplName_() { }
         public T_MemberTypeImplName_(IT_MemberTypeIntfName_ source) { }
         protected override IEntityBase OnPartCopy() => throw new NotImplementedException();
+
+        public override int GetHashCode() => 0;
+        public bool Equals(T_MemberTypeImplName_? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other is null) return false;
+            if (!base.Equals(other)) return false;
+            return true;
+        }
+        public override bool Equals(object? obj) => obj is T_MemberTypeImplName_ other && Equals(other);
+        public static bool operator ==(T_MemberTypeImplName_? left, T_MemberTypeImplName_? right) => left is not null ? left.Equals(right) : (right is null);
+        public static bool operator !=(T_MemberTypeImplName_? left, T_MemberTypeImplName_? right) => left is not null ? !left.Equals(right) : (right is not null);
     }
 }
 namespace T_BaseNameSpace_
@@ -50,6 +62,8 @@ namespace T_BaseNameSpace_
 }
 namespace T_BaseNameSpace_.JsonSystemText
 {
+    [JsonPolymorphic]
+    [JsonDerivedType(typeof(T_NameSpace_.JsonSystemText.T_EntityImplName_), 1)]
     public class T_BaseName_ : EntityBase, IT_BaseName_, IEquatable<T_BaseName_>
     {
         protected override int OnGetEntityId() => 2;
@@ -101,6 +115,13 @@ namespace T_NameSpace_
 //##}
 namespace T_NameSpace_.JsonSystemText
 {
+    //##if (entity.DerivedEntityCount > 0) {
+    [JsonPolymorphic]
+    //##foreach (var derived in entity.DerivedEntities) {
+    //##using var _ = NewScope(derived);
+    [JsonDerivedType(typeof(T_EntityImplName_))]
+    //##}
+    //##}
     public partial class T_EntityImplName_ : T_BaseNameSpace_.JsonSystemText.T_BaseName_, IT_EntityIntfName_, IEquatable<T_EntityImplName_>
     {
         // Derived entities: T_DerivedEntityCount_
@@ -283,14 +304,12 @@ namespace T_NameSpace_.JsonSystemText
         [Obsolete("T_MemberObsoleteMessage_", T_MemberObsoleteIsError_)]
         //##}
         //##if (member.IsNullable) {
-        [JsonPropertyName("T_MemberJsonName_")]
         public T_MemberType_? T_NullableScalarMemberName_
         {
             get => _T_NullableScalarMemberName_;
             set => _T_NullableScalarMemberName_ = IfNotFrozen(value);
         }
         //##} else {
-        [JsonPropertyName("T_MemberJsonName_")]
         public T_MemberType_ T_RequiredScalarMemberName_
         {
             get => _T_RequiredScalarMemberName_;
@@ -304,7 +323,6 @@ namespace T_NameSpace_.JsonSystemText
         //##if (member.IsObsolete) {
         [Obsolete("T_MemberObsoleteMessage_", T_MemberObsoleteIsError_)]
         //##}
-        [JsonPropertyName("T_MemberJsonName_")]
         public T_MemberType_[] T_VectorMemberName_
         {
             get => _T_VectorMemberName_;
@@ -320,7 +338,6 @@ namespace T_NameSpace_.JsonSystemText
         //##if (member.IsNullable) {
         [JsonIgnore]
         private T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_? _T_NullableEntityMemberName_;
-        [JsonPropertyName("T_MemberJsonName_")]
         public T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_? T_NullableEntityMemberName_
         {
             get => _T_NullableEntityMemberName_;
@@ -334,7 +351,6 @@ namespace T_NameSpace_.JsonSystemText
         //##} else {
         [JsonIgnore]
         private T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_ _T_RequiredEntityMemberName_ = T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_.Empty;
-        [JsonPropertyName("T_MemberJsonName_")]
         public T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_ T_RequiredEntityMemberName_
         {
             get => _T_RequiredEntityMemberName_;
@@ -351,7 +367,6 @@ namespace T_NameSpace_.JsonSystemText
         //##if (member.IsNullable) {
         [JsonIgnore]
         private byte[]? _T_NullableBinaryMemberName_;
-        [JsonPropertyName("T_MemberJsonName_")]
         public byte[]? T_NullableBinaryMemberName_
         {
             get => _T_NullableBinaryMemberName_;
@@ -365,7 +380,6 @@ namespace T_NameSpace_.JsonSystemText
         //##} else {
         [JsonIgnore]
         private byte[] _T_RequiredBinaryMemberName_ = Array.Empty<byte>();
-        [JsonPropertyName("T_MemberJsonName_")]
         public byte[] T_RequiredBinaryMemberName_
         {
             get => _T_RequiredBinaryMemberName_;
@@ -382,7 +396,6 @@ namespace T_NameSpace_.JsonSystemText
         //##if (member.IsNullable) {
         [JsonIgnore]
         private string? _T_NullableStringMemberName_;
-        [JsonPropertyName("T_MemberJsonName_")]
         public string? T_NullableStringMemberName_
         {
             get => _T_NullableStringMemberName_;
@@ -391,7 +404,6 @@ namespace T_NameSpace_.JsonSystemText
         //##} else {
         [JsonIgnore]
         private string _T_RequiredStringMemberName_ = string.Empty;
-        [JsonPropertyName("T_MemberJsonName_")]
         public string T_RequiredStringMemberName_
         {
             get => _T_RequiredStringMemberName_;
