@@ -1,6 +1,5 @@
 using DataFac.Memory;
 using DTOMaker.Runtime.JsonSystemText;
-using MessagePack;
 using Shouldly;
 using System;
 using System.Linq;
@@ -15,19 +14,7 @@ namespace Template.JsonSystemText.Tests
         Octets Field2 { get; }
     }
 
-    [MessagePackObject]
-    public sealed class SimpleMP : ISimple
-    {
-        [Key(1)]
-        public int Field1 { get; set; }
-
-        [Key(2)]
-        public ReadOnlyMemory<byte> Field2 { get; set; }
-
-        Octets ISimple.Field2 => Octets.UnsafeWrap(Field2);
-    }
-
-    internal sealed class SimpleNS : ISimple
+    internal sealed class SimpleST : ISimple
     {
         [JsonPropertyName("fieldOne")]
         public int Field1 { get; set; }
@@ -43,17 +30,9 @@ namespace Template.JsonSystemText.Tests
         int Id { get; }
     }
 
-    [MessagePackObject]
-    [Union(1, typeof(Child1MP))]
-    public abstract class ParentMP : IParent
-    {
-        [Key(101)]
-        public int Id { get; set; }
-    }
-
-    [JsonDerivedType(typeof(ParentNS), 1)]
-    [JsonDerivedType(typeof(Child1NS), 2)]
-    internal class ParentNS : IParent
+    [JsonDerivedType(typeof(ParentST), 1)]
+    [JsonDerivedType(typeof(Child1ST), 2)]
+    internal class ParentST : IParent
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
@@ -64,14 +43,7 @@ namespace Template.JsonSystemText.Tests
         string Name { get; }
     }
 
-    [MessagePackObject]
-    public sealed class Child1MP : ParentMP, IChild1
-    {
-        [Key(201)]
-        public string Name { get; set; } = string.Empty;
-    }
-
-    internal sealed class Child1NS : ParentNS, IChild1
+    internal sealed class Child1ST : ParentST, IChild1
     {
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
@@ -84,12 +56,12 @@ namespace Template.JsonSystemText.Tests
         {
             ReadOnlyMemory<byte> smallBinary = new byte[] { 1, 2, 3, 4, 5, 6, 7 };
 
-            var orig = new SimpleNS();
+            var orig = new SimpleST();
             orig.Field1 = 321;
             orig.Field2 = smallBinary.ToArray();
 
-            string buffer = orig.SerializeToJson<SimpleNS>();
-            var copy = buffer.DeserializeFromJson<SimpleNS>();
+            string buffer = orig.SerializeToJson<SimpleST>();
+            var copy = buffer.DeserializeFromJson<SimpleST>();
 
             copy.ShouldNotBeNull();
 
@@ -102,12 +74,12 @@ namespace Template.JsonSystemText.Tests
         [Fact]
         public void RoundtripNestedNSAsLeaf()
         {
-            var orig = new Child1NS();
+            var orig = new Child1ST();
             orig.Id = 321;
             orig.Name = "Alice";
 
-            string buffer = orig.SerializeToJson<Child1NS>();
-            var copy = buffer.DeserializeFromJson<Child1NS>();
+            string buffer = orig.SerializeToJson<Child1ST>();
+            var copy = buffer.DeserializeFromJson<Child1ST>();
 
             copy.ShouldNotBeNull();
 
@@ -120,15 +92,15 @@ namespace Template.JsonSystemText.Tests
         [Fact]
         public void RoundtripNestedNSAsRoot()
         {
-            var orig = new Child1NS();
+            var orig = new Child1ST();
             orig.Id = 321;
             orig.Name = "Alice";
 
-            string buffer = orig.SerializeToJson<ParentNS>();
-            var copy = buffer.DeserializeFromJson<ParentNS>();
+            string buffer = orig.SerializeToJson<ParentST>();
+            var copy = buffer.DeserializeFromJson<ParentST>();
 
             copy.ShouldNotBeNull();
-            copy.ShouldBeOfType<Child1NS>();
+            copy.ShouldBeOfType<Child1ST>();
 
             IChild1 iorig = orig;
             IChild1? icopy = (copy as IChild1);
