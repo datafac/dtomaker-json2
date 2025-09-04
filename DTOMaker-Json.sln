@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.Runtime.JsonSystem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.JsonSystemText.Tests", "DTOMaker.SrcGen.JsonSystemText.Tests\DTOMaker.SrcGen.JsonSystemText.Tests.csproj", "{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox1", "Sandbox1\Sandbox1.csproj", "{7F97DB8E-B396-4CE1-B927-0C96058DE423}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox1.Tests", "Sandbox1.Tests\Sandbox1.Tests.csproj", "{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +59,14 @@ Global
 		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F97DB8E-B396-4CE1-B927-0C96058DE423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F97DB8E-B396-4CE1-B927-0C96058DE423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F97DB8E-B396-4CE1-B927-0C96058DE423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F97DB8E-B396-4CE1-B927-0C96058DE423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
