@@ -6,6 +6,7 @@
 	  <LangVersion>latest</LangVersion>
 	  <Nullable>enable</Nullable>
 	  <WarningsAsErrors>nullable</WarningsAsErrors>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <PackageProjectUrl>https://github.com/datafac/dtomaker-json</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/datafac/dtomaker-json</RepositoryUrl>
 	  <Company>DataFac</Company>
@@ -20,7 +21,6 @@
 	  <AssemblyOriginatorKeyFile>..\SigningKey.snk</AssemblyOriginatorKeyFile>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>generator; roslyn</PackageTags>
-	  <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
 	<ItemGroup>
