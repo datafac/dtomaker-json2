@@ -165,16 +165,6 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
         }
 
         [Fact]
-        public async Task Generic2_Monoid2_Half()
-        {
-            string source = source2.Replace("_T1_", "Half");
-            var grr = GeneratorTestHelper.RunSourceGenerator(source, LanguageVersion.LatestMajor);
-            grr.Diagnostics.ShouldBeEmpty();
-            string outputCode = grr.GeneratedSources[0].SourceText.ToString();
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
         public async Task Generic2_Monoid2_int()
         {
             string source = source2.Replace("_T1_", "int");
@@ -274,6 +264,17 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             await Verifier.Verify(outputCode);
         }
 
+#if NET8_0_OR_GREATER
+        [Fact]
+        public async Task Generic2_Monoid2_Half()
+        {
+            string source = source2.Replace("_T1_", "Half");
+            var grr = GeneratorTestHelper.RunSourceGenerator(source, LanguageVersion.LatestMajor);
+            grr.Diagnostics.ShouldBeEmpty();
+            string outputCode = grr.GeneratedSources[0].SourceText.ToString();
+            await Verifier.Verify(outputCode);
+        }
+
         [Fact]
         public async Task Generic2_Monoid2_Int128()
         {
@@ -293,6 +294,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             string outputCode = grr.GeneratedSources[0].SourceText.ToString();
             await Verifier.Verify(outputCode);
         }
+#endif
 
         private readonly string source3 =
             """

@@ -13,12 +13,15 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             params PortableExecutableReference[] additionalReferences)
         {
             Assembly standardAssm = Assembly.Load("netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51");
+#if NET8_0_OR_GREATER
             Assembly runtimeAssm = Assembly.Load("System.Runtime, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
-
+#endif
             PortableExecutableReference[] commonReferences = new[]
                         {
                             MetadataReference.CreateFromFile(standardAssm.Location),
+#if NET8_0_OR_GREATER
                             MetadataReference.CreateFromFile(runtimeAssm.Location),
+#endif
                             MetadataReference.CreateFromFile(typeof(Enum).GetTypeInfo().Assembly.Location),
                             MetadataReference.CreateFromFile(typeof(Attribute).GetTypeInfo().Assembly.Location),
                             MetadataReference.CreateFromFile(typeof(Memory<>).GetTypeInfo().Assembly.Location),
