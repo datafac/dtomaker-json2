@@ -12,7 +12,7 @@ namespace Sandbox1.Tests
     {
         [Fact]
 
-        public async Task Generic_MyTree_OutputVerifyAsync()
+        public async Task Generic_MyTree_OutputVerify()
         {
             var orig = new MyOrg.Models.JsonSystemText.MyTree()
             {

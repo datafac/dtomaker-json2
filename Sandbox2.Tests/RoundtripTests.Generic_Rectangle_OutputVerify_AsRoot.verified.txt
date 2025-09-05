@@ -1,1 +1,1 @@
-﻿{"$type":7,"Length":123,"Height":456}
+﻿{"$type":7,"length":123,"height":456}
