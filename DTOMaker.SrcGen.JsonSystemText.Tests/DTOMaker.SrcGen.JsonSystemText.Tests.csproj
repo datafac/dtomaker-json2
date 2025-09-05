@@ -31,6 +31,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\DTOMaker.Runtime.JsonSystemText\DTOMaker.Runtime.JsonSystemText.csproj" />
+	  <ProjectReference Include="..\DTOMaker.SrcGen.Core\DTOMaker.SrcGen.Core.csproj" />
 	  <ProjectReference Include="..\DTOMaker.SrcGen.JsonSystemText\DTOMaker.SrcGen.JsonSystemText.csproj" />
 	</ItemGroup>
 
