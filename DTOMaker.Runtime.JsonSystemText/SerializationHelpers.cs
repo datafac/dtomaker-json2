@@ -30,7 +30,7 @@ namespace DTOMaker.Runtime.JsonSystemText
                         a = value;
                         break;
                     case "B":
-                    case "c":
+                    case "b":
                         b = value;
                         break;
                     default:
@@ -44,8 +44,8 @@ namespace DTOMaker.Runtime.JsonSystemText
         public override void Write(Utf8JsonWriter writer, PairOfInt16 value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            writer.WriteNumber("A", value.A);
-            writer.WriteNumber("B", value.B);
+            writer.WriteNumber("a", value.A);
+            writer.WriteNumber("b", value.B);
             writer.WriteEndObject();
         }
     }
@@ -74,7 +74,7 @@ namespace DTOMaker.Runtime.JsonSystemText
                         a = value;
                         break;
                     case "B":
-                    case "c":
+                    case "b":
                         b = value;
                         break;
                     default:
@@ -88,8 +88,8 @@ namespace DTOMaker.Runtime.JsonSystemText
         public override void Write(Utf8JsonWriter writer, PairOfInt32 value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            writer.WriteNumber("A", value.A);
-            writer.WriteNumber("B", value.B);
+            writer.WriteNumber("a", value.A);
+            writer.WriteNumber("b", value.B);
             writer.WriteEndObject();
         }
     }
@@ -118,7 +118,7 @@ namespace DTOMaker.Runtime.JsonSystemText
                         a = value;
                         break;
                     case "B":
-                    case "c":
+                    case "b":
                         b = value;
                         break;
                     default:
@@ -132,8 +132,8 @@ namespace DTOMaker.Runtime.JsonSystemText
         public override void Write(Utf8JsonWriter writer, PairOfInt64 value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            writer.WriteNumber("A", value.A);
-            writer.WriteNumber("B", value.B);
+            writer.WriteNumber("a", value.A);
+            writer.WriteNumber("b", value.B);
             writer.WriteEndObject();
         }
     }
