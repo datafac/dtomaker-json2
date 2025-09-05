@@ -119,7 +119,7 @@ namespace T_NameSpace_.JsonSystemText
     [JsonPolymorphic]
     //##foreach (var derived in entity.DerivedEntities) {
     //##using var _ = NewScope(derived);
-    [JsonDerivedType(typeof(T_EntityImplName_))]
+    [JsonDerivedType(typeof(T_EntityImplName_), T_EntityId_)]
     //##}
     //##}
     public partial class T_EntityImplName_ : T_BaseNameSpace_.JsonSystemText.T_BaseName_, IT_EntityIntfName_, IEquatable<T_EntityImplName_>
@@ -133,7 +133,7 @@ namespace T_NameSpace_.JsonSystemText
         private const string T_MemberObsoleteMessage_ = null;
         private const bool T_MemberObsoleteIsError_ = false;
         private const int T_MemberDefaultValue_ = 0;
-        private const int T_EntityId_ = 1;
+        private const int T_EntityId_ = 999;
         //##}
 
         protected override int OnGetEntityId() => T_EntityId_;

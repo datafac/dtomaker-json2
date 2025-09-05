@@ -16,7 +16,7 @@ using MyOrg.Models.JsonSystemText;
 namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(MyDTO))]
+    [JsonDerivedType(typeof(MyDTO), 1)]
     public partial class MyBase : DTOMaker.Runtime.JsonSystemText.EntityBase, IMyBase, IEquatable<MyBase>
     {
         // Derived entities: 1

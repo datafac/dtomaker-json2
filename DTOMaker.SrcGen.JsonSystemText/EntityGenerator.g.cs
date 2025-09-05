@@ -129,7 +129,7 @@ Emit("{");
 Emit("    [JsonPolymorphic]");
     foreach (var derived in entity.DerivedEntities) {
     using var _ = NewScope(derived);
-Emit("    [JsonDerivedType(typeof(T_EntityImplName_))]");
+Emit("    [JsonDerivedType(typeof(T_EntityImplName_), T_EntityId_)]");
     }
     }
 Emit("    public partial class T_EntityImplName_ : T_BaseNameSpace_.JsonSystemText.T_BaseName_, IT_EntityIntfName_, IEquatable<T_EntityImplName_>");
@@ -143,7 +143,7 @@ Emit("        // - T_EntityImplName_");
 Emit("        private const string T_MemberObsoleteMessage_ = null;");
 Emit("        private const bool T_MemberObsoleteIsError_ = false;");
 Emit("        private const int T_MemberDefaultValue_ = 0;");
-Emit("        private const int T_EntityId_ = 1;");
+Emit("        private const int T_EntityId_ = 999;");
         }
 Emit("");
 Emit("        protected override int OnGetEntityId() => T_EntityId_;");

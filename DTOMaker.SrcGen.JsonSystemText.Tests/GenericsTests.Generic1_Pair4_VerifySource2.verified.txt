@@ -16,7 +16,7 @@ using MyOrg.Models.JsonSystemText;
 namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(MyDTO2))]
+    [JsonDerivedType(typeof(MyDTO2), 2)]
     public partial class Pair_2_Int64_String : DTOMaker.Runtime.JsonSystemText.EntityBase, IPair<Int64, String>, IEquatable<Pair_2_Int64_String>
     {
         // Derived entities: 1

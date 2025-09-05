@@ -16,8 +16,8 @@ using MyOrg.Models.JsonSystemText;
 namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(Equilateral))]
-    [JsonDerivedType(typeof(RightTriangle))]
+    [JsonDerivedType(typeof(Equilateral), 3)]
+    [JsonDerivedType(typeof(RightTriangle), 4)]
     public partial class Triangle : MyOrg.Models.JsonSystemText.Polygon, ITriangle, IEquatable<Triangle>
     {
         // Derived entities: 2

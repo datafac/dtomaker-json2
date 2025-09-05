@@ -17,7 +17,6 @@ namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
     [JsonDerivedType(typeof(Rectangle), 7)]
-    [JsonDerivedType(typeof(Square), 6)]
     public partial class Quadrilateral : MyOrg.Models.JsonSystemText.Polygon, IQuadrilateral, IEquatable<Quadrilateral>
     {
         // Derived entities: 2
@@ -41,7 +40,6 @@ namespace MyOrg.Models.JsonSystemText
             return source switch
             {
                 MyOrg.Models.JsonSystemText.Rectangle source2 => new MyOrg.Models.JsonSystemText.Rectangle(source2),
-                MyOrg.Models.JsonSystemText.Square source2 => new MyOrg.Models.JsonSystemText.Square(source2),
                 _ => new MyOrg.Models.JsonSystemText.Quadrilateral(source)
             };
         }
@@ -52,7 +50,6 @@ namespace MyOrg.Models.JsonSystemText
             return source switch
             {
                 MyOrg.Models.IRectangle source2 => new MyOrg.Models.JsonSystemText.Rectangle(source2),
-                MyOrg.Models.ISquare source2 => new MyOrg.Models.JsonSystemText.Square(source2),
                 _ => new MyOrg.Models.JsonSystemText.Quadrilateral(source)
             };
         }

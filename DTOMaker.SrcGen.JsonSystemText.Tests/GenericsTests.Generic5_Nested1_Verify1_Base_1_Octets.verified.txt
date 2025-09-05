@@ -16,8 +16,8 @@ using MyOrg.Models.JsonSystemText;
 namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(MyPoco1))]
-    [JsonDerivedType(typeof(Poco_2_String_Octets))]
+    [JsonDerivedType(typeof(MyPoco1), 1)]
+    [JsonDerivedType(typeof(Poco_2_String_Octets), 116665718)]
     public partial class Base_1_Octets : DTOMaker.Runtime.JsonSystemText.EntityBase, IBase<Octets>, IEquatable<Base_1_Octets>
     {
         // Derived entities: 2

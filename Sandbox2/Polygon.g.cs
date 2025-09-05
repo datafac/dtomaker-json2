@@ -16,12 +16,8 @@ using MyOrg.Models.JsonSystemText;
 namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(Equilateral), 3)]
     [JsonDerivedType(typeof(Quadrilateral), 5)]
     [JsonDerivedType(typeof(Rectangle), 7)]
-    [JsonDerivedType(typeof(RightTriangle), 4)]
-    [JsonDerivedType(typeof(Square), 6)]
-    [JsonDerivedType(typeof(Triangle), 2)]
     public partial class Polygon : DTOMaker.Runtime.JsonSystemText.EntityBase, IPolygon, IEquatable<Polygon>
     {
         // Derived entities: 6
@@ -48,12 +44,8 @@ namespace MyOrg.Models.JsonSystemText
             if (source.IsFrozen) return source;
             return source switch
             {
-                MyOrg.Models.JsonSystemText.Equilateral source2 => new MyOrg.Models.JsonSystemText.Equilateral(source2),
                 MyOrg.Models.JsonSystemText.Rectangle source2 => new MyOrg.Models.JsonSystemText.Rectangle(source2),
-                MyOrg.Models.JsonSystemText.RightTriangle source2 => new MyOrg.Models.JsonSystemText.RightTriangle(source2),
-                MyOrg.Models.JsonSystemText.Square source2 => new MyOrg.Models.JsonSystemText.Square(source2),
                 MyOrg.Models.JsonSystemText.Quadrilateral source2 => new MyOrg.Models.JsonSystemText.Quadrilateral(source2),
-                MyOrg.Models.JsonSystemText.Triangle source2 => new MyOrg.Models.JsonSystemText.Triangle(source2),
                 _ => new MyOrg.Models.JsonSystemText.Polygon(source)
             };
         }
@@ -63,12 +55,8 @@ namespace MyOrg.Models.JsonSystemText
             if (source is Polygon concrete && concrete.IsFrozen) return concrete;
             return source switch
             {
-                MyOrg.Models.IEquilateral source2 => new MyOrg.Models.JsonSystemText.Equilateral(source2),
                 MyOrg.Models.IRectangle source2 => new MyOrg.Models.JsonSystemText.Rectangle(source2),
-                MyOrg.Models.IRightTriangle source2 => new MyOrg.Models.JsonSystemText.RightTriangle(source2),
-                MyOrg.Models.ISquare source2 => new MyOrg.Models.JsonSystemText.Square(source2),
                 MyOrg.Models.IQuadrilateral source2 => new MyOrg.Models.JsonSystemText.Quadrilateral(source2),
-                MyOrg.Models.ITriangle source2 => new MyOrg.Models.JsonSystemText.Triangle(source2),
                 _ => new MyOrg.Models.JsonSystemText.Polygon(source)
             };
         }

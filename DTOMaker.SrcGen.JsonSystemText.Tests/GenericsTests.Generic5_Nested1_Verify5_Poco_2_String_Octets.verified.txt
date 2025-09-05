@@ -16,7 +16,7 @@ using MyOrg.Models.JsonSystemText;
 namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(MyPoco1))]
+    [JsonDerivedType(typeof(MyPoco1), 1)]
     public partial class Poco_2_String_Octets : MyOrg.Models.JsonSystemText.Base_1_Octets, IPoco<String, Octets>, IEquatable<Poco_2_String_Octets>
     {
         // Derived entities: 1

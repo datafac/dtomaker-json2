@@ -16,11 +16,11 @@ using MyOrg.Models.JsonSystemText;
 namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(BooleanNode))]
-    [JsonDerivedType(typeof(DoubleNode))]
-    [JsonDerivedType(typeof(Int64Node))]
-    [JsonDerivedType(typeof(NumericNode))]
-    [JsonDerivedType(typeof(StringNode))]
+    [JsonDerivedType(typeof(BooleanNode), 4)]
+    [JsonDerivedType(typeof(DoubleNode), 6)]
+    [JsonDerivedType(typeof(Int64Node), 5)]
+    [JsonDerivedType(typeof(NumericNode), 3)]
+    [JsonDerivedType(typeof(StringNode), 2)]
     public partial class Node : DTOMaker.Runtime.JsonSystemText.EntityBase, INode, IEquatable<Node>
     {
         // Derived entities: 5

@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox1", "Sandbox1\Sandbo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox1.Tests", "Sandbox1.Tests\Sandbox1.Tests.csproj", "{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox2", "Sandbox2\Sandbox2.csproj", "{A3927613-29BC-46B9-95BE-C5106BE18CC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox2.Tests", "Sandbox2.Tests\Sandbox2.Tests.csproj", "{921F6CAD-3F55-4D54-A482-EE24662625C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +71,14 @@ Global
 		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3927613-29BC-46B9-95BE-C5106BE18CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3927613-29BC-46B9-95BE-C5106BE18CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3927613-29BC-46B9-95BE-C5106BE18CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3927613-29BC-46B9-95BE-C5106BE18CC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{921F6CAD-3F55-4D54-A482-EE24662625C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{921F6CAD-3F55-4D54-A482-EE24662625C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{921F6CAD-3F55-4D54-A482-EE24662625C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{921F6CAD-3F55-4D54-A482-EE24662625C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

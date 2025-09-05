@@ -16,8 +16,8 @@ using MyOrg.Models.JsonSystemText;
 namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(DoubleNode))]
-    [JsonDerivedType(typeof(Int64Node))]
+    [JsonDerivedType(typeof(DoubleNode), 6)]
+    [JsonDerivedType(typeof(Int64Node), 5)]
     public partial class NumericNode : MyOrg.Models.JsonSystemText.Node, INumericNode, IEquatable<NumericNode>
     {
         // Derived entities: 2

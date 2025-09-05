@@ -8,6 +8,7 @@ namespace DTOMaker.Runtime.JsonSystemText
         private static readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
         };
 
         public static string SerializeToJson<T>(this T value)
