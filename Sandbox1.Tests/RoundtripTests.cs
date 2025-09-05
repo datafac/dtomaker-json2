@@ -1,4 +1,3 @@
-using DataFac.Memory;
 using DTOMaker.Runtime.JsonSystemText;
 using Shouldly;
 using System;
@@ -23,10 +22,7 @@ namespace Sandbox1.Tests
             };
             orig.Freeze();
 
-            var sender = new MyOrg.Models.JsonSystemText.MyTree(orig);
-            sender.Freeze();
-
-            var buffer = sender.SerializeToJson<MyOrg.Models.JsonSystemText.MyTree>();
+            var buffer = orig.SerializeToJson<MyOrg.Models.JsonSystemText.MyTree>();
 
             await Verifier.Verify(buffer);
         }
@@ -43,18 +39,10 @@ namespace Sandbox1.Tests
             };
             orig.Freeze();
 
-            var sender = new MyOrg.Models.JsonSystemText.MyTree(orig);
-            sender.Freeze();
+            var buffer = orig.SerializeToJson<MyOrg.Models.JsonSystemText.MyTree>();
 
-            var buffer = sender.SerializeToJson<MyOrg.Models.JsonSystemText.MyTree>();
-
-            var recver = buffer.DeserializeFromJson<MyOrg.Models.JsonSystemText.MyTree>();
-            recver.ShouldNotBeNull();
-            recver.Freeze();
-
-            recver.Equals(sender).ShouldBeTrue();
-
-            var copy = new MyOrg.Models.JsonSystemText.MyTree(recver);
+            var copy = buffer.DeserializeFromJson<MyOrg.Models.JsonSystemText.MyTree>();
+            copy.ShouldNotBeNull();
             copy.Freeze();
 
             copy.Equals(orig).ShouldBeTrue();
@@ -89,18 +77,10 @@ namespace Sandbox1.Tests
             };
             orig.Freeze();
 
-            var sender = new MyOrg.Models.JsonSystemText.MyTree(orig);
-            sender.Freeze();
+            var buffer = orig.SerializeToJson<MyOrg.Models.JsonSystemText.MyTree>();
 
-            var buffer = sender.SerializeToJson<MyOrg.Models.JsonSystemText.MyTree>();
-
-            var recver = buffer.DeserializeFromJson<MyOrg.Models.JsonSystemText.MyTree>();
-            recver.ShouldNotBeNull();
-            recver.Freeze();
-
-            recver.Equals(sender).ShouldBeTrue();
-
-            var copy = new MyOrg.Models.JsonSystemText.MyTree(recver);
+            var copy = buffer.DeserializeFromJson<MyOrg.Models.JsonSystemText.MyTree>();
+            copy.ShouldNotBeNull();
             copy.Freeze();
 
             copy.Equals(orig).ShouldBeTrue();
