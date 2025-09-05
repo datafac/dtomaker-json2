@@ -1,6 +1,6 @@
 ﻿namespace DTOMaker.SrcGen.Core
 {
-    public static class FullTypeName
+    public static class KnownType
     {
         public const string SystemBoolean = "System.Boolean";
         public const string SystemSByte = "System.SByte";

@@ -218,12 +218,12 @@ namespace DTOMaker.SrcGen.Core
                         member.MemberType = mTFN;
                         member.Kind = mTFN.MemberKind;
 
-                        if (member.MemberType.FullName == FullTypeName.MemoryOctets)
+                        if (member.MemberType.FullName == KnownType.MemoryOctets)
                         {
                             // binary
                             member.Kind = MemberKind.Binary;
                         }
-                        else if (member.MemberType.FullName == FullTypeName.SystemString)
+                        else if (member.MemberType.FullName == KnownType.SystemString)
                         {
                             // string
                             member.Kind = MemberKind.String;

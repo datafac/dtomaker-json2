@@ -44,11 +44,11 @@
         {
             return typeFullName.FullName switch
             {
-                FullTypeName.SystemString => "String",
-                FullTypeName.MemoryOctets => "Octets",
-                FullTypeName.PairOfInt16 => "PairOfInt16",
-                FullTypeName.PairOfInt32 => "PairOfInt32",
-                FullTypeName.PairOfInt64 => "PairOfInt64",
+                KnownType.SystemString => "String",
+                KnownType.MemoryOctets => "Octets",
+                KnownType.PairOfInt16 => "PairOfInt16",
+                KnownType.PairOfInt32 => "PairOfInt32",
+                KnownType.PairOfInt64 => "PairOfInt64",
                 _ => typeFullName.ShortImplName
             };
         }
@@ -57,8 +57,8 @@
         {
             return typeFullName.FullName switch
             {
-                FullTypeName.SystemString => "string.Empty",
-                FullTypeName.MemoryOctets => "Octets.Empty",
+                KnownType.SystemString => "string.Empty",
+                KnownType.MemoryOctets => "Octets.Empty",
                 _ => "default"
             };
         }
