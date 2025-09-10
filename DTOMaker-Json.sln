@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		version.json = version.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.Core", "DTOMaker.SrcGen.Core\DTOMaker.SrcGen.Core.csproj", "{34A532C9-A797-4809-955A-E98508454E40}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.JsonSystemText", "DTOMaker.SrcGen.JsonSystemText\DTOMaker.SrcGen.JsonSystemText.csproj", "{DDC31E38-1E90-4259-9B07-5EA523F3649A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.JsonSystemText", "Template.JsonSystemText\Template.JsonSystemText.csproj", "{A76F8839-0FF2-7474-3DD8-E9B6D68A0537}"
@@ -43,10 +41,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{34A532C9-A797-4809-955A-E98508454E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34A532C9-A797-4809-955A-E98508454E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34A532C9-A797-4809-955A-E98508454E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34A532C9-A797-4809-955A-E98508454E40}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDC31E38-1E90-4259-9B07-5EA523F3649A}.Release|Any CPU.ActiveCfg = Release|Any CPU
