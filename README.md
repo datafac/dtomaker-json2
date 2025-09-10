@@ -8,12 +8,8 @@
 
 *Warning: This is pre-release software under active development. Breaking changes may occur.*
 
-A collection of model-driven compile-time source generators for quickly creating DTOs (Data Transport Objects) supporting the following
-serialization schemes:
-- JSON
-
-and related types.
-
+A model-driven compile-time source generator for quickly creating polymorphic, freezable DTOs (Data Transport Objects) 
+supporting JSON serialization.
 
 ## Workflow
 ```mermaid
@@ -22,9 +18,9 @@ title: Workflow
 ---
 flowchart LR
     def(Define models e.g. IMyDTO.cs)
-    ref1(Reference DTOMaker.Models.*)
-    ref2(Reference DTOMaker.Runtime.*)
-    ref3(Reference one or more source generators e.g. DTOMaker.MessagePack)
+    ref1(Reference DTOMaker.Models)
+    ref2(Reference DTOMaker.Runtime.JsonSystemText)
+    ref3(Reference DTOMaker.SrcGen.JsonSystemText)
     bld(VS/Code/MSBuild)
     pkg(Assembly)
     ref1-->def
@@ -35,35 +31,62 @@ flowchart LR
     bld-->pkg
 ```
 
-Models are defined as C# interfaces with additional attributes. Here's a trivial example:
+Models are defined as C# interfaces with additional attributes. So let's start with a non-trivial model. 
+Here's how to define a generic recursive tree type with an example closed instance:
 
 ```C#
 [Entity][Id(1)]
-public interface IMyFirstDTO
+public interface ITree<TK, TV> : IEntityBase
 {
-    [Member(1)] string Name { get; set; }
+    [Member(1)] int Count { get; set; }
+    [Member(2)] TK Key { get; set; }
+    [Member(3)] TV Value { get; set; }
+    [Member(4)] ITree<TK, TV>? Left { get; set; }
+    [Member(5)] ITree<TK, TV>? Right { get; set; }
 }
+[Entity][Id(2)]
+public interface IMyTree : ITree<String, Octets> { }
 ```
-If using the MessagePack source generator, the following implmentation will be 
-generated (simplified):
+The following implmentation will be 
+generated (simplified for readability):
 
 ```C#
-[MessagePackObject]
-public sealed class MyFirstDTO : EntityBase, IMyFirstDTO, IEquatable<MyFirstDTO>
+[JsonPolymorphic]
+[JsonDerivedType(typeof(MyTree))]
+public partial class Tree_2_String_Octets : EntityBase, ITree<String, Octets>, IEquatable<Tree_2_String_Octets>
 {
-    [Key(1)] string Name { get; set; }
+    [JsonIgnore] private Int32 _Count = default;
+    public Int32 Count { get => _Count; set => _Count = value; }
+
+    [JsonIgnore] private string _Key = string.Empty;
+    public string Key { get => _Key; set => _Key = value; }
+
+    [JsonIgnore] private byte[] _Value = Array.Empty<byte>();
+    public byte[] Value { get => _Value; set => _Value = value; }
+    Octets ITree<String, Octets>.Value
+    {
+        get => _Value.Length == 0 ? Octets.Empty : new Octets(_Value);
+        set => _Value = value.ToByteArray();
+    }
+
+    [JsonIgnore] private Tree_2_String_Octets? _Left;
+    public Tree_2_String_Octets? Left { get => _Left; set => _Left = value; }
+    ITree<String, Octets>? ITree<String, Octets>.Left
+    {
+        get => _Left;
+        set => _Left = value is null ? null : Tree_2_String_Octets.CreateFrom(value));
+    }
+
+    [JsonIgnore] private Tree_2_String_Octets? _Right;
+    public Tree_2_String_Octets? Right { get => _Right; set => _Right = value; }
+    ITree<String, Octets>? ITree<String, Octets>.Right
+    {
+        get => _Right;
+        set => _Right = value is null ? null : Tree_2_String_Octets.CreateFrom(value);
+    }
 }
+public partial class MyTree : Tree_2_String_Octets, IMyTree, IEquatable<MyTree>
 ```
-# Included Packages
-
-This repo includes the following packages:
-
-## DTOMaker.JsonSystemText
-A source generator that creates DTOs (Data Transport Objects) that are serializable to JSON.
-
-## DTOMaker.Runtime
-Common types used at runtime by DTOMaker generated entities.
-
 # Model features
 - Member value types: Boolean, S/Byte, U/Int16/32/64/128, Double, Single, Half, Char, Guid, Decimal
 - String member types
@@ -77,40 +100,17 @@ Common types used at runtime by DTOMaker generated entities.
 - IEquatable\<T\> support
 - Templates as testable code, template-to-generator processing.
 
-## MemBlocks features
-- auto-embedded string, binary and entity members when encoded < 63 bytes.
-- fixed-length string and binary member types.
-
-# !Limitations
-## Single compilation unit
-All models and generated DTOs are contained within a single assembly.
-Models cannot reference types in other projects or packages (other 
-than native or built-in types). Generated classes are partial, which can help you 
-mitigate the single assembly constraint.
-
 # Development
 ## In progress
 - custom struct members (to avoid primitive obsession)
 
 ## Coming soon
-- Json (System.Text) generator
-- upgrade source generators to IIncrementalGenerator
+- upgrade to IIncrementalGenerator
 - global interface equality comparer
 - reservation (hidden members)
-- Orleans generator
-- ProtobufNet 3.0 generator
-- MessagePack 3.x generator
-- NetStrux generator
-- MemBlocks compact layout method
-- Enum data types. Workaround - enums can be implemented with an underlying 
-  integer property and a cast.
-- MemBlocks nullable types. Workaround - T? can be implemented with a pair
-  of members (Boolean, T).
 
 ## Coming later
-- Google Protobuf .proto generation
 - model.json generation
 - command-line alternative
 - variable length arrays
 - logical value equality
-- Rune member types
