@@ -1,210 +1,183 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 
 namespace DTOMaker.SrcGen.Core
 {
-    public abstract class SourceGeneratorBase : ISourceGenerator
+    public readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IReadOnlyCollection<T>
+        where T : IEquatable<T>
     {
-        protected abstract void OnInitialize(GeneratorInitializationContext context);
-        public void Initialize(GeneratorInitializationContext context) => OnInitialize(context);
+        private readonly T[] _array;
 
-        private static bool IsDerivedFrom(TargetEntity candidate, TargetEntity parent)
+        public EquatableArray() => _array = Array.Empty<T>();
+        public EquatableArray(T[] array) => _array = array;
+
+        public int Count => _array.Length;
+        public ReadOnlySpan<T> AsSpan() => _array.AsSpan();
+        public T[]? AsArray() => _array;
+
+
+        public bool Equals(EquatableArray<T> array) => AsSpan().SequenceEqual(array.AsSpan());
+        public override bool Equals(object? obj) => obj is EquatableArray<T> array && this.Equals(array);
+        public static bool operator ==(EquatableArray<T> left, EquatableArray<T> right) => left.Equals(right);
+        public static bool operator !=(EquatableArray<T> left, EquatableArray<T> right) => !left.Equals(right);
+
+        public override int GetHashCode()
         {
-            if (ReferenceEquals(candidate, parent)) return false;
-            if (candidate.Base is null) return false;
-            if (candidate.Base.TFN.Equals(parent.TFN)) return true;
-            return IsDerivedFrom(candidate.Base, parent);
+            HashCode hashCode = default;
+            hashCode.Add(_array.Length);
+            for (int i = 0; i < _array.Length; i++)
+            {
+                hashCode.Add(_array[i]);
+            }
+            return hashCode.ToHashCode();
         }
 
-        private static string MakeClosedFullName(TypeFullName openTFN, ImmutableArray<ITypeParameterSymbol> typeParameters, ImmutableArray<ITypeSymbol> typeArguments)
+        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)_array).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T>)_array).GetEnumerator();
+    }
+    public readonly record struct EnumToGenerate
+    {
+        public readonly string Name;
+        public readonly EquatableArray<string> Values;
+
+        public EnumToGenerate(string name, List<string> values)
         {
-            string result = openTFN.FullName;
-            int length = Math.Min(typeParameters.Length, typeArguments.Length);
-            for (int i = 0; i < length; i++)
-            {
-                string pattern = $"T{i}";
-                string replace = TypeFullName.Create(typeArguments[i]).ShortImplName;
-                result = result.Replace(pattern, replace);
-            }
-            return result;
-        }
-
-        private static TypeFullName ResolveMemberType(TargetDomain domain, TypeFullName closedEntityTFN, TargetMember openMember)
-        {
-            // search for direct open/closed argument match
-            for (int i = 0; i < closedEntityTFN.TypeParameters.Length; i++)
-            {
-                TypeFullName openMemberTFN = TypeFullName.Create(closedEntityTFN.TypeParameters[i]);
-                if (openMember.MemberType == openMemberTFN)
-                {
-                    var mTFN = TypeFullName.Create(closedEntityTFN.TypeArguments[i]);
-                    return mTFN;
-                }
-            }
-
-            // search closed entities for match
-            string candidateFullName = MakeClosedFullName(openMember.MemberType, closedEntityTFN.TypeParameters, closedEntityTFN.TypeArguments);
-            foreach (var closedEntity in domain.ClosedEntities.Values)
-            {
-                if (string.Equals(candidateFullName, closedEntity.TFN.FullName))
-                {
-                    return closedEntity.TFN;
-                }
-            }
-            // oops - not resolved
-            return openMember.MemberType;
-        }
-
-        protected abstract void OnExecute(GeneratorExecutionContext context);
-        public void Execute(GeneratorExecutionContext context)
-        {
-            if (context.SyntaxContextReceiver is not SyntaxReceiverBase syntaxReceiver) return;
-
-            // fix entity hierarchy
-            var domain = syntaxReceiver.Domain;
-            var entities = domain.ClosedEntities.Values.ToArray();
-            foreach (var entity in entities)
-            {
-                if (!entity.BaseName.Equals(TypeFullName.DefaultBase))
-                {
-                    if (domain.ClosedEntities.TryGetValue(entity.BaseName.FullName, out var baseEntity))
-                    {
-                        entity.Base = baseEntity;
-                    }
-                    else
-                    {
-                        // invalid base name!
-                        entity.SyntaxErrors.Add(
-                            new SyntaxDiagnostic(
-                                DiagnosticId.DTOM0008, "Invalid base name", DiagnosticCategory.Design, entity.Location, DiagnosticSeverity.Error,
-                                $"Base name '{entity.BaseName}' does not refer to a known entity."));
-                    }
-                }
-            }
-
-            // generate closed base entities (recursively)
-            // todo replace thes loop with a queue
-            //int entitiesAdded = 0;
-            //do
-            //{
-            //    entitiesAdded = 0;
-            //    foreach (var entity in entities)
-            //    {
-            //        if (entity.TFN.IsGeneric && entity.TFN.IsClosed)
-            //        {
-            //            var openTFN = entity.TFN.AsOpenGeneric();
-            //            if (domain.OpenEntities.TryGetValue(openTFN.FullName, out var openEntity))
-            //            {
-            //                // check if open entity has base
-            //                if (!openEntity.BaseName.Equals(TypeFullName.DefaultBase))
-            //                {
-            //                    // generate closed base name
-            //                    TypeFullName closedBaseTFN = openEntity.BaseName.AsClosedGeneric(ImmutableArray<ITypeSymbol>.Empty);
-
-            //                    // create closed base entity if not exists
-            //                    if (!domain.ClosedEntities.TryGetValue(closedBaseTFN.FullName, out var closedBaseEntity))
-            //                    {
-            //                        closedBaseEntity = syntaxReceiver.Factory.CreateEntity(domain, closedBaseTFN, entity.Location);
-            //                        domain.ClosedEntities.TryAdd(closedBaseTFN.FullName, closedBaseEntity);
-            //                        entitiesAdded++;
-            //                    }
-            //                }
-            //            }
-            //            else
-            //            {
-            //                // open entity not found!
-            //                entity.SyntaxErrors.Add(
-            //                    new SyntaxDiagnostic(
-            //                        DiagnosticId.DTOM0011, "Invalid generic entity", DiagnosticCategory.Design, entity.Location, DiagnosticSeverity.Error,
-            //                        $"Cannot find open entity '{openTFN}' for closed entity '{entity.TFN}'."));
-            //            }
-            //        }
-            //    }
-            //} while (entitiesAdded > 0);
-
-            // bind closed/open generic entities
-            foreach (var entity in entities)
-            {
-                if (entity.TFN.IsGeneric && entity.TFN.IsClosed && entity.OpenEntity is null)
-                {
-                    var openTFN = entity.TFN.AsOpenGeneric();
-                    if (domain.OpenEntities.TryGetValue(openTFN.FullName, out var openEntity))
-                    {
-                        // generate id and members
-                        entity.OpenEntity = openEntity;
-                        //entity.HasEntityAttribute = true; // implied
-
-                        // generate id
-                        SyntheticId syntheticId = new SyntheticId(openEntity.EntityId);
-                        foreach (var ta in entity.TFN.TypeArguments)
-                        {
-                            syntheticId = syntheticId.Add(TypeFullName.Create(ta).SyntheticId);
-                        }
-                        entity.EntityId = syntheticId.Id;
-
-                        // generate members
-                        foreach (TargetMember openMember in openEntity.Members.Values)
-                        {
-                            TargetMember member = syntaxReceiver.Factory.CloneMember(entity, openMember);
-                            if (member.Kind == MemberKind.Unknown)
-                            {
-                                var mTFN = ResolveMemberType(domain, entity.TFN, openMember);
-                                member.MemberType = mTFN;
-                                member.Kind = mTFN.MemberKind;
-                                if (mTFN.MemberKind == MemberKind.Unknown && domain.ClosedEntities.TryGetValue(mTFN.FullName, out var _))
-                                {
-                                    member.Kind = MemberKind.Entity;
-                                }
-                            }
-                            entity.Members.TryAdd(member.Name, member);
-                        }
-                    }
-                    else
-                    {
-                        // open entity not found!
-                        entity.SyntaxErrors.Add(
-                            new SyntaxDiagnostic(
-                                DiagnosticId.DTOM0011, "Invalid generic entity", DiagnosticCategory.Design, entity.Location, DiagnosticSeverity.Error,
-                                $"Cannot find open entity '{openTFN}' for closed entity '{entity.TFN}'."));
-                    }
-                }
-            }
-
-            // determine derived entities
-            foreach (var entity in entities)
-            {
-                entity.DerivedEntities = domain.ClosedEntities.Values
-                    .Where(e => IsDerivedFrom(e, entity))
-                    .OrderBy(e => e.TFN.FullName)
-                    .ToArray();
-            }
-
-            // determine entity members
-            foreach (var entity in entities)
-            {
-                foreach (var member in entity.Members.Values)
-                {
-                    var entity2 = entities.FirstOrDefault(e => e.TFN == member.MemberType);
-                    if (entity2 is not null)
-                    {
-                        member.Kind = MemberKind.Entity;
-                    }
-                }
-            }
-
-            // todo emit metadata as json
-            //var metadata = new JsonModel();
-            //metadata.Entities = entities
-            //    .OrderBy(e => e.EntityId)
-            //    .Select(e => e.ToJson())
-            //    .ToArray();
-            //string jsonText = metadata.ToText();
-            //// todo emit json file directly to file system
-            //context.AddSource($"Metadata.g.json", jsonText);
-
-            OnExecute(context);
+            Name = name;
+            Values = new(values.ToArray());
         }
     }
+    public static class SourceGenerationHelper
+    {
+        public const string Attribute =
+            """
+            namespace NetEscapades.EnumGenerators
+            {
+                [System.AttributeUsage(System.AttributeTargets.Enum)]
+                public class EnumExtensionsAttribute : System.Attribute
+                {
+                }
+            }
+            """;
+
+        public static string GenerateExtensionClass(EnumToGenerate enumToGenerate)
+        {
+            string head =
+                """
+                namespace NetEscapades.EnumGenerators
+                {
+                    public static partial class EnumExtensions
+                    {
+                        public static string ToStringFast(this T_EnumName_ value)
+                            => value switch
+                            {
+                """;
+            string body =
+                """
+                                T_EnumName_.T_EnumMember_ => nameof(T_EnumName_.T_EnumMember_),
+                """;
+            string foot =
+                """
+                                _ => value.ToString()
+                            }
+                    }
+                }
+                """;
+            var sb = new StringBuilder();
+            sb.AppendLine(head.Replace("T_EnumName_", enumToGenerate.Name));
+            foreach (string member in enumToGenerate.Values)
+            {
+                sb.AppendLine(body
+                    .Replace("T_EnumName_", enumToGenerate.Name)
+                    .Replace("T_EnumMember_", member));
+            }
+            sb.AppendLine(foot);
+            return sb.ToString();
+        }
+
+
+    }
+
+    public abstract class SourceGeneratorBase : IIncrementalGenerator
+    {
+        protected abstract void OnInitialize(IncrementalGeneratorInitializationContext context);
+
+        static EnumToGenerate GetEnumToGenerate(SemanticModel semanticModel, SyntaxNode enumDeclarationSyntax)
+        {
+            // Get the semantic representation of the enum syntax
+            if (semanticModel.GetDeclaredSymbol(enumDeclarationSyntax) is not INamedTypeSymbol enumSymbol)
+            {
+                // something went wrong
+                return default;
+            }
+
+            // Get the full type name of the enum e.g. Colour, 
+            // or OuterClass<T>.Colour if it was nested in a generic type (for example)
+            string enumName = enumSymbol.ToString();
+
+            // Get all the members in the enum
+            ImmutableArray<ISymbol> enumMembers = enumSymbol.GetMembers();
+            var members = new List<string>(enumMembers.Length);
+
+            // Get all the fields from the enum, and add their name to the list
+            foreach (ISymbol member in enumMembers)
+            {
+                if (member is IFieldSymbol field && field.ConstantValue is not null)
+                {
+                    members.Add(member.Name);
+                }
+            }
+
+            // Create an EnumToGenerate for use in the generation phase
+            //enumsToGenerate.Add(new EnumToGenerate(enumName, members));
+
+            foreach (ISymbol member in enumMembers)
+            {
+                if (member is IFieldSymbol field && field.ConstantValue is not null)
+                {
+                    members.Add(member.Name);
+                }
+            }
+
+            return new EnumToGenerate(enumName, members);
+        }
+
+        static void Execute(EnumToGenerate enumToGenerate, SourceProductionContext context)
+        {
+            // generate the source code and add it to the output
+            string result = SourceGenerationHelper.GenerateExtensionClass(enumToGenerate);
+            // Create a separate partial class file for each enum
+            context.AddSource($"EnumExtensions.{enumToGenerate.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
+        }
+
+        public void Initialize(IncrementalGeneratorInitializationContext context)
+        {
+            // Add the marker attributes to the compilation
+            context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
+                "EnumExtensionsAttribute.g.cs",
+                SourceText.From(SourceGenerationHelper.Attribute, Encoding.UTF8)));
+
+            // Do a simple filter for enums
+            IncrementalValuesProvider<EnumToGenerate> enumsToGenerate = context.SyntaxProvider
+                .ForAttributeWithMetadataName(
+                    "NetEscapades.EnumGenerators.EnumExtensionsAttribute",
+                    predicate: static (s, _) => true,
+                    transform: static (ctx, _) => GetEnumToGenerate(ctx.SemanticModel, ctx.TargetNode))
+                .Where(static m => !string.IsNullOrEmpty(m.Name));
+
+            // Generate source code for each enum found
+            context.RegisterSourceOutput(enumsToGenerate,
+                static (spc, source) => Execute(source, spc));
+            
+            // now do derived stuff
+            OnInitialize(context);
+        }
+    }
+
 }

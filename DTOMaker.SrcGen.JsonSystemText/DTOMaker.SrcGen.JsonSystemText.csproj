@@ -3,6 +3,8 @@
 	<PropertyGroup>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
@@ -23,16 +25,9 @@
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<!-- Generates a package at build -->
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<!-- Do not include the generator as a lib dependency -->
-		<IncludeBuildOutput>false</IncludeBuildOutput>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<!-- Package the generator in the analyzer directory of the nuget package -->
-		<None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 		<!-- Private dependencies of this generator that consumers of this generator will not reference. -->
 		<!--<PackageReference Include="System.Memory" Version="4.6.0" PrivateAssets="all" GeneratePathProperty="true" />-->
 	</ItemGroup>
@@ -46,7 +41,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

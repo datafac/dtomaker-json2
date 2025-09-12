@@ -44,7 +44,6 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
         }
 
         public static GeneratorRunResult RunSourceGenerator(string source,
-            // int expectedNewTrees,
             LanguageVersion languageVersion,
             params PortableExecutableReference[] additionalReferences)
         {
@@ -56,11 +55,12 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             var generator = new JsonSTSourceGenerator();
 
             // Create the driver that will control the generation, passing in our generator
-            GeneratorDriver driver = CSharpGeneratorDriver.Create(new ISourceGenerator[] { generator });
+            GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 
             // Run the generation pass
             // (Note: the generator driver itself is immutable, and all calls return an updated version of the driver that you should use for subsequent calls)
-            driver = driver.RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
+            //driver = driver.RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
+            driver = driver.RunGenerators(inputCompilation);
 
             // We can now assert things about the resulting compilation:
             //diagnostics.ShouldBeEmpty(); // there were no diagnostics created by the generators

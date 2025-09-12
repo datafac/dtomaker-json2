@@ -87,25 +87,12 @@ public partial class Tree_2_String_Octets : EntityBase, ITree<String, Octets>, I
 }
 public partial class MyTree : Tree_2_String_Octets, IMyTree, IEquatable<MyTree>
 ```
-# Model features
-- Member value types: Boolean, S/Byte, U/Int16/32/64/128, Double, Single, Half, Char, Guid, Decimal
-- String member types
-- Binary member types (Octets)
-- polymorphic types
-- generic types
-- entity members
-- Built-in freezability (mutable until frozen) support
-- [Obsolete] members
-- Fixed length arrays of above value types.
-- IEquatable\<T\> support
-- Templates as testable code, template-to-generator processing.
-
 # Development
 ## In progress
-- custom struct members (to avoid primitive obsession)
+- upgrade to IIncrementalGenerator
 
 ## Coming soon
-- upgrade to IIncrementalGenerator
+- custom struct members (to avoid primitive obsession)
 - global interface equality comparer
 - reservation (hidden members)
 
