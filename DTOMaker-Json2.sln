@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox3", "Sandbox3\Sandbo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox3.Tests", "Sandbox3.Tests\Sandbox3.Tests.csproj", "{D567E3BA-5400-40D1-B7C8-53E797E5B225}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.JsonSystemText.IntTests", "DTOMaker.SrcGen.JsonSystemText.IntTests\DTOMaker.SrcGen.JsonSystemText.IntTests.csproj", "{715E8AD0-7C76-4B2A-BB66-4B2BEBBF27C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{D567E3BA-5400-40D1-B7C8-53E797E5B225}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D567E3BA-5400-40D1-B7C8-53E797E5B225}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D567E3BA-5400-40D1-B7C8-53E797E5B225}.Release|Any CPU.Build.0 = Release|Any CPU
+		{715E8AD0-7C76-4B2A-BB66-4B2BEBBF27C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{715E8AD0-7C76-4B2A-BB66-4B2BEBBF27C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{715E8AD0-7C76-4B2A-BB66-4B2BEBBF27C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{715E8AD0-7C76-4B2A-BB66-4B2BEBBF27C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

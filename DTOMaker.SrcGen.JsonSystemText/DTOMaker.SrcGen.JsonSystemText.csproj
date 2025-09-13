@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<!--IncludeBuildOutput should be false for source generators-->
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
 		<LangVersion>latest</LangVersion>

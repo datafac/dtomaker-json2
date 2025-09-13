@@ -79,7 +79,8 @@ namespace DTOMaker.SrcGen.Core
                     public static partial class EnumExtensions
                     {
                         public static string ToStringFast(this T_EnumName_ value)
-                            => value switch
+                        {
+                            return value switch
                             {
                 """;
             string body =
@@ -89,7 +90,8 @@ namespace DTOMaker.SrcGen.Core
             string foot =
                 """
                                 _ => value.ToString()
-                            }
+                            };
+                        }
                     }
                 }
                 """;
@@ -120,9 +122,6 @@ namespace DTOMaker.SrcGen.Core
                 defaultSeverity: DiagnosticSeverity.Info,
                 isEnabledByDefault: true);
         }
-
-        private static readonly DiagnosticDescriptor _test01 = CreateInfoDiagnostic(DiagnosticCategory.Other, "TEST01", "A test diagnostic", "A description about the problem");
-        public static DiagnosticDescriptor Test01 => _test01;
 
         private static readonly DiagnosticDescriptor _ok01 = CreateInfoDiagnostic(DiagnosticCategory.Other, "OK01", "Source generated", "Source generation complete.");
         public static DiagnosticDescriptor OK01 => _ok01;
@@ -176,9 +175,6 @@ namespace DTOMaker.SrcGen.Core
             string result = SourceGenerationHelper.GenerateExtensionClass(enumToGenerate);
             // Create a separate partial class file for each enum
             context.AddSource($"EnumExtensions.{enumToGenerate.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
-
-            // Add a dummy diagnostic
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticsEN.Test01, enumToGenerate.Syntax.GetLocation()));
         }
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
