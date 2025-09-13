@@ -35,7 +35,8 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
         {
             var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
             generatorResult.Exception.ShouldBeNull();
-            //generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Info).ShouldBeEmpty();
+            generatorResult.Diagnostics.Count(d => d.Id == "OK01").ShouldBe(1);
+            generatorResult.Diagnostics.Count(d => d.Severity == DiagnosticSeverity.Info).ShouldBeGreaterThan(0);
             generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ShouldBeEmpty();
             generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
 

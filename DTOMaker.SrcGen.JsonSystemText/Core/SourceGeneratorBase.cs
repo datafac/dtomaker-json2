@@ -124,7 +124,7 @@ namespace DTOMaker.SrcGen.Core
         private static readonly DiagnosticDescriptor _test01 = CreateInfoDiagnostic(DiagnosticCategory.Other, "TEST01", "A test diagnostic", "A description about the problem");
         public static DiagnosticDescriptor Test01 => _test01;
 
-        private static readonly DiagnosticDescriptor _ok01 = CreateInfoDiagnostic(DiagnosticCategory.Other, "OK01", "Source generated", "A source file was successfully generated.");
+        private static readonly DiagnosticDescriptor _ok01 = CreateInfoDiagnostic(DiagnosticCategory.Other, "OK01", "Source generated", "Source generation complete.");
         public static DiagnosticDescriptor OK01 => _ok01;
     }
 
@@ -178,7 +178,7 @@ namespace DTOMaker.SrcGen.Core
             context.AddSource($"EnumExtensions.{enumToGenerate.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
 
             // Add a dummy diagnostic
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticsEN.OK01, enumToGenerate.Syntax.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(DiagnosticsEN.Test01, enumToGenerate.Syntax.GetLocation()));
         }
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -200,7 +200,14 @@ namespace DTOMaker.SrcGen.Core
             context.RegisterSourceOutput(
                 enumsToGenerate,
                 static (spc, source) => GenerateEnumExtensions(spc, source));
-            
+
+            context.RegisterSourceOutput(context.CompilationProvider, (spc, compilation) =>
+            {
+                // This is a way to check that the source generator is running
+                // You can remove this diagnostic if you don't need it
+                spc.ReportDiagnostic(Diagnostic.Create(DiagnosticsEN.OK01, Location.None));
+            });
+
             // now do derived stuff
             OnInitialize(context);
         }
