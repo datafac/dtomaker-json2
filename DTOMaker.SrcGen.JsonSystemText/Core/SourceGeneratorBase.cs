@@ -44,11 +44,15 @@ namespace DTOMaker.SrcGen.Core
     }
     public readonly record struct EnumToGenerate
     {
+        public readonly EnumDeclarationSyntax Syntax;
         public readonly string Name;
         public readonly EquatableArray<string> Values;
 
-        public EnumToGenerate(string name, List<string> values)
+        public bool IsValid => !string.IsNullOrWhiteSpace(Name) && Values.Count > 0;
+
+        public EnumToGenerate(EnumDeclarationSyntax syntax, string name, List<string> values)
         {
+            Syntax = syntax;
             Name = name;
             Values = new(values.ToArray());
         }
@@ -104,12 +108,38 @@ namespace DTOMaker.SrcGen.Core
 
     }
 
+    public static class DiagnosticsEN
+    {
+        private static DiagnosticDescriptor CreateInfoDiagnostic(string cat, string id, string title, string desc)
+        {
+            return new DiagnosticDescriptor(
+                id: id,
+                title: title,
+                messageFormat: desc,
+                category: cat.ToString(),
+                defaultSeverity: DiagnosticSeverity.Info,
+                isEnabledByDefault: true);
+        }
+
+        private static readonly DiagnosticDescriptor _test01 = CreateInfoDiagnostic(DiagnosticCategory.Other, "TEST01", "A test diagnostic", "A description about the problem");
+        public static DiagnosticDescriptor Test01 => _test01;
+    }
+
     public abstract class SourceGeneratorBase : IIncrementalGenerator
     {
         protected abstract void OnInitialize(IncrementalGeneratorInitializationContext context);
 
-        static EnumToGenerate GetEnumToGenerate(SemanticModel semanticModel, SyntaxNode enumDeclarationSyntax)
+        static EnumToGenerate GetEnumToGenerate(GeneratorAttributeSyntaxContext ctx)
         {
+            SemanticModel semanticModel = ctx.SemanticModel;
+            SyntaxNode syntaxNode = ctx.TargetNode;
+
+            if (syntaxNode is not EnumDeclarationSyntax enumDeclarationSyntax)
+            {
+                // something went wrong
+                return default;
+            }
+
             // Get the semantic representation of the enum syntax
             if (semanticModel.GetDeclaredSymbol(enumDeclarationSyntax) is not INamedTypeSymbol enumSymbol)
             {
@@ -145,15 +175,18 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new EnumToGenerate(enumName, members);
+            return new EnumToGenerate(enumDeclarationSyntax, enumName, members);
         }
 
-        static void Execute(EnumToGenerate enumToGenerate, SourceProductionContext context)
+        static void Execute(SourceProductionContext context, EnumToGenerate enumToGenerate)
         {
             // generate the source code and add it to the output
             string result = SourceGenerationHelper.GenerateExtensionClass(enumToGenerate);
             // Create a separate partial class file for each enum
             context.AddSource($"EnumExtensions.{enumToGenerate.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
+
+            // Add a dummy diagnostic
+            context.ReportDiagnostic(Diagnostic.Create(DiagnosticsEN.Test01, enumToGenerate.Syntax.GetLocation()));
         }
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -168,12 +201,13 @@ namespace DTOMaker.SrcGen.Core
                 .ForAttributeWithMetadataName(
                     "NetEscapades.EnumGenerators.EnumExtensionsAttribute",
                     predicate: static (s, _) => true,
-                    transform: static (ctx, _) => GetEnumToGenerate(ctx.SemanticModel, ctx.TargetNode))
-                .Where(static m => !string.IsNullOrEmpty(m.Name));
+                    transform: static (ctx, _) => GetEnumToGenerate(ctx))
+                .Where(static m => m.IsValid);
 
             // Generate source code for each enum found
-            context.RegisterSourceOutput(enumsToGenerate,
-                static (spc, source) => Execute(source, spc));
+            context.RegisterSourceOutput(
+                enumsToGenerate,
+                static (spc, source) => Execute(spc, source));
             
             // now do derived stuff
             OnInitialize(context);

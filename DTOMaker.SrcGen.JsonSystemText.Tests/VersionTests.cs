@@ -26,7 +26,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             thisVersion.Minor.ShouldBeGreaterThanOrEqualTo(coreVersion.Minor);
         }
 
-        [Fact(Skip = "todo")]
+        [Fact]
         public void RuntimeVersionChecks()
         {
             Version coreVersion = typeof(DTOMaker.Runtime.IEntityBase).Assembly.GetName().Version ?? new Version(99, 99, 9999);

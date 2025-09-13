@@ -22,8 +22,8 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
 #if NET8_0_OR_GREATER
                             MetadataReference.CreateFromFile(runtimeAssm.Location),
 #endif
-                            MetadataReference.CreateFromFile(typeof(Enum).GetTypeInfo().Assembly.Location),
-                            MetadataReference.CreateFromFile(typeof(Attribute).GetTypeInfo().Assembly.Location),
+                            MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
+                            //MetadataReference.CreateFromFile(typeof(Attribute).GetTypeInfo().Assembly.Location),
                             MetadataReference.CreateFromFile(typeof(Memory<>).GetTypeInfo().Assembly.Location),
                             // types for local tests
                             MetadataReference.CreateFromFile(typeof(DataFac.Memory.Octets).GetTypeInfo().Assembly.Location),

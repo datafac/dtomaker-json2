@@ -5,10 +5,11 @@
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<Deterministic>true</Deterministic>
 		<!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageProjectUrl>https://github.com/datafac/dtomaker-json</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/datafac/dtomaker-json</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/datafac/dtomaker-json2</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/datafac/dtomaker-json2</RepositoryUrl>
 		<Company>DataFac</Company>
 		<Product>DTOMaker</Product>
 		<Authors>DataFac Contributors</Authors>
