@@ -123,6 +123,9 @@ namespace DTOMaker.SrcGen.Core
 
         private static readonly DiagnosticDescriptor _test01 = CreateInfoDiagnostic(DiagnosticCategory.Other, "TEST01", "A test diagnostic", "A description about the problem");
         public static DiagnosticDescriptor Test01 => _test01;
+
+        private static readonly DiagnosticDescriptor _ok01 = CreateInfoDiagnostic(DiagnosticCategory.Other, "OK01", "Source generated", "A source file was successfully generated.");
+        public static DiagnosticDescriptor OK01 => _ok01;
     }
 
     public abstract class SourceGeneratorBase : IIncrementalGenerator
@@ -164,21 +167,10 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            // Create an EnumToGenerate for use in the generation phase
-            //enumsToGenerate.Add(new EnumToGenerate(enumName, members));
-
-            foreach (ISymbol member in enumMembers)
-            {
-                if (member is IFieldSymbol field && field.ConstantValue is not null)
-                {
-                    members.Add(member.Name);
-                }
-            }
-
             return new EnumToGenerate(enumDeclarationSyntax, enumName, members);
         }
 
-        static void Execute(SourceProductionContext context, EnumToGenerate enumToGenerate)
+        static void GenerateEnumExtensions(SourceProductionContext context, EnumToGenerate enumToGenerate)
         {
             // generate the source code and add it to the output
             string result = SourceGenerationHelper.GenerateExtensionClass(enumToGenerate);
@@ -186,7 +178,7 @@ namespace DTOMaker.SrcGen.Core
             context.AddSource($"EnumExtensions.{enumToGenerate.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
 
             // Add a dummy diagnostic
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticsEN.Test01, enumToGenerate.Syntax.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(DiagnosticsEN.OK01, enumToGenerate.Syntax.GetLocation()));
         }
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -207,7 +199,7 @@ namespace DTOMaker.SrcGen.Core
             // Generate source code for each enum found
             context.RegisterSourceOutput(
                 enumsToGenerate,
-                static (spc, source) => Execute(spc, source));
+                static (spc, source) => GenerateEnumExtensions(spc, source));
             
             // now do derived stuff
             OnInitialize(context);

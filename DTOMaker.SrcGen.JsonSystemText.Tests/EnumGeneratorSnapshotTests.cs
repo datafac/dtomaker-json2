@@ -22,6 +22,12 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
                 Red = 0,
                 Blue = 1,
             }
+
+            public enum OtherEnum
+            {
+                Red = 0,
+                Blue = 1,
+            }
             """;
 
         [Fact]
