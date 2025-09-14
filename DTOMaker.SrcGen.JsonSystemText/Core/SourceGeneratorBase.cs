@@ -47,14 +47,16 @@ namespace DTOMaker.SrcGen.Core
         public readonly EnumDeclarationSyntax Syntax;
         public readonly string Name;
         public readonly EquatableArray<string> Values;
+        public readonly string GeneratedClassName;
 
         public bool IsValid => !string.IsNullOrWhiteSpace(Name) && Values.Count > 0;
 
-        public EnumToGenerate(EnumDeclarationSyntax syntax, string name, List<string> values)
+        public EnumToGenerate(EnumDeclarationSyntax syntax, string name, List<string> values, string generatedClassName)
         {
             Syntax = syntax;
             Name = name;
             Values = new(values.ToArray());
+            GeneratedClassName = generatedClassName;
         }
     }
     public static class SourceGenerationHelper
@@ -66,6 +68,7 @@ namespace DTOMaker.SrcGen.Core
                 [System.AttributeUsage(System.AttributeTargets.Enum)]
                 public class EnumExtensionsAttribute : System.Attribute
                 {
+                    public string ExtensionClassName { get; set; }
                 }
             }
             """;
@@ -76,7 +79,7 @@ namespace DTOMaker.SrcGen.Core
                 """
                 namespace NetEscapades.EnumGenerators
                 {
-                    public static partial class EnumExtensions
+                    public static partial class T_GeneratedClassName_
                     {
                         public static string ToStringFast(this T_EnumName_ value)
                         {
@@ -96,7 +99,9 @@ namespace DTOMaker.SrcGen.Core
                 }
                 """;
             var sb = new StringBuilder();
-            sb.AppendLine(head.Replace("T_EnumName_", enumToGenerate.Name));
+            sb.AppendLine(head
+                .Replace("T_GeneratedClassName_", enumToGenerate.GeneratedClassName)
+                .Replace("T_EnumName_", enumToGenerate.Name));
             foreach (string member in enumToGenerate.Values)
             {
                 sb.AppendLine(body
@@ -149,6 +154,25 @@ namespace DTOMaker.SrcGen.Core
                 return default;
             }
 
+            // Set the default extension name
+            string generatedClassName = "EnumExtensions";
+
+            // Loop through all of the attributes on the enum
+            foreach (AttributeData attributeData in ctx.Attributes)
+            {
+                // This is the attribute, check all of the named arguments
+                foreach (KeyValuePair<string, TypedConstant> namedArgument in attributeData.NamedArguments)
+                {
+                    // Is this the ExtensionClassName argument?
+                    if (namedArgument.Key == "ExtensionClassName"
+                        && namedArgument.Value.Value is not null)
+                    {
+                        generatedClassName = namedArgument.Value.Value.ToString();
+                        break;
+                    }
+                }
+            }
+
             // Get the full type name of the enum e.g. Colour, 
             // or OuterClass<T>.Colour if it was nested in a generic type (for example)
             string enumName = enumSymbol.ToString();
@@ -166,7 +190,7 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new EnumToGenerate(enumDeclarationSyntax, enumName, members);
+            return new EnumToGenerate(enumDeclarationSyntax, enumName, members, generatedClassName);
         }
 
         static void GenerateEnumExtensions(SourceProductionContext context, EnumToGenerate enumToGenerate)
