@@ -1,14 +1,14 @@
-﻿namespace NetEscapades.EnumGenerators
+﻿namespace MyNamespace
 {
     public static partial class EnumExtensions
     {
-        public static string ToStringFast(this Gender value)
+        public static string ToStringFast(this MyNamespace.Gender value)
         {
             return value switch
             {
-                Gender.None => nameof(Gender.None),
-                Gender.Male => nameof(Gender.Male),
-                Gender.Female => nameof(Gender.Female),
+                MyNamespace.Gender.None => nameof(MyNamespace.Gender.None),
+                MyNamespace.Gender.Male => nameof(MyNamespace.Gender.Male),
+                MyNamespace.Gender.Female => nameof(MyNamespace.Gender.Female),
                 _ => value.ToString()
             };
         }

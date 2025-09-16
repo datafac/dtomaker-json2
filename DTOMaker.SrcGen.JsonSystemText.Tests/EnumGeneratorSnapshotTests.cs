@@ -16,6 +16,8 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             """
             using NetEscapades.EnumGenerators;
 
+            namespace MyNamespace;
+
             [EnumExtensions(ExtensionClassName = "ColourExtensions")]
             public enum Colour
             {
@@ -39,7 +41,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             """;
 
         [Fact]
-        public void EnumSrcGen00_GeneratedSourcesLengthShouldBe3()
+        public void EnumSrcGen00_GeneratedSourcesLengthShouldBe4()
         {
             var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
             generatorResult.Exception.ShouldBeNull();
@@ -49,10 +51,11 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
 
             // custom generation checks
-            generatorResult.GeneratedSources.Length.ShouldBe(3);
+            generatorResult.GeneratedSources.Length.ShouldBe(4);
             generatorResult.GeneratedSources[0].HintName.ShouldBe("EnumExtensionsAttribute.g.cs");
-            generatorResult.GeneratedSources[1].HintName.ShouldBe("EnumExtensions.Colour.g.cs");
-            generatorResult.GeneratedSources[2].HintName.ShouldBe("EnumExtensions.Gender.g.cs");
+            generatorResult.GeneratedSources[1].HintName.ShouldBe("EnumExtensions.MyNamespace.Colour.g.cs");
+            generatorResult.GeneratedSources[2].HintName.ShouldBe("EnumExtensions.MyNamespace.Gender.g.cs");
+            generatorResult.GeneratedSources[3].HintName.ShouldBe("EnumExtensions.Summary.g.cs");
         }
 
         [Fact]
@@ -84,6 +87,16 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
 
             // custom generation checks
             var generated = generatorResult.GeneratedSources[2];
+            string outputCode = string.Join(Environment.NewLine, generated.SourceText.Lines.Select(tl => tl.ToString()));
+            await Verifier.Verify(outputCode);
+        }
+        [Fact]
+        public async Task EnumSrcGen01_VerifyGeneratedSource3()
+        {
+            var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
+
+            // custom generation checks
+            var generated = generatorResult.GeneratedSources[3];
             string outputCode = string.Join(Environment.NewLine, generated.SourceText.Lines.Select(tl => tl.ToString()));
             await Verifier.Verify(outputCode);
         }

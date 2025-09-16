@@ -6,7 +6,7 @@ using Shouldly;
 
 namespace DTOMaker.SrcGen.JsonSystemText.IntTests;
 
-[EnumExtensions]
+[EnumExtensions(ExtensionClassName = "ColourExtensions")]
 [Flags]
 public enum Colour
 {

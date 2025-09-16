@@ -1,8 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -10,58 +8,12 @@ using System.Text;
 
 namespace DTOMaker.SrcGen.Core
 {
-    public readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IReadOnlyCollection<T>
-        where T : IEquatable<T>
+    public abstract class SourceGeneratorBase : IIncrementalGenerator
     {
-        private readonly T[] _array;
+        protected abstract void OnInitialize(IncrementalGeneratorInitializationContext context);
 
-        public EquatableArray() => _array = Array.Empty<T>();
-        public EquatableArray(T[] array) => _array = array;
-
-        public int Count => _array.Length;
-        public ReadOnlySpan<T> AsSpan() => _array.AsSpan();
-        public T[]? AsArray() => _array;
-
-
-        public bool Equals(EquatableArray<T> array) => AsSpan().SequenceEqual(array.AsSpan());
-        public override bool Equals(object? obj) => obj is EquatableArray<T> array && this.Equals(array);
-        public static bool operator ==(EquatableArray<T> left, EquatableArray<T> right) => left.Equals(right);
-        public static bool operator !=(EquatableArray<T> left, EquatableArray<T> right) => !left.Equals(right);
-
-        public override int GetHashCode()
-        {
-            HashCode hashCode = default;
-            hashCode.Add(_array.Length);
-            for (int i = 0; i < _array.Length; i++)
-            {
-                hashCode.Add(_array[i]);
-            }
-            return hashCode.ToHashCode();
-        }
-
-        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)_array).GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T>)_array).GetEnumerator();
-    }
-    public readonly record struct EnumToGenerate
-    {
-        public readonly EnumDeclarationSyntax Syntax;
-        public readonly string Name;
-        public readonly EquatableArray<string> Values;
-        public readonly string GeneratedClassName;
-
-        public bool IsValid => !string.IsNullOrWhiteSpace(Name) && Values.Count > 0;
-
-        public EnumToGenerate(EnumDeclarationSyntax syntax, string name, List<string> values, string generatedClassName)
-        {
-            Syntax = syntax;
-            Name = name;
-            Values = new(values.ToArray());
-            GeneratedClassName = generatedClassName;
-        }
-    }
-    public static class SourceGenerationHelper
-    {
-        public const string Attribute =
+        // todo remove this
+        private const string AttributeSource =
             """
             namespace NetEscapades.EnumGenerators
             {
@@ -73,11 +25,11 @@ namespace DTOMaker.SrcGen.Core
             }
             """;
 
-        public static string GenerateExtensionClass(EnumToGenerate enumToGenerate)
+        private static string GenerateExtensionClass(EnumToGenerate enumToGenerate)
         {
             string head =
                 """
-                namespace NetEscapades.EnumGenerators
+                namespace T_GeneratedNamespace_
                 {
                     public static partial class T_GeneratedClassName_
                     {
@@ -100,6 +52,7 @@ namespace DTOMaker.SrcGen.Core
                 """;
             var sb = new StringBuilder();
             sb.AppendLine(head
+                .Replace("T_GeneratedNamespace_", enumToGenerate.GeneratedNamespace)
                 .Replace("T_GeneratedClassName_", enumToGenerate.GeneratedClassName)
                 .Replace("T_EnumName_", enumToGenerate.Name));
             foreach (string member in enumToGenerate.Values)
@@ -112,29 +65,50 @@ namespace DTOMaker.SrcGen.Core
             return sb.ToString();
         }
 
-
-    }
-
-    public static class DiagnosticsEN
-    {
-        private static DiagnosticDescriptor CreateInfoDiagnostic(string cat, string id, string title, string desc)
+        // determine the namespace the class/enum/struct is declared in, if any
+        static string GetNamespace(BaseTypeDeclarationSyntax syntax)
         {
-            return new DiagnosticDescriptor(
-                id: id,
-                title: title,
-                messageFormat: desc,
-                category: cat.ToString(),
-                defaultSeverity: DiagnosticSeverity.Info,
-                isEnabledByDefault: true);
+            // If we don't have a namespace at all we'll return an empty string
+            // This accounts for the "default namespace" case
+            string nameSpace = string.Empty;
+
+            // Get the containing syntax node for the type declaration
+            // (could be a nested type, for example)
+            SyntaxNode? potentialNamespaceParent = syntax.Parent;
+
+            // Keep moving "out" of nested classes etc until we get to a namespace
+            // or until we run out of parents
+            while (potentialNamespaceParent != null &&
+                    potentialNamespaceParent is not NamespaceDeclarationSyntax
+                    && potentialNamespaceParent is not FileScopedNamespaceDeclarationSyntax)
+            {
+                potentialNamespaceParent = potentialNamespaceParent.Parent;
+            }
+
+            // Build up the final namespace by looping until we no longer have a namespace declaration
+            if (potentialNamespaceParent is BaseNamespaceDeclarationSyntax namespaceParent)
+            {
+                // We have a namespace. Use that as the type
+                nameSpace = namespaceParent.Name.ToString();
+
+                // Keep moving "out" of the namespace declarations until we 
+                // run out of nested namespace declarations
+                while (true)
+                {
+                    if (namespaceParent.Parent is not NamespaceDeclarationSyntax parent)
+                    {
+                        break;
+                    }
+
+                    // Add the outer namespace as a prefix to the final namespace
+                    nameSpace = $"{namespaceParent.Name}.{nameSpace}";
+                    namespaceParent = parent;
+                }
+            }
+
+            // return the final namespace
+            return nameSpace;
         }
-
-        private static readonly DiagnosticDescriptor _ok01 = CreateInfoDiagnostic(DiagnosticCategory.Other, "OK01", "Source generated", "Source generation complete.");
-        public static DiagnosticDescriptor OK01 => _ok01;
-    }
-
-    public abstract class SourceGeneratorBase : IIncrementalGenerator
-    {
-        protected abstract void OnInitialize(IncrementalGeneratorInitializationContext context);
 
         static EnumToGenerate GetEnumToGenerate(GeneratorAttributeSyntaxContext ctx)
         {
@@ -153,6 +127,9 @@ namespace DTOMaker.SrcGen.Core
                 // something went wrong
                 return default;
             }
+
+            // Get the namespace the enum is declared in, if any
+            string generatedNamespace = GetNamespace(enumDeclarationSyntax);
 
             // Set the default extension name
             string generatedClassName = "EnumExtensions";
@@ -190,13 +167,13 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new EnumToGenerate(enumDeclarationSyntax, enumName, members, generatedClassName);
+            return new EnumToGenerate(enumDeclarationSyntax, enumName, members, generatedClassName, generatedNamespace);
         }
 
         static void GenerateEnumExtensions(SourceProductionContext context, EnumToGenerate enumToGenerate)
         {
             // generate the source code and add it to the output
-            string result = SourceGenerationHelper.GenerateExtensionClass(enumToGenerate);
+            string result = GenerateExtensionClass(enumToGenerate);
             // Create a separate partial class file for each enum
             context.AddSource($"EnumExtensions.{enumToGenerate.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
         }
@@ -206,7 +183,7 @@ namespace DTOMaker.SrcGen.Core
             // Add the marker attributes to the compilation
             context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
                 "EnumExtensionsAttribute.g.cs",
-                SourceText.From(SourceGenerationHelper.Attribute, Encoding.UTF8)));
+                SourceText.From(AttributeSource, Encoding.UTF8)));
 
             // Do a simple filter for enums
             IncrementalValuesProvider<EnumToGenerate> enumsToGenerate = context.SyntaxProvider
@@ -220,6 +197,21 @@ namespace DTOMaker.SrcGen.Core
             context.RegisterSourceOutput(
                 enumsToGenerate,
                 static (spc, source) => GenerateEnumExtensions(spc, source));
+
+            var allEnums = enumsToGenerate.Collect();
+
+            context.RegisterSourceOutput(allEnums, (spc, enums) =>
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("// <auto-generated/>");
+                sb.AppendLine("// List of generated enums:");
+                foreach (var enumToGenerate in enums)
+                {
+                    sb.AppendLine($"// - {enumToGenerate.Name} ({enumToGenerate.Values.Count} members) -> {enumToGenerate.GeneratedNamespace}.{enumToGenerate.GeneratedClassName}");
+                }
+                sb.AppendLine("// End of list.");
+                spc.AddSource("EnumExtensions.Summary.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
+            });
 
             context.RegisterSourceOutput(context.CompilationProvider, (spc, compilation) =>
             {
