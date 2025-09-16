@@ -41,7 +41,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             """;
 
         [Fact]
-        public void EnumSrcGen00_GeneratedSourcesLengthShouldBe4()
+        public void EnumSrcGen00_GeneratedSourcesLength()
         {
             var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
             generatorResult.Exception.ShouldBeNull();
@@ -51,54 +51,23 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
 
             // custom generation checks
-            generatorResult.GeneratedSources.Length.ShouldBe(4);
-            generatorResult.GeneratedSources[0].HintName.ShouldBe("EnumExtensionsAttribute.g.cs");
-            generatorResult.GeneratedSources[1].HintName.ShouldBe("EnumExtensions.MyNamespace.Colour.g.cs");
-            generatorResult.GeneratedSources[2].HintName.ShouldBe("EnumExtensions.MyNamespace.Gender.g.cs");
-            generatorResult.GeneratedSources[3].HintName.ShouldBe("EnumExtensions.Summary.g.cs");
+            generatorResult.GeneratedSources.Length.ShouldBe(5);
         }
 
-        [Fact]
-        public async Task EnumSrcGen01_VerifyGeneratedSource0()
+        private static string GenerateAndGetOutput(int index, string expectedHintName)
         {
             var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var generated = generatorResult.GeneratedSources[0];
+            var generated = generatorResult.GeneratedSources[index];
+            generated.HintName.ShouldBe(expectedHintName);
             string outputCode = string.Join(Environment.NewLine, generated.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
+            return outputCode;
         }
 
-        [Fact]
-        public async Task EnumSrcGen01_VerifyGeneratedSource1()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
+        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource0() => await Verifier.Verify(GenerateAndGetOutput(0, "EnumExtensionsAttribute.g.cs"));
+        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource1() => await Verifier.Verify(GenerateAndGetOutput(1, "EnumExtensions.MyNamespace.Colour.g.cs"));
+        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource2() => await Verifier.Verify(GenerateAndGetOutput(2, "EnumExtensions.MyNamespace.Gender.g.cs"));
+        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource3() => await Verifier.Verify(GenerateAndGetOutput(3, "EnumExtensions.Summary.g.cs"));
+        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource4() => await Verifier.Verify(GenerateAndGetOutput(4, "Generated.EntityList.g.cs"));
 
-            // custom generation checks
-            var generated = generatorResult.GeneratedSources[1];
-            string outputCode = string.Join(Environment.NewLine, generated.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task EnumSrcGen01_VerifyGeneratedSource2()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var generated = generatorResult.GeneratedSources[2];
-            string outputCode = string.Join(Environment.NewLine, generated.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-        [Fact]
-        public async Task EnumSrcGen01_VerifyGeneratedSource3()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var generated = generatorResult.GeneratedSources[3];
-            string outputCode = string.Join(Environment.NewLine, generated.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
     }
 }

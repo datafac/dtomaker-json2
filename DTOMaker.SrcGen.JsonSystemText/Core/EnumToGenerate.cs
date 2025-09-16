@@ -23,4 +23,22 @@ namespace DTOMaker.SrcGen.Core
         }
     }
 
+    public readonly record struct EntityToGenerate
+    {
+        public readonly InterfaceDeclarationSyntax Syntax;
+        public readonly string Name;
+        public readonly EquatableArray<string> Values;
+        public readonly string GeneratedNamespace;
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(Name) && Values.Count > 0;
+
+        public EntityToGenerate(InterfaceDeclarationSyntax syntax, string name, List<string> values, string generatedNamespace)
+        {
+            Syntax = syntax;
+            Name = name;
+            Values = new(values.ToArray());
+            GeneratedNamespace = generatedNamespace;
+        }
+    }
+
 }
