@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace DTOMaker.SrcGen.Core
 {
@@ -23,21 +24,24 @@ namespace DTOMaker.SrcGen.Core
         }
     }
 
-    public readonly record struct EntityToGenerate
+    public readonly record struct MarkedInterface
     {
         public readonly InterfaceDeclarationSyntax Syntax;
-        public readonly string Name;
+        public readonly string Fullname;
         public readonly EquatableArray<string> Values;
         public readonly string GeneratedNamespace;
+        public readonly ImmutableArray<SyntaxDiagnostic> SyntaxErrors;
 
-        public bool IsValid => !string.IsNullOrWhiteSpace(Name) && Values.Count > 0;
+        public bool IsValid => !string.IsNullOrWhiteSpace(Fullname);
 
-        public EntityToGenerate(InterfaceDeclarationSyntax syntax, string name, List<string> values, string generatedNamespace)
+        public MarkedInterface(InterfaceDeclarationSyntax syntax, string fullname, List<string> values, string generatedNamespace,
+            ImmutableArray<SyntaxDiagnostic> syntaxErrors)
         {
             Syntax = syntax;
-            Name = name;
+            Fullname = fullname;
             Values = new(values.ToArray());
             GeneratedNamespace = generatedNamespace;
+            SyntaxErrors = syntaxErrors;
         }
     }
 

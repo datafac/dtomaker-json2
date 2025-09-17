@@ -110,8 +110,14 @@ namespace DTOMaker.SrcGen.Core
             return nameSpace;
         }
 
-        static EntityToGenerate GetEntityToGenerate(GeneratorAttributeSyntaxContext ctx)
+        //private const string DomainAttribute = nameof(DomainAttribute);
+        private const string EntityAttribute = nameof(EntityAttribute);
+        private const string MemberAttribute = nameof(MemberAttribute);
+        private const string IdAttribute = nameof(IdAttribute);
+
+        static MarkedInterface GetMarkedInterface(GeneratorAttributeSyntaxContext ctx)
         {
+            List<SyntaxDiagnostic> syntaxErrors = new();
             SemanticModel semanticModel = ctx.SemanticModel;
             SyntaxNode syntaxNode = ctx.TargetNode;
 
@@ -131,32 +137,58 @@ namespace DTOMaker.SrcGen.Core
             // Get the namespace the enum is declared in, if any
             string generatedNamespace = GetNamespace(intfDeclarationSyntax);
 
-            // Loop through all of the attributes on the enum
-            foreach (AttributeData attributeData in ctx.Attributes)
+            // Loop through all of the attributes on the interface
+            foreach (AttributeData attributeData in intfSymbol.GetAttributes())
             {
-                // This is the attribute, check all of the named arguments
-                foreach (KeyValuePair<string, TypedConstant> namedArgument in attributeData.NamedArguments)
+                string? attrName = attributeData.AttributeClass?.Name;
+                SyntaxDiagnostic? diagnostic = null;
+                switch(attrName)
                 {
-                    // Is this the ExtensionClassName argument?
-                    if (namedArgument.Key == "ExtensionClassName"
-                        && namedArgument.Value.Value is not null)
-                    {
-                        //generatedClassName = namedArgument.Value.Value.ToString();
+                    case null:
                         break;
-                    }
+                    //DomainAttribute => null,
+                    case EntityAttribute:
+                        break;
+                    case MemberAttribute:
+                        break;
+                    case IdAttribute:
+                        // todo get entity id
+                        break;
+                    default:
+                        diagnostic = new SyntaxDiagnostic(
+                            "WRN001", "Ignored unknown attribute", DiagnosticCategory.Other, syntaxNode.GetLocation(), DiagnosticSeverity.Warning,
+                            $"The attribute '{attrName}' is not recognized.");
+                        break;
+                };
+
+                if (diagnostic is not null)
+                {
+                    syntaxErrors.Add(diagnostic);
                 }
+
+                // This is the attribute, check all of the named arguments
+                //foreach (KeyValuePair<string, TypedConstant> namedArgument in attributeData.NamedArguments)
+                //{
+                //    // Is this the ExtensionClassName argument?
+                //    if (namedArgument.Key == "ExtensionClassName"
+                //        && namedArgument.Value.Value is not null)
+                //    {
+                //        //generatedClassName = namedArgument.Value.Value.ToString();
+                //        break;
+                //    }
+                //}
             }
 
             // Get the full type name of the enum e.g. Colour, 
             // or OuterClass<T>.Colour if it was nested in a generic type (for example)
-            string enumName = intfSymbol.ToString();
+            string fullname = intfSymbol.ToString();
 
             // Get all the members in the enum
-            ImmutableArray<ISymbol> enumMembers = intfSymbol.GetMembers();
-            var members = new List<string>(enumMembers.Length);
+            ImmutableArray<ISymbol> intfMembers = intfSymbol.GetMembers();
+            var members = new List<string>(intfMembers.Length);
 
             // Get all the fields from the enum, and add their name to the list
-            foreach (ISymbol member in enumMembers)
+            foreach (ISymbol member in intfMembers)
             {
                 if (member is IFieldSymbol field && field.ConstantValue is not null)
                 {
@@ -164,7 +196,7 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new EntityToGenerate(intfDeclarationSyntax, enumName, members, generatedNamespace);
+            return new MarkedInterface(intfDeclarationSyntax, fullname, members, generatedNamespace, syntaxErrors.ToImmutableArray());
         }
 
         static EnumToGenerate GetEnumToGenerate(GeneratorAttributeSyntaxContext ctx)
@@ -235,6 +267,17 @@ namespace DTOMaker.SrcGen.Core
             context.AddSource($"EnumExtensions.{enumToGenerate.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
         }
 
+        static void ValidateEntity(SourceProductionContext context, MarkedInterface markedInterface)
+        {
+            foreach (SyntaxDiagnostic err in markedInterface.SyntaxErrors)
+            {
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        new DiagnosticDescriptor(err.Id, err.Title, err.Message,
+                            err.Category, err.Severity, true), err.Location));
+            }
+        }
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             // Add the marker attributes to the compilation
@@ -250,21 +293,26 @@ namespace DTOMaker.SrcGen.Core
                     transform: static (ctx, _) => GetEnumToGenerate(ctx))
                 .Where(static m => m.IsValid);
 
-            // filter for entities
-            IncrementalValuesProvider<EntityToGenerate> entitiesToGenerate = context.SyntaxProvider
-                .ForAttributeWithMetadataName(
-                    "DTOMaker.Models.EntityAttribute",
-                    predicate: static (s, _) => true,
-                    transform: static (ctx, _) => GetEntityToGenerate(ctx))
-                .Where(static m => m.IsValid);
-
             // Generate source code for each enum found
             context.RegisterSourceOutput(
                 enumsToGenerate,
                 static (spc, source) => GenerateEnumExtensions(spc, source));
 
+            // filter for entities
+            IncrementalValuesProvider<MarkedInterface> markedInterfaces = context.SyntaxProvider
+                .ForAttributeWithMetadataName(
+                    "DTOMaker.Models.EntityAttribute",
+                    predicate: static (s, _) => true,
+                    transform: static (ctx, _) => GetMarkedInterface(ctx))
+                .Where(static m => m.IsValid);
+
+            // validate entities
+            context.RegisterSourceOutput(
+                markedInterfaces,
+                static (spc, markedInterface) => ValidateEntity(spc, markedInterface));
+
             var allEnums = enumsToGenerate.Collect();
-            var allEntities = entitiesToGenerate.Collect();
+            var allInterfaces = markedInterfaces.Collect();
 
             context.RegisterSourceOutput(allEnums, (spc, enums) =>
             {
@@ -279,17 +327,18 @@ namespace DTOMaker.SrcGen.Core
                 spc.AddSource("EnumExtensions.Summary.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
             });
 
-            context.RegisterSourceOutput(allEntities, (spc, entities) =>
+            context.RegisterSourceOutput(allInterfaces, (spc, interfaces) =>
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("// <auto-generated/>");
-                sb.AppendLine("// List of generated entities:");
-                foreach (var entity in entities)
+                sb.AppendLine("// Marked types summary.");
+                sb.AppendLine("// Interfaces:");
+                foreach (var intf in interfaces)
                 {
-                    sb.AppendLine($"// - {entity.GeneratedNamespace}.{entity.Name} ({entity.Values.Count} members)");
+                    sb.AppendLine($"// - {intf.Fullname} ({intf.Values.Count} members)");
                 }
-                sb.AppendLine("// End of list.");
-                spc.AddSource("Generated.EntityList.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
+                sb.AppendLine("// End of summary.");
+                spc.AddSource("Metadata.Summary.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
             });
 
             context.RegisterSourceOutput(context.CompilationProvider, (spc, compilation) =>

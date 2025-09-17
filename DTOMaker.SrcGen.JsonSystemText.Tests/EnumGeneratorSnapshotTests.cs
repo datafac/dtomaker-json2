@@ -40,8 +40,17 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             }
             """;
 
+        private static string GenerateAndGetOutput(int index, string expectedHintName)
+        {
+            var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
+            var generated = generatorResult.GeneratedSources[index];
+            generated.HintName.ShouldBe(expectedHintName);
+            string outputCode = string.Join(Environment.NewLine, generated.SourceText.Lines.Select(tl => tl.ToString()));
+            return outputCode;
+        }
+
         [Fact]
-        public void EnumSrcGen00_GeneratedSourcesLength()
+        public void EnumSrcGen_GeneratedSourcesLength()
         {
             var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
             generatorResult.Exception.ShouldBeNull();
@@ -54,20 +63,11 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             generatorResult.GeneratedSources.Length.ShouldBe(5);
         }
 
-        private static string GenerateAndGetOutput(int index, string expectedHintName)
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(sourceCode, LanguageVersion.LatestMajor);
-            var generated = generatorResult.GeneratedSources[index];
-            generated.HintName.ShouldBe(expectedHintName);
-            string outputCode = string.Join(Environment.NewLine, generated.SourceText.Lines.Select(tl => tl.ToString()));
-            return outputCode;
-        }
-
-        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource0() => await Verifier.Verify(GenerateAndGetOutput(0, "EnumExtensionsAttribute.g.cs"));
-        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource1() => await Verifier.Verify(GenerateAndGetOutput(1, "EnumExtensions.MyNamespace.Colour.g.cs"));
-        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource2() => await Verifier.Verify(GenerateAndGetOutput(2, "EnumExtensions.MyNamespace.Gender.g.cs"));
-        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource3() => await Verifier.Verify(GenerateAndGetOutput(3, "EnumExtensions.Summary.g.cs"));
-        [Fact] public async Task EnumSrcGen01_VerifyGeneratedSource4() => await Verifier.Verify(GenerateAndGetOutput(4, "Generated.EntityList.g.cs"));
+        [Fact] public async Task EnumSrcGen_VerifyGeneratedSource0() => await Verifier.Verify(GenerateAndGetOutput(0, "EnumExtensionsAttribute.g.cs"));
+        [Fact] public async Task EnumSrcGen_VerifyGeneratedSource1() => await Verifier.Verify(GenerateAndGetOutput(1, "EnumExtensions.MyNamespace.Colour.g.cs"));
+        [Fact] public async Task EnumSrcGen_VerifyGeneratedSource2() => await Verifier.Verify(GenerateAndGetOutput(2, "EnumExtensions.MyNamespace.Gender.g.cs"));
+        [Fact] public async Task EnumSrcGen_VerifyGeneratedSource3() => await Verifier.Verify(GenerateAndGetOutput(3, "EnumExtensions.Summary.g.cs"));
+        [Fact] public async Task EnumSrcGen_VerifyGeneratedSource4() => await Verifier.Verify(GenerateAndGetOutput(4, "Metadata.Summary.g.cs"));
 
     }
 }
