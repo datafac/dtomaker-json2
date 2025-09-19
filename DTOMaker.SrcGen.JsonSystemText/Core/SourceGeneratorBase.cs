@@ -1,10 +1,12 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace DTOMaker.SrcGen.Core
 {
@@ -12,60 +14,7 @@ namespace DTOMaker.SrcGen.Core
     {
         protected abstract void OnInitialize(IncrementalGeneratorInitializationContext context);
 
-        // todo remove this
-        private const string AttributeSource =
-            """
-            namespace NetEscapades.EnumGenerators
-            {
-                [System.AttributeUsage(System.AttributeTargets.Enum)]
-                public class EnumExtensionsAttribute : System.Attribute
-                {
-                    public string ExtensionClassName { get; set; }
-                }
-            }
-            """;
-
-        private static string GenerateExtensionClass(EnumToGenerate enumToGenerate)
-        {
-            string head =
-                """
-                namespace T_GeneratedNamespace_
-                {
-                    public static partial class T_GeneratedClassName_
-                    {
-                        public static string ToStringFast(this T_EnumName_ value)
-                        {
-                            return value switch
-                            {
-                """;
-            string body =
-                """
-                                T_EnumName_.T_EnumMember_ => nameof(T_EnumName_.T_EnumMember_),
-                """;
-            string foot =
-                """
-                                _ => value.ToString()
-                            };
-                        }
-                    }
-                }
-                """;
-            var sb = new StringBuilder();
-            sb.AppendLine(head
-                .Replace("T_GeneratedNamespace_", enumToGenerate.GeneratedNamespace)
-                .Replace("T_GeneratedClassName_", enumToGenerate.GeneratedClassName)
-                .Replace("T_EnumName_", enumToGenerate.Name));
-            foreach (string member in enumToGenerate.Values)
-            {
-                sb.AppendLine(body
-                    .Replace("T_EnumName_", enumToGenerate.Name)
-                    .Replace("T_EnumMember_", member));
-            }
-            sb.AppendLine(foot);
-            return sb.ToString();
-        }
-
-        // determine the namespace the class/enum/struct is declared in, if any
+        // determine the namespace the syntax node is declared in, if any
         static string GetNamespace(BaseTypeDeclarationSyntax syntax)
         {
             // If we don't have a namespace at all we'll return an empty string
@@ -115,11 +64,47 @@ namespace DTOMaker.SrcGen.Core
         private const string MemberAttribute = nameof(MemberAttribute);
         private const string IdAttribute = nameof(IdAttribute);
 
-        static MarkedInterface GetMarkedInterface(GeneratorAttributeSyntaxContext ctx)
+        private static bool FilterEntity(SyntaxNode syntaxNode, CancellationToken _)
+        {
+            return syntaxNode is InterfaceDeclarationSyntax;
+        }
+
+        protected static SyntaxDiagnostic? TryGetAttributeArgumentValue<T>(AttributeData attrData, Location location, int index, Action<T> action)
+        {
+            object? input = attrData.ConstructorArguments[index].Value;
+            if (input is T value)
+            {
+                action(value);
+                return null;
+            }
+
+            string? errorMessage = input is null
+                ? $"Could not read arg[{index}] (null) as <{typeof(T).Name}>"
+                : $"Could not read arg[{index}] '{input}' <{input.GetType().Name}> as <{typeof(T).Name}>";
+
+            return
+                new SyntaxDiagnostic(
+                    DiagnosticId.DTOM0005, "Invalid argument value", DiagnosticCategory.Syntax, location, DiagnosticSeverity.Error,
+                    errorMessage);
+        }
+
+        private static SyntaxDiagnostic? CheckAttributeArguments(AttributeData attrData, Location location, int expectedCount)
+        {
+            var attrArgs = attrData.ConstructorArguments;
+            if (attrArgs.Length == expectedCount)
+                return null;
+
+            return new SyntaxDiagnostic(
+                    DiagnosticId.DTOM0002, "Invalid argument count", DiagnosticCategory.Syntax, location, DiagnosticSeverity.Error,
+                    $"Expected {attrData.AttributeClass?.Name} attribute to have {expectedCount} arguments, but it has {attrArgs.Length}.");
+        }
+
+        private static MarkedInterface GetMarkedInterface(GeneratorAttributeSyntaxContext ctx)
         {
             List<SyntaxDiagnostic> syntaxErrors = new();
             SemanticModel semanticModel = ctx.SemanticModel;
             SyntaxNode syntaxNode = ctx.TargetNode;
+            Location location = syntaxNode.GetLocation();
 
             if (syntaxNode is not InterfaceDeclarationSyntax intfDeclarationSyntax)
             {
@@ -136,13 +121,14 @@ namespace DTOMaker.SrcGen.Core
 
             // Get the namespace the enum is declared in, if any
             string generatedNamespace = GetNamespace(intfDeclarationSyntax);
+            int entityId = 0;
 
             // Loop through all of the attributes on the interface
             foreach (AttributeData attributeData in intfSymbol.GetAttributes())
             {
                 string? attrName = attributeData.AttributeClass?.Name;
                 SyntaxDiagnostic? diagnostic = null;
-                switch(attrName)
+                switch (attrName)
                 {
                     case null:
                         break;
@@ -152,14 +138,17 @@ namespace DTOMaker.SrcGen.Core
                     case MemberAttribute:
                         break;
                     case IdAttribute:
-                        // todo get entity id
+                        // get entity id
+                        diagnostic =
+                            CheckAttributeArguments(attributeData, location, 1)
+                            ?? TryGetAttributeArgumentValue<int>(attributeData, location, 0, (value) => { entityId = value; });
                         break;
                     default:
                         diagnostic = new SyntaxDiagnostic(
-                            "WRN001", "Ignored unknown attribute", DiagnosticCategory.Other, syntaxNode.GetLocation(), DiagnosticSeverity.Warning,
+                            "WRN001", "Ignored unknown attribute", DiagnosticCategory.Other, location, DiagnosticSeverity.Warning,
                             $"The attribute '{attrName}' is not recognized.");
                         break;
-                };
+                }
 
                 if (diagnostic is not null)
                 {
@@ -179,6 +168,13 @@ namespace DTOMaker.SrcGen.Core
                 //}
             }
 
+            if (entityId <= 0)
+            {
+                syntaxErrors.Add(new SyntaxDiagnostic(
+                    "ERR001", "Missing or invalid Id", DiagnosticCategory.Syntax, syntaxNode.GetLocation(), DiagnosticSeverity.Error,
+                    $"The interface '{intfSymbol.Name}' must have a valid Id attribute with a positive integer value."));
+            }
+
             // Get the full type name of the enum e.g. Colour, 
             // or OuterClass<T>.Colour if it was nested in a generic type (for example)
             string fullname = intfSymbol.ToString();
@@ -196,78 +192,10 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new MarkedInterface(intfDeclarationSyntax, fullname, members, generatedNamespace, syntaxErrors.ToImmutableArray());
+            return new MarkedInterface(intfDeclarationSyntax, fullname, entityId, members, generatedNamespace, syntaxErrors.ToImmutableArray());
         }
 
-        static EnumToGenerate GetEnumToGenerate(GeneratorAttributeSyntaxContext ctx)
-        {
-            SemanticModel semanticModel = ctx.SemanticModel;
-            SyntaxNode syntaxNode = ctx.TargetNode;
-
-            if (syntaxNode is not EnumDeclarationSyntax enumDeclarationSyntax)
-            {
-                // something went wrong
-                return default;
-            }
-
-            // Get the semantic representation of the enum syntax
-            if (semanticModel.GetDeclaredSymbol(enumDeclarationSyntax) is not INamedTypeSymbol enumSymbol)
-            {
-                // something went wrong
-                return default;
-            }
-
-            // Get the namespace the enum is declared in, if any
-            string generatedNamespace = GetNamespace(enumDeclarationSyntax);
-
-            // Set the default extension name
-            string generatedClassName = "EnumExtensions";
-
-            // Loop through all of the attributes on the enum
-            foreach (AttributeData attributeData in ctx.Attributes)
-            {
-                // This is the attribute, check all of the named arguments
-                foreach (KeyValuePair<string, TypedConstant> namedArgument in attributeData.NamedArguments)
-                {
-                    // Is this the ExtensionClassName argument?
-                    if (namedArgument.Key == "ExtensionClassName"
-                        && namedArgument.Value.Value is not null)
-                    {
-                        generatedClassName = namedArgument.Value.Value.ToString();
-                        break;
-                    }
-                }
-            }
-
-            // Get the full type name of the enum e.g. Colour, 
-            // or OuterClass<T>.Colour if it was nested in a generic type (for example)
-            string enumName = enumSymbol.ToString();
-
-            // Get all the members in the enum
-            ImmutableArray<ISymbol> enumMembers = enumSymbol.GetMembers();
-            var members = new List<string>(enumMembers.Length);
-
-            // Get all the fields from the enum, and add their name to the list
-            foreach (ISymbol member in enumMembers)
-            {
-                if (member is IFieldSymbol field && field.ConstantValue is not null)
-                {
-                    members.Add(member.Name);
-                }
-            }
-
-            return new EnumToGenerate(enumDeclarationSyntax, enumName, members, generatedClassName, generatedNamespace);
-        }
-
-        static void GenerateEnumExtensions(SourceProductionContext context, EnumToGenerate enumToGenerate)
-        {
-            // generate the source code and add it to the output
-            string result = GenerateExtensionClass(enumToGenerate);
-            // Create a separate partial class file for each enum
-            context.AddSource($"EnumExtensions.{enumToGenerate.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
-        }
-
-        static void ValidateEntity(SourceProductionContext context, MarkedInterface markedInterface)
+        static void EmitEntityDiagnostics(SourceProductionContext context, MarkedInterface markedInterface)
         {
             foreach (SyntaxDiagnostic err in markedInterface.SyntaxErrors)
             {
@@ -280,52 +208,20 @@ namespace DTOMaker.SrcGen.Core
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            // Add the marker attributes to the compilation
-            context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
-                "EnumExtensionsAttribute.g.cs",
-                SourceText.From(AttributeSource, Encoding.UTF8)));
-
-            // Do a simple filter for enums
-            IncrementalValuesProvider<EnumToGenerate> enumsToGenerate = context.SyntaxProvider
-                .ForAttributeWithMetadataName(
-                    "NetEscapades.EnumGenerators.EnumExtensionsAttribute",
-                    predicate: static (s, _) => true,
-                    transform: static (ctx, _) => GetEnumToGenerate(ctx))
-                .Where(static m => m.IsValid);
-
-            // Generate source code for each enum found
-            context.RegisterSourceOutput(
-                enumsToGenerate,
-                static (spc, source) => GenerateEnumExtensions(spc, source));
-
             // filter for entities
             IncrementalValuesProvider<MarkedInterface> markedInterfaces = context.SyntaxProvider
                 .ForAttributeWithMetadataName(
                     "DTOMaker.Models.EntityAttribute",
-                    predicate: static (s, _) => true,
+                    predicate: FilterEntity,
                     transform: static (ctx, _) => GetMarkedInterface(ctx))
                 .Where(static m => m.IsValid);
 
             // validate entities
             context.RegisterSourceOutput(
                 markedInterfaces,
-                static (spc, markedInterface) => ValidateEntity(spc, markedInterface));
+                static (spc, markedInterface) => EmitEntityDiagnostics(spc, markedInterface));
 
-            var allEnums = enumsToGenerate.Collect();
             var allInterfaces = markedInterfaces.Collect();
-
-            context.RegisterSourceOutput(allEnums, (spc, enums) =>
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("// <auto-generated/>");
-                sb.AppendLine("// List of generated enums:");
-                foreach (var enumToGenerate in enums)
-                {
-                    sb.AppendLine($"// - {enumToGenerate.Name} ({enumToGenerate.Values.Count} members) -> {enumToGenerate.GeneratedNamespace}.{enumToGenerate.GeneratedClassName}");
-                }
-                sb.AppendLine("// End of list.");
-                spc.AddSource("EnumExtensions.Summary.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
-            });
 
             context.RegisterSourceOutput(allInterfaces, (spc, interfaces) =>
             {

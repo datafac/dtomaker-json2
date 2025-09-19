@@ -43,12 +43,10 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
 
             // custom generation checks
-            generatorResult.GeneratedSources.Length.ShouldBe(3);
+            generatorResult.GeneratedSources.Length.ShouldBe(1);
         }
 
-        [Fact] public async Task EntitySrcGen_VerifyGeneratedSource0() => await Verifier.Verify(GenerateAndGetOutput(0, "EnumExtensionsAttribute.g.cs"));
-        [Fact] public async Task EntitySrcGen_VerifyGeneratedSource1() => await Verifier.Verify(GenerateAndGetOutput(1, "EnumExtensions.Summary.g.cs"));
-        [Fact] public async Task EntitySrcGen_VerifyGeneratedSource2() => await Verifier.Verify(GenerateAndGetOutput(2, "Metadata.Summary.g.cs"));
+        [Fact] public async Task EntitySrcGen_VerifyGeneratedSource0() => await Verifier.Verify(GenerateAndGetOutput(0, "Metadata.Summary.g.cs"));
 
     }
 }
