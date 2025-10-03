@@ -10,10 +10,11 @@ namespace DTOMaker.SrcGen.JsonSystemText
     [Generator]
     public sealed class JsonSTSourceGenerator : SourceGeneratorBase
     {
-
-        protected override void OnInitialize(IncrementalGeneratorInitializationContext context)
+        protected override void OnBeginInitialize(IncrementalGeneratorInitializationContext context)
         {
         }
-
+        protected override void OnEndInitialize(IncrementalGeneratorInitializationContext context)
+        {
+        }
     }
 }

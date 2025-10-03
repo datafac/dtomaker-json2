@@ -23,30 +23,9 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             }
             """;
 
-        private static string GenerateAndGetOutput(int index, string expectedHintName)
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(modelSource, LanguageVersion.LatestMajor);
-            var generated = generatorResult.GeneratedSources[index];
-            generated.HintName.ShouldBe(expectedHintName);
-            string outputCode = string.Join(Environment.NewLine, generated.SourceText.Lines.Select(tl => tl.ToString()));
-            return outputCode;
-        }
-
-        [Fact]
-        public void EntitySrcGen_GeneratedSourcesLength()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(modelSource, LanguageVersion.LatestMajor);
-            generatorResult.Exception.ShouldBeNull();
-            generatorResult.Diagnostics.Count(d => d.Id == "OK01").ShouldBe(1);
-            generatorResult.Diagnostics.Count(d => d.Severity == DiagnosticSeverity.Info).ShouldBeGreaterThan(0);
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
-
-            // custom generation checks
-            generatorResult.GeneratedSources.Length.ShouldBe(1);
-        }
-
-        [Fact] public async Task EntitySrcGen_VerifyGeneratedSource0() => await Verifier.Verify(GenerateAndGetOutput(0, "Metadata.Summary.g.cs"));
+        [Fact] public void EntitySrcGen_GeneratedSourcesLength() => modelSource.GenerateAndCheckLength(2);
+        [Fact] public async Task EntitySrcGen_VerifyGeneratedSource0() => await Verifier.Verify(modelSource.GenerateAndGetOutput(0, "Metadata.Summary.g.cs"));
+        [Fact] public async Task EntitySrcGen_VerifyGeneratedSource1() => await Verifier.Verify(modelSource.GenerateAndGetOutput(1, "MyOrg.Models.JsonSystemText.MyDTO.g.cs"));
 
     }
 }

@@ -8,8 +8,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="DataFac.Memory" Version="0.15.2" />
-	  <PackageReference Include="DTOMaker.Models" Version="0.71.8" />
+	  <PackageReference Include="DataFac.Memory" Version="0.15.4" />
+	  <PackageReference Include="DTOMaker.Models" Version="0.71.11" />
 	</ItemGroup>
 
 	<ItemGroup>
