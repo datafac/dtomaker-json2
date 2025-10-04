@@ -13,7 +13,7 @@ namespace DTOMaker.SrcGen.Core
     public abstract class SourceGeneratorBase : IIncrementalGenerator
     {
         protected abstract void OnBeginInitialize(IncrementalGeneratorInitializationContext context);
-        protected abstract void OnEndInitialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<MarkedInterface> markedInterfaces);
+        protected abstract void OnEndInitialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ModelEntity> model);
 
         // determine the namespace the syntax node is declared in, if any
         static string GetNamespace(BaseTypeDeclarationSyntax syntax)
@@ -239,6 +239,25 @@ namespace DTOMaker.SrcGen.Core
                 spc.AddSource("Metadata.Summary.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
             });
 
+            // todo emit metadata in json format
+            IncrementalValuesProvider<ModelEntity> modelEntities = markedInterfaces
+                .Select((mi, _) => new ModelEntity
+                {
+                    NameSpace = mi.NameSpace,
+                    IntfName = mi.IntfName,
+                    EntityId = mi.EntityId,
+                    Members = new EquatableArray<ModelMember>(mi.Values.Select(v => new ModelMember { PropName = v }).ToArray())
+                });
+            context.RegisterSourceOutput(modelEntities.Collect(), (spc, entities) =>
+            {
+                ModelMetadata metadata = new()
+                {
+                    Entities = new EquatableArray<ModelEntity>(entities.ToArray())
+                };
+                string metadataText = metadata.ToString();
+                //spc.AddSource("Metadata.g.json", SourceText.From(metadata.ToString(), Encoding.UTF8));
+            });
+
             context.RegisterSourceOutput(context.CompilationProvider, (spc, compilation) =>
             {
                 // This is a way to check that the source generator is running
@@ -247,7 +266,7 @@ namespace DTOMaker.SrcGen.Core
             });
 
             // do derived stuff
-            OnEndInitialize(context, markedInterfaces);
+            OnEndInitialize(context, modelEntities);
         }
     }
 

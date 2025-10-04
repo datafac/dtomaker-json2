@@ -15,7 +15,7 @@ namespace DTOMaker.SrcGen.Core
 
         public int Count => _array.Length;
         public ReadOnlySpan<T> AsSpan() => _array.AsSpan();
-        public T[]? AsArray() => _array;
+        public T[] AsArray() => _array;
 
 
         public bool Equals(EquatableArray<T> array) => AsSpan().SequenceEqual(array.AsSpan());

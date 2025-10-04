@@ -8,14 +8,11 @@ namespace DTOMaker.SrcGen.Core
     public readonly record struct MarkedInterface
     {
         public readonly InterfaceDeclarationSyntax Syntax;
-        //public readonly string Fullname;
+        public readonly string NameSpace;
+        public readonly string IntfName;
         public readonly int EntityId;
         public readonly EquatableArray<string> Values;
-        public readonly string NameSpace;
         public readonly ImmutableArray<SyntaxDiagnostic> SyntaxErrors;
-
-        public readonly string IntfName;
-        public readonly string ImplName;
 
         public bool IsValid => !string.IsNullOrWhiteSpace(NameSpace) && !string.IsNullOrWhiteSpace(IntfName) && IntfName.StartsWith("I");
 
@@ -23,7 +20,6 @@ namespace DTOMaker.SrcGen.Core
             ImmutableArray<SyntaxDiagnostic> syntaxErrors)
         {
             Syntax = syntax;
-            //Fullname = fullname;
             EntityId = entityId;
             Values = new(values.ToArray());
             NameSpace = nameSpace;
@@ -32,8 +28,28 @@ namespace DTOMaker.SrcGen.Core
             // derived properties
             string intfName = fullname.Split('.').Last();
             IntfName = intfName;
-            ImplName = IntfName.Substring(1);
         }
     }
 
+    public sealed record ModelMember
+    {
+        public string PropName { get; init; } = string.Empty;
+    }
+    public sealed record ModelEntity
+    {
+        public string NameSpace { get; init; } = string.Empty;
+        public string IntfName { get; init; } = string.Empty;
+        public int EntityId { get; init; }
+        public EquatableArray<ModelMember> Members { get; init; } = new();
+    }
+    public sealed record ModelMetadata
+    {
+        public EquatableArray<ModelEntity> Entities { get; init; } = new();
+    }
+}
+
+// adding this fixes CS0518 errors
+namespace System.Runtime.CompilerServices
+{
+    internal static class IsExternalInit { }
 }
