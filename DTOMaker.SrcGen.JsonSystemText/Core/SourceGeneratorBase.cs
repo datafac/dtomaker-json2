@@ -98,7 +98,7 @@ namespace DTOMaker.SrcGen.Core
                     $"Expected {attrData.AttributeClass?.Name} attribute to have {expectedCount} arguments, but it has {attrArgs.Length}.");
         }
 
-        private static MarkedInterface GetMarkedInterface(GeneratorAttributeSyntaxContext ctx)
+        private static MarkedEntity GetMarkedInterface(GeneratorAttributeSyntaxContext ctx)
         {
             List<SyntaxDiagnostic> syntaxErrors = new();
             SemanticModel semanticModel = ctx.SemanticModel;
@@ -192,10 +192,10 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new MarkedInterface(intfDeclarationSyntax, fullname, entityId, members, generatedNamespace, syntaxErrors.ToImmutableArray());
+            return new MarkedEntity(intfDeclarationSyntax, fullname, entityId, members, generatedNamespace, syntaxErrors.ToImmutableArray());
         }
 
-        static void EmitEntityDiagnostics(SourceProductionContext context, MarkedInterface markedInterface)
+        static void EmitEntityDiagnostics(SourceProductionContext context, MarkedEntity markedInterface)
         {
             foreach (SyntaxDiagnostic err in markedInterface.SyntaxErrors)
             {
@@ -212,7 +212,7 @@ namespace DTOMaker.SrcGen.Core
             OnBeginInitialize(context);
 
             // filter for entities
-            IncrementalValuesProvider<MarkedInterface> markedInterfaces = context.SyntaxProvider
+            IncrementalValuesProvider<MarkedEntity> markedInterfaces = context.SyntaxProvider
                 .ForAttributeWithMetadataName(
                     "DTOMaker.Models.EntityAttribute",
                     predicate: FilterEntity,

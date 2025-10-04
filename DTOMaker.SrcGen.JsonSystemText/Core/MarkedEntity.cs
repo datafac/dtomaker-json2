@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DTOMaker.SrcGen.Core
 {
-    public readonly record struct MarkedInterface
+    public readonly record struct MarkedEntity
     {
         public readonly InterfaceDeclarationSyntax Syntax;
         public readonly string NameSpace;
@@ -16,7 +16,7 @@ namespace DTOMaker.SrcGen.Core
 
         public bool IsValid => !string.IsNullOrWhiteSpace(NameSpace) && !string.IsNullOrWhiteSpace(IntfName) && IntfName.StartsWith("I");
 
-        public MarkedInterface(InterfaceDeclarationSyntax syntax, string fullname, int entityId, List<string> values, string nameSpace,
+        public MarkedEntity(InterfaceDeclarationSyntax syntax, string fullname, int entityId, List<string> values, string nameSpace,
             ImmutableArray<SyntaxDiagnostic> syntaxErrors)
         {
             Syntax = syntax;
@@ -30,26 +30,4 @@ namespace DTOMaker.SrcGen.Core
             IntfName = intfName;
         }
     }
-
-    public sealed record ModelMember
-    {
-        public string PropName { get; init; } = string.Empty;
-    }
-    public sealed record ModelEntity
-    {
-        public string NameSpace { get; init; } = string.Empty;
-        public string IntfName { get; init; } = string.Empty;
-        public int EntityId { get; init; }
-        public EquatableArray<ModelMember> Members { get; init; } = new();
-    }
-    public sealed record ModelMetadata
-    {
-        public EquatableArray<ModelEntity> Entities { get; init; } = new();
-    }
-}
-
-// adding this fixes CS0518 errors
-namespace System.Runtime.CompilerServices
-{
-    internal static class IsExternalInit { }
 }
