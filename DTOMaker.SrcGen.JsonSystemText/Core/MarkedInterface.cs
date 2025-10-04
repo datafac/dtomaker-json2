@@ -8,27 +8,31 @@ namespace DTOMaker.SrcGen.Core
     public readonly record struct MarkedInterface
     {
         public readonly InterfaceDeclarationSyntax Syntax;
-        public readonly string Fullname;
+        //public readonly string Fullname;
         public readonly int EntityId;
         public readonly EquatableArray<string> Values;
-        public readonly string ModelNamespace;
+        public readonly string NameSpace;
         public readonly ImmutableArray<SyntaxDiagnostic> SyntaxErrors;
 
-        public readonly string EntityName;
+        public readonly string IntfName;
+        public readonly string ImplName;
 
-        public bool IsValid => !string.IsNullOrWhiteSpace(Fullname);
+        public bool IsValid => !string.IsNullOrWhiteSpace(NameSpace) && !string.IsNullOrWhiteSpace(IntfName) && IntfName.StartsWith("I");
 
-        public MarkedInterface(InterfaceDeclarationSyntax syntax, string fullname, int entityId, List<string> values, string modelNamespace,
+        public MarkedInterface(InterfaceDeclarationSyntax syntax, string fullname, int entityId, List<string> values, string nameSpace,
             ImmutableArray<SyntaxDiagnostic> syntaxErrors)
         {
             Syntax = syntax;
-            Fullname = fullname;
+            //Fullname = fullname;
             EntityId = entityId;
             Values = new(values.ToArray());
-            ModelNamespace = modelNamespace;
+            NameSpace = nameSpace;
             SyntaxErrors = syntaxErrors;
 
-            EntityName = Fullname.Split('.').Last();
+            // derived properties
+            string intfName = fullname.Split('.').Last();
+            IntfName = intfName;
+            ImplName = IntfName.Substring(1);
         }
     }
 
