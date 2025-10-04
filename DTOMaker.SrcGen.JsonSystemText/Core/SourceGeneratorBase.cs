@@ -240,6 +240,21 @@ namespace DTOMaker.SrcGen.Core
             });
 
             // todo emit metadata in json format
+            //IncrementalValueProvider<string?> projectDirProvider = context.AnalyzerConfigOptionsProvider
+            //    .Select(static (provider, _) =>
+            //    {
+            //        provider.GlobalOptions.TryGetValue("build_property.projectdir", out string? projectDirectory);
+            //        return projectDirectory;
+            //    });
+
+            //string? projectDirectory = null;
+            //context.RegisterSourceOutput(
+            //    projectDirProvider,
+            //    (context, source) =>
+            //    {
+            //        projectDirectory = source;
+            //    });
+
             IncrementalValuesProvider<ModelEntity> modelEntities = markedInterfaces
                 .Select((mi, _) => new ModelEntity
                 {
@@ -248,15 +263,15 @@ namespace DTOMaker.SrcGen.Core
                     EntityId = mi.EntityId,
                     Members = new EquatableArray<ModelMember>(mi.Values.Select(v => new ModelMember { PropName = v }).ToArray())
                 });
-            context.RegisterSourceOutput(modelEntities.Collect(), (spc, entities) =>
-            {
-                ModelMetadata metadata = new()
-                {
-                    Entities = new EquatableArray<ModelEntity>(entities.ToArray())
-                };
-                string metadataText = metadata.ToString();
-                //spc.AddSource("Metadata.g.json", SourceText.From(metadata.ToString(), Encoding.UTF8));
-            });
+            //context.RegisterSourceOutput(modelEntities.Collect(), (spc, entities) =>
+            //{
+            //    ModelMetadata metadata = new()
+            //    {
+            //        Entities = new EquatableArray<ModelEntity>(entities.ToArray())
+            //    };
+            //    string metadataText = metadata.ToString();
+            //    spc.AddSource("Metadata.g.json", SourceText.From(metadataText, Encoding.UTF8));
+            //});
 
             context.RegisterSourceOutput(context.CompilationProvider, (spc, compilation) =>
             {
