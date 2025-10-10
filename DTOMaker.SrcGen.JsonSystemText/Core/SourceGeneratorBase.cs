@@ -65,11 +65,6 @@ namespace DTOMaker.SrcGen.Core
         private const string MemberAttribute = nameof(MemberAttribute);
         private const string IdAttribute = nameof(IdAttribute);
 
-        private static bool FilterEntity(SyntaxNode syntaxNode, CancellationToken _)
-        {
-            return syntaxNode is InterfaceDeclarationSyntax;
-        }
-
         protected static SyntaxDiagnostic? TryGetAttributeArgumentValue<T>(AttributeData attrData, Location location, int index, Action<T> action)
         {
             object? input = attrData.ConstructorArguments[index].Value;
@@ -98,7 +93,74 @@ namespace DTOMaker.SrcGen.Core
                     $"Expected {attrData.AttributeClass?.Name} attribute to have {expectedCount} arguments, but it has {attrArgs.Length}.");
         }
 
-        private static MarkedEntity GetMarkedInterface(GeneratorAttributeSyntaxContext ctx)
+        private static ParsedMember GetParsedMember(GeneratorAttributeSyntaxContext ctx)
+        {
+            List<SyntaxDiagnostic> syntaxErrors = new();
+            SemanticModel semanticModel = ctx.SemanticModel;
+            SyntaxNode syntaxNode = ctx.TargetNode;
+            Location location = syntaxNode.GetLocation();
+
+            if (syntaxNode is not PropertyDeclarationSyntax propDeclarationSyntax)
+            {
+                // something went wrong
+                return default;
+            }
+
+            // Get the semantic representation of the enum syntax
+            ISymbol? declSynbol = semanticModel.GetDeclaredSymbol(propDeclarationSyntax);
+            if (declSynbol is not IPropertySymbol propSymbol)
+            {
+                // something went wrong
+                return default;
+            }
+
+            // Get the namespace the enum is declared in, if any
+            int sequence = 0;
+
+            // Loop through all of the attributes on the interface
+            foreach (AttributeData attributeData in propSymbol.GetAttributes())
+            {
+                string? attrName = attributeData.AttributeClass?.Name;
+                SyntaxDiagnostic? diagnostic = null;
+                switch (attrName)
+                {
+                    case null:
+                        break;
+                    case MemberAttribute:
+                        // get sequence
+                        diagnostic =
+                            CheckAttributeArguments(attributeData, location, 1)
+                            ?? TryGetAttributeArgumentValue<int>(attributeData, location, 0, (value) => { sequence = value; });
+                        break;
+                    default:
+                        // todo pass to derived
+                        diagnostic = new SyntaxDiagnostic(
+                            "WRN001", "Ignored unknown attribute", DiagnosticCategory.Other, location, DiagnosticSeverity.Warning,
+                            $"The attribute '{attrName}' is not recognized.");
+                        break;
+                }
+
+                if (diagnostic is not null)
+                {
+                    syntaxErrors.Add(diagnostic);
+                }
+            }
+
+            if (sequence <= 0)
+            {
+                syntaxErrors.Add(new SyntaxDiagnostic(
+                    "ERR001", "Missing or invalid member sequence", DiagnosticCategory.Syntax, syntaxNode.GetLocation(), DiagnosticSeverity.Error,
+                    $"The interface '{propSymbol.Name}' must have a valid Id attribute with a positive integer value."));
+            }
+
+            // Get the full type name of the enum e.g. Colour, 
+            // or OuterClass<T>.Colour if it was nested in a generic type (for example)
+            string fullname = propSymbol.ToString();
+
+            return new ParsedMember(propDeclarationSyntax, fullname, sequence, syntaxErrors.ToImmutableArray());
+        }
+
+        private static ParsedEntity GetParsedEntity(GeneratorAttributeSyntaxContext ctx)
         {
             List<SyntaxDiagnostic> syntaxErrors = new();
             SemanticModel semanticModel = ctx.SemanticModel;
@@ -154,18 +216,6 @@ namespace DTOMaker.SrcGen.Core
                 {
                     syntaxErrors.Add(diagnostic);
                 }
-
-                // This is the attribute, check all of the named arguments
-                //foreach (KeyValuePair<string, TypedConstant> namedArgument in attributeData.NamedArguments)
-                //{
-                //    // Is this the ExtensionClassName argument?
-                //    if (namedArgument.Key == "ExtensionClassName"
-                //        && namedArgument.Value.Value is not null)
-                //    {
-                //        //generatedClassName = namedArgument.Value.Value.ToString();
-                //        break;
-                //    }
-                //}
             }
 
             if (entityId <= 0)
@@ -192,10 +242,10 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new MarkedEntity(intfDeclarationSyntax, fullname, entityId, members, generatedNamespace, syntaxErrors.ToImmutableArray());
+            return new ParsedEntity(intfDeclarationSyntax, fullname, entityId, members, generatedNamespace, syntaxErrors.ToImmutableArray());
         }
 
-        static void EmitEntityDiagnostics(SourceProductionContext context, MarkedEntity markedInterface)
+        static void EmitEntityDiagnostics(SourceProductionContext context, ParsedEntity markedInterface)
         {
             foreach (SyntaxDiagnostic err in markedInterface.SyntaxErrors)
             {
@@ -212,31 +262,50 @@ namespace DTOMaker.SrcGen.Core
             OnBeginInitialize(context);
 
             // filter for entities
-            IncrementalValuesProvider<MarkedEntity> markedInterfaces = context.SyntaxProvider
+            IncrementalValuesProvider<ParsedEntity> parsedEntities = context.SyntaxProvider
                 .ForAttributeWithMetadataName(
                     "DTOMaker.Models.EntityAttribute",
-                    predicate: FilterEntity,
-                    transform: static (ctx, _) => GetMarkedInterface(ctx))
+                    predicate: static (syntaxNode, _) => syntaxNode is InterfaceDeclarationSyntax,
+                    transform: static (ctx, _) => GetParsedEntity(ctx))
+                .Where(static m => m.IsValid);
+
+            // filter for Members
+            IncrementalValuesProvider<ParsedMember> parsedMembers = context.SyntaxProvider
+                .ForAttributeWithMetadataName(
+                    "DTOMaker.Models.MemberAttribute",
+                    predicate: static (syntaxNode, _) => syntaxNode is PropertyDeclarationSyntax,
+                    transform: static (ctx, _) => GetParsedMember(ctx))
                 .Where(static m => m.IsValid);
 
             // validate entities
             context.RegisterSourceOutput(
-                markedInterfaces,
-                static (spc, markedInterface) => EmitEntityDiagnostics(spc, markedInterface));
+                parsedEntities,
+                static (spc, entity) => EmitEntityDiagnostics(spc, entity));
 
             // generate summary
-            context.RegisterSourceOutput(markedInterfaces.Collect(), (spc, interfaces) =>
+            context.RegisterSourceOutput(parsedEntities.Collect(), (spc, entities) =>
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("// <auto-generated/>");
-                sb.AppendLine("// Marked types summary.");
-                sb.AppendLine("// Interfaces:");
-                foreach (var intf in interfaces)
+                sb.AppendLine("// Entities:");
+                foreach (var entity in entities)
                 {
-                    sb.AppendLine($"// - {intf.NameSpace}.{intf.IntfName}");
+                    sb.AppendLine($"// - {entity.NameSpace}.{entity.IntfName}");
                 }
-                sb.AppendLine("// End of summary.");
+                sb.AppendLine("// End.");
                 spc.AddSource("Metadata.Summary.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
+            });
+            context.RegisterSourceOutput(parsedMembers.Collect(), (spc, members) =>
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("// <auto-generated/>");
+                sb.AppendLine("// Members:");
+                foreach (var member in members)
+                {
+                    sb.AppendLine($"// - {member.FullName}");
+                }
+                sb.AppendLine("// End.");
+                spc.AddSource("Metadata.Members.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
             });
 
             // todo emit metadata in json format
@@ -255,7 +324,7 @@ namespace DTOMaker.SrcGen.Core
             //        projectDirectory = source;
             //    });
 
-            IncrementalValuesProvider<ModelEntity> modelEntities = markedInterfaces
+            IncrementalValuesProvider<ModelEntity> modelEntities = parsedEntities
                 .Select((mi, _) => new ModelEntity
                 {
                     NameSpace = mi.NameSpace,

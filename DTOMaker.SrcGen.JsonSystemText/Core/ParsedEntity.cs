@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DTOMaker.SrcGen.Core
 {
-    public readonly record struct MarkedEntity
+    public readonly record struct ParsedEntity
     {
         public readonly InterfaceDeclarationSyntax Syntax;
         public readonly string NameSpace;
@@ -16,7 +16,7 @@ namespace DTOMaker.SrcGen.Core
 
         public bool IsValid => !string.IsNullOrWhiteSpace(NameSpace) && !string.IsNullOrWhiteSpace(IntfName) && IntfName.StartsWith("I");
 
-        public MarkedEntity(InterfaceDeclarationSyntax syntax, string fullname, int entityId, List<string> values, string nameSpace,
+        public ParsedEntity(InterfaceDeclarationSyntax syntax, string fullname, int entityId, List<string> values, string nameSpace,
             ImmutableArray<SyntaxDiagnostic> syntaxErrors)
         {
             Syntax = syntax;
@@ -28,6 +28,29 @@ namespace DTOMaker.SrcGen.Core
             // derived properties
             string intfName = fullname.Split('.').Last();
             IntfName = intfName;
+        }
+    }
+    public readonly record struct ParsedMember
+    {
+        public readonly PropertyDeclarationSyntax Syntax;
+        public readonly string FullName;
+        public readonly string PropNameqqq;
+        public readonly int Sequence;
+        public readonly ImmutableArray<SyntaxDiagnostic> SyntaxErrors;
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(PropNameqqq);
+
+        public ParsedMember(PropertyDeclarationSyntax syntax, string fullname, int sequence,
+            ImmutableArray<SyntaxDiagnostic> syntaxErrors)
+        {
+            Syntax = syntax;
+            FullName = fullname;
+            Sequence = sequence;
+            SyntaxErrors = syntaxErrors;
+
+            // derived properties
+            string propName = fullname.Split('.').Last();
+            PropNameqqq = propName;
         }
     }
 }
