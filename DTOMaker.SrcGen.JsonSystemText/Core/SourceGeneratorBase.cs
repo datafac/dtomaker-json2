@@ -95,7 +95,7 @@ namespace DTOMaker.SrcGen.Core
 
         private static ParsedMember GetParsedMember(GeneratorAttributeSyntaxContext ctx)
         {
-            List<SyntaxDiagnostic> syntaxErrors = new();
+            //List<SyntaxDiagnostic> syntaxErrors = new();
             SemanticModel semanticModel = ctx.SemanticModel;
             SyntaxNode syntaxNode = ctx.TargetNode;
             Location location = syntaxNode.GetLocation();
@@ -142,27 +142,27 @@ namespace DTOMaker.SrcGen.Core
 
                 if (diagnostic is not null)
                 {
-                    syntaxErrors.Add(diagnostic);
+                    //syntaxErrors.Add(diagnostic);
                 }
             }
 
             if (sequence <= 0)
             {
-                syntaxErrors.Add(new SyntaxDiagnostic(
-                    "ERR001", "Missing or invalid member sequence", DiagnosticCategory.Syntax, syntaxNode.GetLocation(), DiagnosticSeverity.Error,
-                    $"The interface '{propSymbol.Name}' must have a valid Id attribute with a positive integer value."));
+                //syntaxErrors.Add(new SyntaxDiagnostic(
+                //    "ERR001", "Missing or invalid member sequence", DiagnosticCategory.Syntax, syntaxNode.GetLocation(), DiagnosticSeverity.Error,
+                //    $"The interface '{propSymbol.Name}' must have a valid Id attribute with a positive integer value."));
             }
 
             // Get the full type name of the enum e.g. Colour, 
             // or OuterClass<T>.Colour if it was nested in a generic type (for example)
             string fullname = propSymbol.ToString();
 
-            return new ParsedMember(propDeclarationSyntax, fullname, sequence, syntaxErrors.ToImmutableArray());
+            return new ParsedMember(fullname, sequence);
         }
 
         private static ParsedEntity GetParsedEntity(GeneratorAttributeSyntaxContext ctx)
         {
-            List<SyntaxDiagnostic> syntaxErrors = new();
+            //List<SyntaxDiagnostic> syntaxErrors = new();
             SemanticModel semanticModel = ctx.SemanticModel;
             SyntaxNode syntaxNode = ctx.TargetNode;
             Location location = syntaxNode.GetLocation();
@@ -214,15 +214,15 @@ namespace DTOMaker.SrcGen.Core
 
                 if (diagnostic is not null)
                 {
-                    syntaxErrors.Add(diagnostic);
+                    //syntaxErrors.Add(diagnostic);
                 }
             }
 
             if (entityId <= 0)
             {
-                syntaxErrors.Add(new SyntaxDiagnostic(
-                    "ERR001", "Missing or invalid Id", DiagnosticCategory.Syntax, syntaxNode.GetLocation(), DiagnosticSeverity.Error,
-                    $"The interface '{intfSymbol.Name}' must have a valid Id attribute with a positive integer value."));
+                //syntaxErrors.Add(new SyntaxDiagnostic(
+                //    "ERR001", "Missing or invalid Id", DiagnosticCategory.Syntax, syntaxNode.GetLocation(), DiagnosticSeverity.Error,
+                //    $"The interface '{intfSymbol.Name}' must have a valid Id attribute with a positive integer value."));
             }
 
             // Get the full type name of the enum e.g. Colour, 
@@ -242,18 +242,19 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new ParsedEntity(intfDeclarationSyntax, fullname, entityId, members, generatedNamespace, syntaxErrors.ToImmutableArray());
+            return new ParsedEntity(fullname, entityId, members, generatedNamespace);
         }
 
         static void EmitEntityDiagnostics(SourceProductionContext context, ParsedEntity markedInterface)
         {
-            foreach (SyntaxDiagnostic err in markedInterface.SyntaxErrors)
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        new DiagnosticDescriptor(err.Id, err.Title, err.Message,
-                            err.Category, err.Severity, true), err.Location));
-            }
+            // todo move diagnostic emission to separate analyzer
+            //foreach (SyntaxDiagnostic err in markedInterface.SyntaxErrors)
+            //{
+            //    context.ReportDiagnostic(
+            //        Diagnostic.Create(
+            //            new DiagnosticDescriptor(err.Id, err.Title, err.Message,
+            //                err.Category, err.Severity, true), err.Location));
+            //}
         }
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
