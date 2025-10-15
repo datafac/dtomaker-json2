@@ -19,4 +19,15 @@ namespace DTOMaker.SrcGen.Core
             PropName = fullname.Split('.').Last();
         }
     }
+    public readonly record struct OutputMember
+    {
+        public readonly string PropName;
+        public readonly int Sequence;
+
+        public OutputMember(string propName, int sequence)
+        {
+            PropName = propName;
+            Sequence = sequence;
+        }
+    }
 }

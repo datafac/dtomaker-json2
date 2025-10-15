@@ -15,10 +15,10 @@ namespace DTOMaker.SrcGen.JsonSystemText
         protected override void OnBeginInitialize(IncrementalGeneratorInitializationContext context)
         {
         }
-        protected override void OnEndInitialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ModelEntity> model)
+        protected override void OnEndInitialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<OutputEntity> entities)
         {
             // generate entities
-            context.RegisterSourceOutput(model, (spc, ent) =>
+            context.RegisterSourceOutput(entities, (spc, ent) =>
             {
                 string implName = ent.IntfName.Substring(1);
                 // todo move to derived class
@@ -31,7 +31,6 @@ namespace DTOMaker.SrcGen.JsonSystemText
                 string hintName = $"{ent.NameSpace}.JsonSystemText.{implName}.g.cs";
                 spc.AddSource(hintName, SourceText.From(sb.ToString(), Encoding.UTF8));
             });
-
         }
     }
 }

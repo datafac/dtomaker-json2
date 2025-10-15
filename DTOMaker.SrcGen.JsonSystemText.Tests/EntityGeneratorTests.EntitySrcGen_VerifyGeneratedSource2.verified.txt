@@ -2,4 +2,4 @@
 // Namespace: MyOrg.Models
 // Name     : MyDTO
 // Id       : 1
-// Members  : 0
+// Members  : 1
