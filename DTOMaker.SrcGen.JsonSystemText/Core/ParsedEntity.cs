@@ -10,14 +10,12 @@ namespace DTOMaker.SrcGen.Core
         public readonly string FullName;
         public readonly string IntfName;
         public readonly int EntityId;
-        public readonly EquatableArray<string> Values;
 
         public bool IsValid => !string.IsNullOrWhiteSpace(NameSpace) && !string.IsNullOrWhiteSpace(IntfName) && IntfName.StartsWith("I", StringComparison.Ordinal);
 
-        public ParsedEntity(string fullname, int entityId, string[] values, string nameSpace)
+        public ParsedEntity(string fullname, int entityId, string nameSpace)
         {
             EntityId = entityId;
-            Values = new(values);
             NameSpace = nameSpace;
             FullName = fullname;
 
@@ -34,7 +32,7 @@ namespace DTOMaker.SrcGen.Core
         public readonly int EntityId;
         public readonly EquatableArray<OutputMember> Members;
 
-        public OutputEntity(string nameSpace, string fullname, string intfName, int entityId, OutputMember[] members)
+        public OutputEntity(string nameSpace, string fullname, string intfName, int entityId, IEnumerable<OutputMember> members)
         {
             NameSpace = nameSpace;
             FullName = fullname;

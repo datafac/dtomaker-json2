@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace DTOMaker.SrcGen.Core
@@ -8,18 +9,17 @@ namespace DTOMaker.SrcGen.Core
     public readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IReadOnlyCollection<T>
         where T : IEquatable<T>
     {
-        private readonly T[] _array;
+        private readonly ImmutableArray<T> _array;
 
-        public EquatableArray() => _array = Array.Empty<T>();
-        public EquatableArray(T[] array) => _array = array;
+        public EquatableArray() => _array = ImmutableArray<T>.Empty;
+        public EquatableArray(IEnumerable<T> items) => _array = ImmutableArray.CreateRange(items);
 
         public int Count => _array.Length;
-        public ReadOnlySpan<T> AsSpan() => _array.AsSpan();
-        public T[] AsArray() => _array;
+        public ImmutableArray<T> Array => _array;
 
 
-        public bool Equals(EquatableArray<T> array) => AsSpan().SequenceEqual(array.AsSpan());
-        public override bool Equals(object? obj) => obj is EquatableArray<T> array && this.Equals(array);
+        public bool Equals(EquatableArray<T> other) => _array.AsSpan().SequenceEqual(other.Array.AsSpan());
+        public override bool Equals(object? obj) => obj is EquatableArray<T> other && Equals(other);
         public static bool operator ==(EquatableArray<T> left, EquatableArray<T> right) => left.Equals(right);
         public static bool operator !=(EquatableArray<T> left, EquatableArray<T> right) => !left.Equals(right);
 
