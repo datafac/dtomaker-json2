@@ -242,7 +242,7 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new ParsedEntity(fullname, entityId, generatedNamespace);
+            return new ParsedEntity(generatedNamespace, fullname, entityId);
         }
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -261,7 +261,7 @@ namespace DTOMaker.SrcGen.Core
             // add base entity
             parsedEntities = parsedEntities.Collect().Select((list1, _) =>
             {
-                var baseEntity = new ParsedEntity("DTOMaker.Runtime.IEntityBase", 0, "DTOMaker.Runtime");
+                var baseEntity = new ParsedEntity("DTOMaker.Runtime", "DTOMaker.Runtime.IEntityBase", 0);
                 List<ParsedEntity> newList = [baseEntity];
                 return newList.Concat(list1).ToImmutableArray();
             }).SelectMany((list2, _) => list2.ToImmutableArray());
@@ -286,7 +286,8 @@ namespace DTOMaker.SrcGen.Core
                             members.Add(new OutputMember(member.PropName, member.Sequence));
                         }
                     }
-                    return new OutputEntity(entity.NameSpace, entity.FullName, entity.IntfName, entity.EntityId, members);
+                    int classHeight = 0; // todo calculate class height
+                    return new OutputEntity(entity.NameSpace, entity.FullName, entity.IntfName, entity.EntityId, members, classHeight);
                 });
 
             // generate summary
