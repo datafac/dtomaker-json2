@@ -9,6 +9,9 @@ namespace DTOMaker.SrcGen.Core
     public readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IReadOnlyCollection<T>
         where T : IEquatable<T>
     {
+        private static readonly EquatableArray<T> _empty = new EquatableArray<T>();
+        public static EquatableArray<T> Empty => _empty;
+
         private readonly ImmutableArray<T> _array;
 
         public EquatableArray() => _array = ImmutableArray<T>.Empty;

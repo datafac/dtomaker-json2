@@ -14,6 +14,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
         private static readonly string modelSource =
             """
             using DTOMaker.Models;
+            using DTOMaker.Runtime;
             namespace MyOrg.Models
             {
                 [Entity][Id(1)]

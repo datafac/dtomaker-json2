@@ -9,14 +9,16 @@ namespace DTOMaker.SrcGen.Core
         public readonly string FullName;
         public readonly string IntfName;
         public readonly int EntityId;
+        public readonly string? BaseFullName;
 
         public bool IsValid => !string.IsNullOrWhiteSpace(NameSpace) && !string.IsNullOrWhiteSpace(IntfName) && IntfName.StartsWith("I", StringComparison.Ordinal);
 
-        public ParsedEntity(string nameSpace, string fullname, int entityId)
+        public ParsedEntity(string nameSpace, string fullname, int entityId, string? baseFullName)
         {
             EntityId = entityId;
             NameSpace = nameSpace;
             FullName = fullname;
+            BaseFullName = baseFullName;
 
             // derived properties
             IntfName = fullname.Split('.').Last();

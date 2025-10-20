@@ -25,7 +25,9 @@ namespace DTOMaker.SrcGen.JsonSystemText
                 sb.AppendLine($"// FullName : {ent.FullName}");
                 sb.AppendLine($"// Namespace: {ent.NameSpace}");
                 sb.AppendLine($"// IntfName : {ent.IntfName}");
+                sb.AppendLine($"// Base     : {ent.BaseFullName ?? "(null)"}");
                 sb.AppendLine($"// Id       : {ent.EntityId}");
+                sb.AppendLine($"// Height   : {ent.ClassHeight}");
                 sb.AppendLine($"// Members  : {ent.Members.Count}");
                 foreach (var member in ent.Members)
                 {

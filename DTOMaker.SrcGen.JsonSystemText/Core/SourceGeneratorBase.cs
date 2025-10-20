@@ -242,7 +242,17 @@ namespace DTOMaker.SrcGen.Core
                 }
             }
 
-            return new ParsedEntity(generatedNamespace, fullname, entityId);
+            string? baseFullName = intfSymbol.Interfaces.FirstOrDefault()?.ToString();
+
+            return new ParsedEntity(generatedNamespace, fullname, entityId, baseFullName);
+        }
+
+        private static int GetClassHeight(string? baseFullName, ImmutableArray<ParsedEntity> entities)
+        {
+            if (baseFullName is null) return 0;
+            var parentEntity = entities.FirstOrDefault(e => e.FullName == baseFullName);
+            if (!parentEntity.IsValid) return 0;
+            return 1 + GetClassHeight(parentEntity.BaseFullName, entities);
         }
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -261,7 +271,7 @@ namespace DTOMaker.SrcGen.Core
             // add base entity
             parsedEntities = parsedEntities.Collect().Select((list1, _) =>
             {
-                var baseEntity = new ParsedEntity("DTOMaker.Runtime", "DTOMaker.Runtime.IEntityBase", 0);
+                var baseEntity = new ParsedEntity("DTOMaker.Runtime", "DTOMaker.Runtime.IEntityBase", 0, null);
                 List<ParsedEntity> newList = [baseEntity];
                 return newList.Concat(list1).ToImmutableArray();
             }).SelectMany((list2, _) => list2.ToImmutableArray());
@@ -274,20 +284,31 @@ namespace DTOMaker.SrcGen.Core
                     transform: static (ctx, _) => GetParsedMember(ctx))
                 .Where(static m => m.IsValid);
 
-            IncrementalValuesProvider<OutputEntity> outputEntities = parsedEntities.Combine(parsedMembers.Collect())
+            var parsedMatrix = parsedEntities.Collect().Combine(parsedMembers.Collect());
+
+            IncrementalValuesProvider<OutputEntity> outputEntities = parsedEntities.Combine(parsedMatrix)
                 .Select((pair, _) =>
                 {
                     var entity = pair.Left;
                     var members = new List<OutputMember>();
-                    foreach (var member in pair.Right)
+                    foreach (var member in pair.Right.Right)
                     {
                         if (member.FullName.StartsWith(entity.FullName, StringComparison.Ordinal))
                         {
                             members.Add(new OutputMember(member.PropName, member.Sequence));
                         }
                     }
-                    int classHeight = 0; // todo calculate class height
-                    return new OutputEntity(entity.NameSpace, entity.FullName, entity.IntfName, entity.EntityId, members, classHeight);
+                    int classHeight = GetClassHeight(entity.BaseFullName, pair.Right.Left);
+                    return new OutputEntity()
+                    {
+                        FullName = entity.FullName,
+                        NameSpace = entity.NameSpace,
+                        IntfName = entity.IntfName,
+                        BaseFullName = entity.BaseFullName,
+                        EntityId = entity.EntityId,
+                        ClassHeight = classHeight,
+                        Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence))
+                    };
                 });
 
             // generate summary
