@@ -2,8 +2,10 @@
 // FullName : MyOrg.Models.IMyDTO
 // Namespace: MyOrg.Models
 // IntfName : IMyDTO
-// Base     : DTOMaker.Runtime.IEntityBase
 // Id       : 1
 // Height   : 1
 // Members  : 1
-//   1: Field1
+//         1: Field1
+// Base     : DTOMaker.Runtime.IEntityBase
+// Derived  : 1
+//          - MyOrg.Models.IDerived

@@ -255,6 +255,22 @@ namespace DTOMaker.SrcGen.Core
             return 1 + GetClassHeight(parentEntity.BaseFullName, entities);
         }
 
+        private static List<string> GetDerivedEntities(string parentEntity, ImmutableArray<ParsedEntity> allEntities)
+        {
+            var derivedEntities = new List<string>();
+            foreach (var entity in allEntities)
+            {
+                if (entity.BaseFullName == parentEntity)
+                {
+                    // found derived
+                    derivedEntities.Add(entity.FullName);
+                    // now recurse
+                    derivedEntities.AddRange(GetDerivedEntities(entity.FullName, allEntities));
+                }
+            }
+            return derivedEntities;
+        }
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             // do derived stuff
@@ -299,15 +315,18 @@ namespace DTOMaker.SrcGen.Core
                         }
                     }
                     int classHeight = GetClassHeight(entity.BaseFullName, pair.Right.Left);
+                    List<string> derivedFullNames = GetDerivedEntities(entity.FullName, pair.Right.Left);
+                    derivedFullNames.Sort(StringComparer.Ordinal);
                     return new OutputEntity()
                     {
                         FullName = entity.FullName,
                         NameSpace = entity.NameSpace,
                         IntfName = entity.IntfName,
-                        BaseFullName = entity.BaseFullName,
                         EntityId = entity.EntityId,
                         ClassHeight = classHeight,
-                        Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence))
+                        Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
+                        BaseFullName = entity.BaseFullName,
+                        DerivedFullNames = new EquatableArray<string>(derivedFullNames)
                     };
                 });
 

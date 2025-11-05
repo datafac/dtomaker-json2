@@ -25,13 +25,18 @@ namespace DTOMaker.SrcGen.JsonSystemText
                 sb.AppendLine($"// FullName : {ent.FullName}");
                 sb.AppendLine($"// Namespace: {ent.NameSpace}");
                 sb.AppendLine($"// IntfName : {ent.IntfName}");
-                sb.AppendLine($"// Base     : {ent.BaseFullName ?? "(null)"}");
                 sb.AppendLine($"// Id       : {ent.EntityId}");
                 sb.AppendLine($"// Height   : {ent.ClassHeight}");
                 sb.AppendLine($"// Members  : {ent.Members.Count}");
                 foreach (var member in ent.Members)
                 {
-                    sb.AppendLine($"// {member.Sequence,3}: {member.PropName}");
+                    sb.AppendLine($"//       {member.Sequence,3}: {member.PropName}");
+                }
+                sb.AppendLine($"// Base     : {ent.BaseFullName ?? "(null)"}");
+                sb.AppendLine($"// Derived  : {ent.DerivedFullNames.Count}");
+                foreach (var derivedFullName in ent.DerivedFullNames)
+                {
+                    sb.AppendLine($"//          - {derivedFullName}");
                 }
                 string implName = ent.IntfName.Substring(1);
                 string hintName = $"{ent.NameSpace}.JsonSystemText.{implName}.g.cs";

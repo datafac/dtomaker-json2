@@ -2,7 +2,10 @@
 // FullName : DTOMaker.Runtime.IEntityBase
 // Namespace: DTOMaker.Runtime
 // IntfName : IEntityBase
-// Base     : (null)
 // Id       : 0
 // Height   : 0
 // Members  : 0
+// Base     : (null)
+// Derived  : 2
+//          - MyOrg.Models.IDerived
+//          - MyOrg.Models.IMyDTO
