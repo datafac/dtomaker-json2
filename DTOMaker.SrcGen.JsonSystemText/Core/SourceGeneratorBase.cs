@@ -247,23 +247,23 @@ namespace DTOMaker.SrcGen.Core
             return new ParsedEntity(generatedNamespace, fullname, entityId, baseFullName);
         }
 
-        private static int GetClassHeight(string? baseFullName, ImmutableArray<ParsedEntity> entities)
+        private static int GetClassHeight(string? baseFullName, ImmutableArray<Phase1Entity> entities)
         {
             if (baseFullName is null) return 0;
             var parentEntity = entities.FirstOrDefault(e => e.FullName == baseFullName);
-            if (!parentEntity.IsValid) return 0;
+            if (parentEntity is null) return 0;
             return 1 + GetClassHeight(parentEntity.BaseFullName, entities);
         }
 
-        private static List<string> GetDerivedEntities(string parentEntity, ImmutableArray<ParsedEntity> allEntities)
+        private static List<Phase1Entity> GetDerivedEntities(string parentEntity, ImmutableArray<Phase1Entity> allEntities)
         {
-            var derivedEntities = new List<string>();
+            var derivedEntities = new List<Phase1Entity>();
             foreach (var entity in allEntities)
             {
                 if (entity.BaseFullName == parentEntity)
                 {
                     // found derived
-                    derivedEntities.Add(entity.FullName);
+                    derivedEntities.Add(entity);
                     // now recurse
                     derivedEntities.AddRange(GetDerivedEntities(entity.FullName, allEntities));
                 }
@@ -300,23 +300,39 @@ namespace DTOMaker.SrcGen.Core
                     transform: static (ctx, _) => GetParsedMember(ctx))
                 .Where(static m => m.IsValid);
 
-            var parsedMatrix = parsedEntities.Collect().Combine(parsedMembers.Collect());
+            //var parsedMatrix = parsedEntities.Collect().Combine(parsedMembers.Collect());
 
-            IncrementalValuesProvider<OutputEntity> outputEntities = parsedEntities.Combine(parsedMatrix)
+            // resolve members
+            IncrementalValuesProvider<Phase1Entity> outputEntities1 = parsedEntities.Combine(parsedMembers.Collect())
                 .Select((pair, _) =>
                 {
-                    var entity = pair.Left;
+                    var parsed = pair.Left;
                     var members = new List<OutputMember>();
-                    foreach (var member in pair.Right.Right)
+                    foreach (var member in pair.Right)
                     {
-                        if (member.FullName.StartsWith(entity.FullName, StringComparison.Ordinal))
+                        if (member.FullName.StartsWith(parsed.FullName, StringComparison.Ordinal))
                         {
                             members.Add(new OutputMember(member.PropName, member.Sequence));
                         }
                     }
-                    int classHeight = GetClassHeight(entity.BaseFullName, pair.Right.Left);
-                    List<string> derivedFullNames = GetDerivedEntities(entity.FullName, pair.Right.Left);
-                    derivedFullNames.Sort(StringComparer.Ordinal);
+                    return new Phase1Entity()
+                    {
+                        FullName = parsed.FullName,
+                        NameSpace = parsed.NameSpace,
+                        IntfName = parsed.IntfName,
+                        EntityId = parsed.EntityId,
+                        Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
+                        BaseFullName = parsed.BaseFullName,
+                    };
+                });
+
+            // resolve derived entities and height
+            IncrementalValuesProvider<OutputEntity> outputEntities2 = outputEntities1.Combine(outputEntities1.Collect())
+                .Select((pair, _) =>
+                {
+                    var entity = pair.Left;
+                    int classHeight = GetClassHeight(entity.BaseFullName, pair.Right);
+                    List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.FullName, pair.Right);
                     return new OutputEntity()
                     {
                         FullName = entity.FullName,
@@ -324,9 +340,9 @@ namespace DTOMaker.SrcGen.Core
                         IntfName = entity.IntfName,
                         EntityId = entity.EntityId,
                         ClassHeight = classHeight,
-                        Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
+                        Members = entity.Members,
                         BaseFullName = entity.BaseFullName,
-                        DerivedFullNames = new EquatableArray<string>(derivedFullNames)
+                        DerivedEntities = new EquatableArray<Phase1Entity>(derivedEntities.OrderBy(e => e.FullName))
                     };
                 });
 
@@ -386,7 +402,7 @@ namespace DTOMaker.SrcGen.Core
             });
 
             // do derived stuff
-            OnEndInitialize(context, outputEntities);
+            OnEndInitialize(context, outputEntities2);
         }
     }
 

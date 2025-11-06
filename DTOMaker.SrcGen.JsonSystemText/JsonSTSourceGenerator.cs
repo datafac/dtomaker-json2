@@ -33,10 +33,10 @@ namespace DTOMaker.SrcGen.JsonSystemText
                     sb.AppendLine($"//       {member.Sequence,3}: {member.PropName}");
                 }
                 sb.AppendLine($"// Base     : {ent.BaseFullName ?? "(null)"}");
-                sb.AppendLine($"// Derived  : {ent.DerivedFullNames.Count}");
-                foreach (var derivedFullName in ent.DerivedFullNames)
+                sb.AppendLine($"// Derived  : {ent.DerivedEntities.Count}");
+                foreach (var derived in ent.DerivedEntities)
                 {
-                    sb.AppendLine($"//          - {derivedFullName}");
+                    sb.AppendLine($"//          - {derived.FullName}");
                 }
                 string implName = ent.IntfName.Substring(1);
                 string hintName = $"{ent.NameSpace}.JsonSystemText.{implName}.g.cs";
