@@ -4,7 +4,8 @@
 // IntfName : IDerived
 // Id       : 2
 // Height   : 2
-// Members  : 1
-//         1: Field11
+// Members  : 2
+//         1: Field11 (System.String)
+//         2: Field12 (System.String?)
 // Base     : MyOrg.Models.IMyDTO
 // Derived  : 0

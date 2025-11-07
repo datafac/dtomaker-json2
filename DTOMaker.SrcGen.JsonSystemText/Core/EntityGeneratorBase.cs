@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
 
@@ -81,6 +82,96 @@ namespace DTOMaker.SrcGen.Core
         protected IDisposable NewScope(ModelScopeBase scope)
         {
             return _tokenStack.NewScope(scope.Tokens);
+        }
+
+        private static string ToCamelCase(string value)
+        {
+            ReadOnlySpan<char> input = value.AsSpan();
+            Span<char> output = stackalloc char[input.Length];
+            input.CopyTo(output);
+            for (int i = 0; i < output.Length; i++)
+            {
+                if (Char.IsLetter(output[i]))
+                {
+                    output[i] = Char.ToLower(output[i]);
+                    return new string(output.ToArray());
+                }
+            }
+            return new string(output.ToArray());
+        }
+
+        protected IDisposable NewScope(OutputMember member)
+        {
+            var tokens = new Dictionary<string, object?>
+            {
+                ["MemberIsObsolete"] = member.IsObsolete,
+                ["MemberObsoleteMessage"] = member.ObsoleteMessage,
+                ["MemberObsoleteIsError"] = member.ObsoleteIsError,
+                ["MemberType"] = _language.GetDataTypeToken(member.MemberType),
+                ["MemberTypeImplName"] = member.MemberType.ShortImplName,
+                ["MemberTypeIntfName"] = member.MemberType.ShortIntfName,
+                ["MemberTypeNameSpace"] = member.MemberType.NameSpace,
+                ["MemberIsNullable"] = member.IsNullable,
+                ["MemberSequence"] = member.Sequence,
+                ["MemberName"] = member.Name,
+                ["MemberJsonName"] = ToCamelCase(member.Name),
+                ["MemberDefaultValue"] = _language.GetDefaultValue(member.MemberType)
+            };
+            switch (member.Kind)
+            {
+                case MemberKind.Native:
+                    tokens["ScalarMemberSequence"] = member.Sequence;
+                    tokens[(member.IsNullable ? "Nullable" : "Required") + "ScalarMemberSequence"] = member.Sequence;
+                    tokens["ScalarMemberName"] = member.Name;
+                    tokens[(member.IsNullable ? "Nullable" : "Required") + "ScalarMemberName"] = member.Name;
+                    break;
+                case MemberKind.Vector:
+                    tokens["VectorMemberSequence"] = member.Sequence;
+                    tokens["VectorMemberName"] = member.Name;
+                    break;
+                case MemberKind.Entity:
+                    tokens[(member.IsNullable ? "Nullable" : "Required") + "EntityMemberName"] = member.Name;
+                    break;
+                case MemberKind.Binary:
+                    tokens[(member.IsNullable ? "Nullable" : "Required") + "BinaryMemberName"] = member.Name;
+                    break;
+                case MemberKind.String:
+                    tokens[(member.IsNullable ? "Nullable" : "Required") + "StringMemberName"] = member.Name;
+                    break;
+            }
+            return _tokenStack.NewScope(tokens);
+        }
+
+        protected IDisposable NewScope(Phase1Entity entity)
+        {
+            /*
+            _tokens["NameSpace"] = entity.TFN.NameSpace;
+            _tokens["AbstractEntity"] = entity.TFN.ShortImplName;
+            _tokens["ConcreteEntity"] = entity.TFN.ShortImplName;
+            _tokens["EntityImplName"] = entity.TFN.ShortImplName;
+            _tokens["EntityIntfName"] = entity.TFN.ShortIntfName;
+
+            _tokens["EntityId"] = entity.EntityId;
+            _tokens["BaseName"] = entity.Base?.TFN.ShortImplName ?? TypeFullName.DefaultBase.ShortImplName;
+            _tokens["BaseNameSpace"] = entity.Base?.TFN.NameSpace ?? TypeFullName.DefaultBase.NameSpace;
+            _tokens["BaseFullName"] = entity.Base?.TFN.FullName ?? TypeFullName.DefaultBase.FullName;
+            _tokens["ClassHeight"] = ClassHeight;
+            _tokens["DerivedEntityCount"] = DerivedEntityCount;
+             */
+            var tokens = new Dictionary<string, object?>()
+            {
+                ["NameSpace"] = entity.NameSpace,
+                ["AbstractEntity"] = entity.ImplName,
+                ["ConcreteEntity"] = entity.ImplName,
+                ["EntityImplName"] = entity.ImplName,
+                ["EntityIntfName"] = entity.IntfName,
+                ["EntityId"] = entity.EntityId,
+                //["BaseName"] = entity.BaseFullName,
+                //["BaseNameSpace"] = entity.BaseFullName != null ? GetNameSpaceFromFullName(entity.BaseFullName) : TypeFullName.DefaultBase.NameSpace,
+                //["BaseFullName"] = entity.BaseFullName ?? TypeFullName.DefaultBase.FullName,
+                //["ClassHeight"] = entity.ClassHeight,
+            };
+            return _tokenStack.NewScope(tokens);
         }
 
         protected abstract void OnGenerate(ModelScopeEntity scope);

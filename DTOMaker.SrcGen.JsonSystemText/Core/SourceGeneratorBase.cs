@@ -64,6 +64,7 @@ namespace DTOMaker.SrcGen.Core
         private const string EntityAttribute = nameof(EntityAttribute);
         private const string MemberAttribute = nameof(MemberAttribute);
         private const string IdAttribute = nameof(IdAttribute);
+        private const string ObsoleteAttribute = nameof(ObsoleteAttribute);
 
         protected static SyntaxDiagnostic? TryGetAttributeArgumentValue<T>(AttributeData attrData, Location location, int index, Action<T> action)
         {
@@ -116,6 +117,9 @@ namespace DTOMaker.SrcGen.Core
 
             // Get the namespace the enum is declared in, if any
             int sequence = 0;
+            bool isObsolete = false;
+            string obsoleteMessage = string.Empty;
+            bool obsoleteIsError = false;
 
             // Loop through all of the attributes on the interface
             foreach (AttributeData attributeData in propSymbol.GetAttributes())
@@ -131,6 +135,19 @@ namespace DTOMaker.SrcGen.Core
                         diagnostic =
                             CheckAttributeArguments(attributeData, location, 1)
                             ?? TryGetAttributeArgumentValue<int>(attributeData, location, 0, (value) => { sequence = value; });
+                        break;
+                    case ObsoleteAttribute:
+                        isObsolete = true;
+                        var attributeArguments = attributeData.ConstructorArguments;
+                        if (attributeArguments.Length == 1)
+                        {
+                            TryGetAttributeArgumentValue<string>(attributeData, location, 0, (value) => { obsoleteMessage = value; });
+                        }
+                        if (attributeArguments.Length == 2)
+                        {
+                            TryGetAttributeArgumentValue<string>(attributeData, location, 0, (value) => { obsoleteMessage = value; });
+                            TryGetAttributeArgumentValue<bool>(attributeData, location, 1, (value) => { obsoleteIsError = value; });
+                        }
                         break;
                     default:
                         // todo pass to derived
@@ -157,7 +174,65 @@ namespace DTOMaker.SrcGen.Core
             // or OuterClass<T>.Colour if it was nested in a generic type (for example)
             string fullname = propSymbol.ToString();
 
-            return new ParsedMember(fullname, sequence);
+            (TypeFullName tfn, MemberKind kind, bool isNullable) = GetTypeInfo(propSymbol.Type);
+
+            return new ParsedMember(fullname, sequence, tfn, kind, isNullable, isObsolete, obsoleteMessage, obsoleteIsError);
+        }
+
+        private static (TypeFullName tfn, MemberKind kind, bool isNullable) GetTypeInfo(ITypeSymbol typeSymbol)
+        {
+            TypeFullName tfn = TypeFullName.Create(typeSymbol);
+            MemberKind kind = tfn.MemberKind;
+            bool isNullable = false;
+            if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
+            {
+                if (namedTypeSymbol.IsGenericType && namedTypeSymbol.Name == "Nullable" && namedTypeSymbol.TypeArguments.Length == 1)
+                {
+                    // nullable value type
+                    isNullable = true;
+                    ITypeSymbol typeArg0 = namedTypeSymbol.TypeArguments[0];
+                    tfn = TypeFullName.Create(typeArg0);
+                    kind = tfn.MemberKind;
+                }
+            }
+            if (typeSymbol.NullableAnnotation == NullableAnnotation.Annotated)
+            {
+                // nullable ref type
+                isNullable = true;
+            }
+            return (tfn, kind, isNullable);
+        }
+
+        private static MemberKind GetMemberKind(ITypeSymbol typeSymbol)
+        {
+            string fullname = typeSymbol.ToString();
+            return fullname switch
+            {
+                KnownType.SystemBoolean => MemberKind.Native,
+                KnownType.SystemSByte => MemberKind.Native,
+                KnownType.SystemByte => MemberKind.Native,
+                KnownType.SystemInt16 => MemberKind.Native,
+                KnownType.SystemUInt16 => MemberKind.Native,
+                KnownType.SystemChar => MemberKind.Native,
+                KnownType.SystemHalf => MemberKind.Native,
+                KnownType.SystemInt32 => MemberKind.Native,
+                KnownType.SystemUInt32 => MemberKind.Native,
+                KnownType.SystemSingle => MemberKind.Native,
+                KnownType.SystemInt64 => MemberKind.Native,
+                KnownType.SystemUInt64 => MemberKind.Native,
+                KnownType.SystemDouble => MemberKind.Native,
+                KnownType.SystemInt128 => MemberKind.Native,
+                KnownType.SystemUInt128 => MemberKind.Native,
+                KnownType.SystemGuid => MemberKind.Native,
+                KnownType.SystemDecimal => MemberKind.Native,
+                KnownType.SystemString => MemberKind.String,
+                // custom types
+                KnownType.PairOfInt16 => MemberKind.Native,
+                KnownType.PairOfInt32 => MemberKind.Native,
+                KnownType.PairOfInt64 => MemberKind.Native,
+                KnownType.MemoryOctets => MemberKind.Binary,
+                _ => MemberKind.Unknown,
+            };
         }
 
         private static ParsedEntity GetParsedEntity(GeneratorAttributeSyntaxContext ctx)
@@ -247,11 +322,11 @@ namespace DTOMaker.SrcGen.Core
             return new ParsedEntity(generatedNamespace, fullname, entityId, baseFullName);
         }
 
-        private static int GetClassHeight(string? baseFullName, ImmutableArray<Phase1Entity> entities)
+        private static int GetClassHeight(string? baseFullName, ImmutableArray<ParsedEntity> entities)
         {
             if (baseFullName is null) return 0;
             var parentEntity = entities.FirstOrDefault(e => e.FullName == baseFullName);
-            if (parentEntity is null) return 0;
+            if (!parentEntity.IsValid) return 0;
             return 1 + GetClassHeight(parentEntity.BaseFullName, entities);
         }
 
@@ -300,38 +375,51 @@ namespace DTOMaker.SrcGen.Core
                     transform: static (ctx, _) => GetParsedMember(ctx))
                 .Where(static m => m.IsValid);
 
-            //var parsedMatrix = parsedEntities.Collect().Combine(parsedMembers.Collect());
+            var parsedMatrix = parsedEntities.Collect().Combine(parsedMembers.Collect());
 
             // resolve members
-            IncrementalValuesProvider<Phase1Entity> outputEntities1 = parsedEntities.Combine(parsedMembers.Collect())
+            IncrementalValuesProvider<Phase1Entity> outputEntities1 = parsedEntities.Combine(parsedMatrix)
                 .Select((pair, _) =>
                 {
                     var parsed = pair.Left;
+                    string prefix = parsed.FullName + ".";
                     var members = new List<OutputMember>();
-                    foreach (var member in pair.Right)
+                    foreach (ParsedMember member in pair.Right.Right)
                     {
-                        if (member.FullName.StartsWith(parsed.FullName, StringComparison.Ordinal))
+                        if (member.FullName.StartsWith(prefix, StringComparison.Ordinal))
                         {
-                            members.Add(new OutputMember(member.PropName, member.Sequence));
+                            members.Add(new OutputMember()
+                            {
+                                Name = member.PropName,
+                                Sequence = member.Sequence,
+                                MemberType = member.MemberType,
+                                Kind = member.Kind,
+                                IsNullable = member.IsNullable,
+                                IsObsolete = member.IsObsolete,
+                                ObsoleteMessage = member.ObsoleteMessage,
+                                ObsoleteIsError = member.ObsoleteIsError,
+                            });
                         }
                     }
+                    int classHeight = GetClassHeight(parsed.BaseFullName, pair.Right.Left);
                     return new Phase1Entity()
                     {
                         FullName = parsed.FullName,
                         NameSpace = parsed.NameSpace,
                         IntfName = parsed.IntfName,
                         EntityId = parsed.EntityId,
+                        ClassHeight = classHeight,
                         Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
                         BaseFullName = parsed.BaseFullName,
                     };
                 });
 
             // resolve derived entities and height
-            IncrementalValuesProvider<OutputEntity> outputEntities2 = outputEntities1.Combine(outputEntities1.Collect())
+            IncrementalValuesProvider<OutputEntity> outputEntities = outputEntities1.Combine(outputEntities1.Collect())
                 .Select((pair, _) =>
                 {
                     var entity = pair.Left;
-                    int classHeight = GetClassHeight(entity.BaseFullName, pair.Right);
+                    var baseEntity = pair.Right.FirstOrDefault(e => e.FullName == entity.BaseFullName);
                     List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.FullName, pair.Right);
                     return new OutputEntity()
                     {
@@ -339,9 +427,9 @@ namespace DTOMaker.SrcGen.Core
                         NameSpace = entity.NameSpace,
                         IntfName = entity.IntfName,
                         EntityId = entity.EntityId,
-                        ClassHeight = classHeight,
+                        ClassHeight = entity.ClassHeight,
                         Members = entity.Members,
-                        BaseFullName = entity.BaseFullName,
+                        BaseEntity = baseEntity,
                         DerivedEntities = new EquatableArray<Phase1Entity>(derivedEntities.OrderBy(e => e.FullName))
                     };
                 });
@@ -402,7 +490,7 @@ namespace DTOMaker.SrcGen.Core
             });
 
             // do derived stuff
-            OnEndInitialize(context, outputEntities2);
+            OnEndInitialize(context, outputEntities);
         }
     }
 

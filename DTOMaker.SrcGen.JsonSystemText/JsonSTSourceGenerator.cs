@@ -30,9 +30,9 @@ namespace DTOMaker.SrcGen.JsonSystemText
                 sb.AppendLine($"// Members  : {ent.Members.Count}");
                 foreach (var member in ent.Members)
                 {
-                    sb.AppendLine($"//       {member.Sequence,3}: {member.PropName}");
+                    sb.AppendLine($"//       {member.Sequence,3}: {member.Name} ({member.MemberType}{(member.IsNullable ? "?" : "")})");
                 }
-                sb.AppendLine($"// Base     : {ent.BaseFullName ?? "(null)"}");
+                sb.AppendLine($"// Base     : {ent.BaseEntity?.FullName ?? "(null)"}");
                 sb.AppendLine($"// Derived  : {ent.DerivedEntities.Count}");
                 foreach (var derived in ent.DerivedEntities)
                 {

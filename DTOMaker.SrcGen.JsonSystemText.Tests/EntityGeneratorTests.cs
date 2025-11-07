@@ -20,12 +20,14 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
                 [Entity][Id(1)]
                 public interface IMyDTO : IEntityBase
                 {
-                    [Member(1)] int Field1 { get; set; }
+                    [Member(1)] int  Field1 { get; set; }
+                    [Member(2)] int? Field2 { get; set; }
                 }
                 [Entity][Id(2)]
                 public interface IDerived : IMyDTO
                 {
-                    [Member(1)] string Field11 { get; set; }
+                    [Member(1)] string  Field11 { get; set; }
+                    [Member(2)] string? Field12 { get; set; }
                 }
             }
             """;
