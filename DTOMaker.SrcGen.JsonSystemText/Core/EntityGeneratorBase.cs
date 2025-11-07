@@ -160,11 +160,11 @@ namespace DTOMaker.SrcGen.Core
              */
             var tokens = new Dictionary<string, object?>()
             {
-                ["NameSpace"] = entity.NameSpace,
+                ["NameSpace"] = entity.Intf.Space,
                 ["AbstractEntity"] = entity.ImplName,
                 ["ConcreteEntity"] = entity.ImplName,
                 ["EntityImplName"] = entity.ImplName,
-                ["EntityIntfName"] = entity.IntfName,
+                ["EntityIntfName"] = entity.Intf.Name,
                 ["EntityId"] = entity.EntityId,
                 //["BaseName"] = entity.BaseFullName,
                 //["BaseNameSpace"] = entity.BaseFullName != null ? GetNameSpaceFromFullName(entity.BaseFullName) : TypeFullName.DefaultBase.NameSpace,

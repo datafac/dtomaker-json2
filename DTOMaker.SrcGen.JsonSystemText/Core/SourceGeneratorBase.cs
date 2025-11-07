@@ -325,7 +325,7 @@ namespace DTOMaker.SrcGen.Core
         private static int GetClassHeight(string? baseFullName, ImmutableArray<ParsedEntity> entities)
         {
             if (baseFullName is null) return 0;
-            var parentEntity = entities.FirstOrDefault(e => e.FullName == baseFullName);
+            var parentEntity = entities.FirstOrDefault(e => e.Intf.FullName == baseFullName);
             if (!parentEntity.IsValid) return 0;
             return 1 + GetClassHeight(parentEntity.BaseFullName, entities);
         }
@@ -340,7 +340,7 @@ namespace DTOMaker.SrcGen.Core
                     // found derived
                     derivedEntities.Add(entity);
                     // now recurse
-                    derivedEntities.AddRange(GetDerivedEntities(entity.FullName, allEntities));
+                    derivedEntities.AddRange(GetDerivedEntities(entity.Intf.FullName, allEntities));
                 }
             }
             return derivedEntities;
@@ -382,7 +382,7 @@ namespace DTOMaker.SrcGen.Core
                 .Select((pair, _) =>
                 {
                     var parsed = pair.Left;
-                    string prefix = parsed.FullName + ".";
+                    string prefix = parsed.Intf.FullName + ".";
                     var members = new List<OutputMember>();
                     foreach (ParsedMember member in pair.Right.Right)
                     {
@@ -404,9 +404,7 @@ namespace DTOMaker.SrcGen.Core
                     int classHeight = GetClassHeight(parsed.BaseFullName, pair.Right.Left);
                     return new Phase1Entity()
                     {
-                        FullName = parsed.FullName,
-                        NameSpace = parsed.NameSpace,
-                        IntfName = parsed.IntfName,
+                        Intf = parsed.Intf,
                         EntityId = parsed.EntityId,
                         ClassHeight = classHeight,
                         Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
@@ -419,18 +417,16 @@ namespace DTOMaker.SrcGen.Core
                 .Select((pair, _) =>
                 {
                     var entity = pair.Left;
-                    var baseEntity = pair.Right.FirstOrDefault(e => e.FullName == entity.BaseFullName);
-                    List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.FullName, pair.Right);
+                    var baseEntity = pair.Right.FirstOrDefault(e => e.Intf.FullName == entity.BaseFullName);
+                    List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.Intf.FullName, pair.Right);
                     return new OutputEntity()
                     {
-                        FullName = entity.FullName,
-                        NameSpace = entity.NameSpace,
-                        IntfName = entity.IntfName,
+                        Intf = entity.Intf,
                         EntityId = entity.EntityId,
                         ClassHeight = entity.ClassHeight,
                         Members = entity.Members,
                         BaseEntity = baseEntity,
-                        DerivedEntities = new EquatableArray<Phase1Entity>(derivedEntities.OrderBy(e => e.FullName))
+                        DerivedEntities = new EquatableArray<Phase1Entity>(derivedEntities.OrderBy(e => e.Intf.FullName))
                     };
                 });
 
