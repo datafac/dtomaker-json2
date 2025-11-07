@@ -256,7 +256,7 @@ namespace DTOMaker.SrcGen.Core
             }
 
             // Get the namespace the enum is declared in, if any
-            string generatedNamespace = GetNamespace(intfDeclarationSyntax);
+            //string generatedNamespace = GetNamespace(intfDeclarationSyntax);
             int entityId = 0;
 
             // Loop through all of the attributes on the interface
@@ -319,7 +319,7 @@ namespace DTOMaker.SrcGen.Core
 
             string? baseFullName = intfSymbol.Interfaces.FirstOrDefault()?.ToString();
 
-            return new ParsedEntity(generatedNamespace, fullname, entityId, baseFullName);
+            return new ParsedEntity(fullname, entityId, baseFullName);
         }
 
         private static int GetClassHeight(string? baseFullName, ImmutableArray<ParsedEntity> entities)
@@ -362,7 +362,7 @@ namespace DTOMaker.SrcGen.Core
             // add base entity
             parsedEntities = parsedEntities.Collect().Select((list1, _) =>
             {
-                var baseEntity = new ParsedEntity("DTOMaker.Runtime", "DTOMaker.Runtime.IEntityBase", 0, null);
+                var baseEntity = new ParsedEntity("DTOMaker.Runtime.IEntityBase", 0, null);
                 List<ParsedEntity> newList = [baseEntity];
                 return newList.Concat(list1).ToImmutableArray();
             }).SelectMany((list2, _) => list2.ToImmutableArray());

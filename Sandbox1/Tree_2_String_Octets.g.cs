@@ -17,7 +17,7 @@ namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
     [JsonDerivedType(typeof(MyTree))]
-    public partial class Tree_2_String_Octets : DTOMaker.Runtime.JsonSystemText.EntityBase, ITree<String, Octets>, IEquatable<Tree_2_String_Octets>
+    public partial class Tree_2_String_Octets : DTOMaker.Runtime.JsonSystemText.EntityBaseOld, ITree<String, Octets>, IEquatable<Tree_2_String_Octets>
     {
         // Derived entities: 1
         // - MyTree

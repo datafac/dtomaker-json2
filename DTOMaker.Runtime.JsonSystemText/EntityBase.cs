@@ -4,14 +4,14 @@ using System.Text.Json.Serialization;
 
 namespace DTOMaker.Runtime.JsonSystemText
 {
-    public abstract class EntityBase : IEntityBase, IEquatable<EntityBase>
+    public abstract class EntityBaseOld : IEntityBase, IEquatable<EntityBaseOld>
     {
         protected abstract int OnGetEntityId();
         public int GetEntityId() => OnGetEntityId();
 
-        public EntityBase() { }
-        public EntityBase(IEntityBase notUsed) { }
-        public EntityBase(EntityBase notUsed) { }
+        public EntityBaseOld() { }
+        public EntityBaseOld(IEntityBase notUsed) { }
+        public EntityBaseOld(EntityBaseOld notUsed) { }
         private volatile bool _frozen;
 
         [JsonIgnore]
@@ -36,9 +36,9 @@ namespace DTOMaker.Runtime.JsonSystemText
             return value;
         }
 
-        public bool Equals(EntityBase? other) => true;
-        public override bool Equals(object? obj) => obj is EntityBase;
-        public override int GetHashCode() => HashCode.Combine<Type>(typeof(EntityBase));
+        public bool Equals(EntityBaseOld? other) => true;
+        public override bool Equals(object? obj) => obj is EntityBaseOld;
+        public override int GetHashCode() => HashCode.Combine<Type>(typeof(EntityBaseOld));
 
         protected static bool BinaryValuesAreEqual(byte[]? left, byte[]? right)
         {

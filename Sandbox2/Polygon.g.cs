@@ -18,7 +18,7 @@ namespace MyOrg.Models.JsonSystemText
     [JsonPolymorphic]
     [JsonDerivedType(typeof(Quadrilateral), 5)]
     [JsonDerivedType(typeof(Rectangle), 7)]
-    public partial class Polygon : DTOMaker.Runtime.JsonSystemText.EntityBase, IPolygon, IEquatable<Polygon>
+    public partial class Polygon : DTOMaker.Runtime.JsonSystemText.EntityBaseOld, IPolygon, IEquatable<Polygon>
     {
         // Derived entities: 6
         // - Equilateral

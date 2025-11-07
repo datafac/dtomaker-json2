@@ -15,7 +15,7 @@ using MyOrg.Models.JsonSystemText;
 
 namespace MyOrg.Models.JsonSystemText
 {
-    public partial class MyDTO : DTOMaker.Runtime.JsonSystemText.EntityBase, IMyDTO, IEquatable<MyDTO>
+    public partial class MyDTO : DTOMaker.Runtime.JsonSystemText.EntityBaseOld, IMyDTO, IEquatable<MyDTO>
     {
         // Derived entities: 0
 

@@ -30,7 +30,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
         public void RuntimeVersionChecks()
         {
             Version coreVersion = typeof(DTOMaker.Runtime.IEntityBase).Assembly.GetName().Version ?? new Version(99, 99, 9999);
-            Version thisVersion = typeof(DTOMaker.Runtime.JsonSystemText.EntityBase).Assembly.GetName().Version ?? new Version(0, 0, 0);
+            Version thisVersion = typeof(DTOMaker.Runtime.JsonSystemText.EntityBaseOld).Assembly.GetName().Version ?? new Version(0, 0, 0);
 
             thisVersion.Major.ShouldBe(coreVersion.Major);
             thisVersion.Minor.ShouldBeGreaterThanOrEqualTo(coreVersion.Minor);
