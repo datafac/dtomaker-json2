@@ -161,9 +161,9 @@ namespace DTOMaker.SrcGen.Core
             var tokens = new Dictionary<string, object?>()
             {
                 ["NameSpace"] = entity.Intf.Space,
-                ["AbstractEntity"] = entity.ImplName,
-                ["ConcreteEntity"] = entity.ImplName,
-                ["EntityImplName"] = entity.ImplName,
+                ["AbstractEntity"] = entity.Impl.Name,
+                ["ConcreteEntity"] = entity.Impl.Name,
+                ["EntityImplName"] = entity.Impl.Name,
                 ["EntityIntfName"] = entity.Intf.Name,
                 ["EntityId"] = entity.EntityId,
                 //["BaseName"] = entity.BaseFullName,

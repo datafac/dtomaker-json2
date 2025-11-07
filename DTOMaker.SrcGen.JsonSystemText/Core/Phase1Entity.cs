@@ -3,10 +3,10 @@
     public record class Phase1Entity
     {
         public ParsedName Intf { get; init; } = new();
-        public string ImplName => Intf.Name.StartsWith("I") ? Intf.Name.Substring(1) : Intf.Name;
+        public ParsedName Impl { get; init; } = new();
         public int EntityId { get; init; }
         public int ClassHeight { get; init; }
         public EquatableArray<OutputMember> Members { get; init; } = EquatableArray<OutputMember>.Empty;
-        public string? BaseFullName { get; init; }
+        public ParsedName? Base { get; init; }
     }
 }

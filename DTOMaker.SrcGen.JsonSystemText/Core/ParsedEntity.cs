@@ -17,22 +17,38 @@ namespace DTOMaker.SrcGen.Core
             Space = lastDotPos < 0 ? string.Empty : fullname.AsSpan().Slice(0, lastDotPos).ToString();
             Name = lastDotPos < 0 ? fullname : fullname.AsSpan().Slice(lastDotPos + 1).ToString();
         }
+
+        public ParsedName(string space, string name)
+        {
+            Space = space;
+            Name = name;
+            FullName = space + "." + name;
+        }
     }
 
     public readonly record struct ParsedEntity
     {
         // todo convert to record class
         public readonly ParsedName Intf = new();
+        public readonly ParsedName Impl = new();
         public readonly int EntityId;
-        public readonly string? BaseFullName;
+        public readonly ParsedName? Base;
 
         public bool IsValid => !string.IsNullOrWhiteSpace(Intf.Space) && !string.IsNullOrWhiteSpace(Intf.Name) && Intf.Name.StartsWith("I", StringComparison.Ordinal);
 
-        public ParsedEntity(string fullname, int entityId, string? baseFullName)
+        public ParsedEntity(string intfFullName, int entityId, string? baseFullName)
         {
-            Intf = new ParsedName(fullname);
+            Intf = new ParsedName(intfFullName);
+            Impl = new ParsedName(Intf.Space, Intf.Name.StartsWith("I", StringComparison.Ordinal) ? Intf.Name.Substring(1) : Intf.Name);
             EntityId = entityId;
-            BaseFullName = baseFullName;
+            Base = baseFullName is null ? null : new ParsedName(baseFullName);
+        }
+        public ParsedEntity(string intfFullName, string implSpace, int entityId, string? baseFullName)
+        {
+            Intf = new ParsedName(intfFullName);
+            Impl = new ParsedName(implSpace, Intf.Name.StartsWith("I", StringComparison.Ordinal) ? Intf.Name.Substring(1) : Intf.Name);
+            EntityId = entityId;
+            Base = baseFullName is null ? null : new ParsedName(baseFullName);
         }
     }
 }

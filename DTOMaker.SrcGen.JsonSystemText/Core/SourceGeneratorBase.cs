@@ -327,7 +327,7 @@ namespace DTOMaker.SrcGen.Core
             if (baseFullName is null) return 0;
             var parentEntity = entities.FirstOrDefault(e => e.Intf.FullName == baseFullName);
             if (!parentEntity.IsValid) return 0;
-            return 1 + GetClassHeight(parentEntity.BaseFullName, entities);
+            return 1 + GetClassHeight(parentEntity.Base?.FullName, entities);
         }
 
         private static List<Phase1Entity> GetDerivedEntities(string parentEntity, ImmutableArray<Phase1Entity> allEntities)
@@ -335,7 +335,7 @@ namespace DTOMaker.SrcGen.Core
             var derivedEntities = new List<Phase1Entity>();
             foreach (var entity in allEntities)
             {
-                if (entity.BaseFullName == parentEntity)
+                if (entity.Base?.FullName == parentEntity)
                 {
                     // found derived
                     derivedEntities.Add(entity);
@@ -401,14 +401,14 @@ namespace DTOMaker.SrcGen.Core
                             });
                         }
                     }
-                    int classHeight = GetClassHeight(parsed.BaseFullName, pair.Right.Left);
+                    int classHeight = GetClassHeight(parsed.Base?.FullName, pair.Right.Left);
                     return new Phase1Entity()
                     {
                         Intf = parsed.Intf,
                         EntityId = parsed.EntityId,
                         ClassHeight = classHeight,
                         Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
-                        BaseFullName = parsed.BaseFullName,
+                        Base = parsed.Base,
                     };
                 });
 
@@ -417,11 +417,12 @@ namespace DTOMaker.SrcGen.Core
                 .Select((pair, _) =>
                 {
                     var entity = pair.Left;
-                    var baseEntity = pair.Right.FirstOrDefault(e => e.Intf.FullName == entity.BaseFullName);
+                    var baseEntity = pair.Right.FirstOrDefault(e => e.Intf.FullName == entity.Base?.FullName);
                     List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.Intf.FullName, pair.Right);
                     return new OutputEntity()
                     {
                         Intf = entity.Intf,
+                        Impl = entity.Impl,
                         EntityId = entity.EntityId,
                         ClassHeight = entity.ClassHeight,
                         Members = entity.Members,
