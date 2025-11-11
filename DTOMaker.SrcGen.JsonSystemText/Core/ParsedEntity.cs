@@ -24,6 +24,8 @@ namespace DTOMaker.SrcGen.Core
             Name = name;
             FullName = space + "." + name;
         }
+
+        public override string ToString() => FullName;
     }
 
     public readonly record struct ParsedEntity

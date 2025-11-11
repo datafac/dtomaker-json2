@@ -362,7 +362,10 @@ namespace DTOMaker.SrcGen.Core
             // add base entity
             parsedEntities = parsedEntities.Collect().Select((list1, _) =>
             {
-                var baseEntity = new ParsedEntity("DTOMaker.Runtime.IEntityBase", 0, null);
+                // add base entity into first namespace
+                if (list1.Length == 0) return list1;
+                string implSpace = list1.OrderBy(e => e.EntityId).First().Intf.Space;
+                var baseEntity = new ParsedEntity("DTOMaker.Runtime.IEntityBase", implSpace, 0, null);
                 List<ParsedEntity> newList = [baseEntity];
                 return newList.Concat(list1).ToImmutableArray();
             }).SelectMany((list2, _) => list2.ToImmutableArray());
@@ -405,6 +408,7 @@ namespace DTOMaker.SrcGen.Core
                     return new Phase1Entity()
                     {
                         Intf = parsed.Intf,
+                        Impl = parsed.Impl,
                         EntityId = parsed.EntityId,
                         ClassHeight = classHeight,
                         Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
