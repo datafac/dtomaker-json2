@@ -18,7 +18,7 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using T_NameSpace_.JsonSystemText;
+using T_ImplNameSpace_;
 
 //##if (false) {
 using T_MemberType_ = System.Int32;
@@ -106,15 +106,15 @@ namespace T_MemberTypeNameSpace_.JsonSystemText
         public static bool operator !=(T_MemberTypeImplName_? left, T_MemberTypeImplName_? right) => left is not null ? !left.Equals(right) : (right is not null);
     }
 }
-namespace T_BaseNameSpace_
+namespace T_BaseIntfNameSpace_
 {
     public interface IT_BaseName_ : IEntityBase { }
 }
-namespace T_BaseNameSpace_.JsonSystemText
+namespace T_BaseImplNameSpace_
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(T_NameSpace_.JsonSystemText.T_EntityImplName_), 1)]
-    public class T_BaseName_ : EntityBase, IT_BaseName_, IEquatable<T_BaseName_>
+    [JsonDerivedType(typeof(T_ImplNameSpace_.T_EntityImplName_), 1)]
+    public class T_BaseName_ : EntityBase, T_BaseIntfNameSpace_.IT_BaseName_, IEquatable<T_BaseName_>
     {
         protected override int OnGetEntityId() => 2;
 
@@ -128,7 +128,7 @@ namespace T_BaseNameSpace_.JsonSystemText
         public static new T_BaseName_ Empty => _empty;
 
         public T_BaseName_() { }
-        public T_BaseName_(IT_BaseName_ source) : base(source) { }
+        public T_BaseName_(T_BaseIntfNameSpace_.IT_BaseName_ source) : base(source) { }
         public T_BaseName_(T_BaseName_ source) : base(source) { }
 
         protected override void OnFreeze() => base.OnFreeze();
@@ -147,9 +147,9 @@ namespace T_BaseNameSpace_.JsonSystemText
         public override int GetHashCode() => base.GetHashCode();
     }
 }
-namespace T_NameSpace_
+namespace T_IntfNameSpace_
 {
-    public interface IT_EntityIntfName_ : T_BaseNameSpace_.IT_BaseName_
+    public interface IT_EntityIntfName_ : T_BaseIntfNameSpace_.IT_BaseName_
     {
         T_MemberType_? T_NullableScalarMemberName_ { get; set; }
         T_MemberType_ T_RequiredScalarMemberName_ { get; set; }
@@ -163,7 +163,7 @@ namespace T_NameSpace_
     }
 }
 //##}
-namespace T_NameSpace_.JsonSystemText
+namespace T_ImplNameSpace_
 {
     //##if (entity.DerivedEntities.Count > 0) {
     [JsonPolymorphic]
@@ -172,7 +172,7 @@ namespace T_NameSpace_.JsonSystemText
     [JsonDerivedType(typeof(T_EntityImplName_), T_EntityId_)]
     //##}
     //##}
-    public partial class T_EntityImplName_ : T_BaseNameSpace_.JsonSystemText.T_BaseName_, IT_EntityIntfName_, IEquatable<T_EntityImplName_>
+    public partial class T_EntityImplName_ : T_BaseImplNameSpace_.T_BaseName_, T_IntfNameSpace_.IT_EntityIntfName_, IEquatable<T_EntityImplName_>
     {
         // Derived entities: T_DerivedEntityCount_
         //##foreach (var derived in entity.DerivedEntities) {
@@ -204,22 +204,22 @@ namespace T_NameSpace_.JsonSystemText
             {
                 //##foreach(var derived in entity.DerivedEntities.OrderByDescending(e => e.ClassHeight)) {
                 //##using var _ = NewScope(derived);
-                T_NameSpace_.JsonSystemText.T_EntityImplName_ source2 => new T_NameSpace_.JsonSystemText.T_EntityImplName_(source2),
+                T_ImplNameSpace_.T_EntityImplName_ source2 => new T_ImplNameSpace_.T_EntityImplName_(source2),
                 //##}
-                _ => new T_NameSpace_.JsonSystemText.T_EntityImplName_(source)
+                _ => new T_ImplNameSpace_.T_EntityImplName_(source)
             };
         }
 
-        public new static T_EntityImplName_ CreateFrom(T_NameSpace_.IT_EntityIntfName_ source)
+        public new static T_EntityImplName_ CreateFrom(T_IntfNameSpace_.IT_EntityIntfName_ source)
         {
             if (source is T_EntityImplName_ concrete && concrete.IsFrozen) return concrete;
             return source switch
             {
                 //##foreach(var derived in entity.DerivedEntities.OrderByDescending(e => e.ClassHeight)) {
                 //##using var _ = NewScope(derived);
-                T_NameSpace_.IT_EntityIntfName_ source2 => new T_NameSpace_.JsonSystemText.T_EntityImplName_(source2),
+                T_IntfNameSpace_.IT_EntityIntfName_ source2 => new T_ImplNameSpace_.T_EntityImplName_(source2),
                 //##}
-                _ => new T_NameSpace_.JsonSystemText.T_EntityImplName_(source)
+                _ => new T_ImplNameSpace_.T_EntityImplName_(source)
             };
         }
 
@@ -254,7 +254,7 @@ namespace T_NameSpace_.JsonSystemText
         protected override IEntityBase OnPartCopy() => new T_EntityImplName_(this);
 
         public T_EntityImplName_() { }
-        public T_EntityImplName_(IT_EntityIntfName_ source) : base(source)
+        public T_EntityImplName_(T_IntfNameSpace_.IT_EntityIntfName_ source) : base(source)
         {
             //##foreach (var member in entity.Members) {
             //##using var _ = NewScope(member);
@@ -378,7 +378,7 @@ namespace T_NameSpace_.JsonSystemText
             get => _T_VectorMemberName_;
             set => _T_VectorMemberName_ = IfNotFrozen(value);
         }
-        ReadOnlyMemory<T_MemberType_> IT_EntityIntfName_.T_VectorMemberName_
+        ReadOnlyMemory<T_MemberType_> T_IntfNameSpace_.IT_EntityIntfName_.T_VectorMemberName_
         {
             get => IsFrozen ? _T_VectorMemberName_ : _T_VectorMemberName_.ToArray().AsMemory();
             set => _T_VectorMemberName_ = IfNotFrozen(value.ToArray());
@@ -393,7 +393,7 @@ namespace T_NameSpace_.JsonSystemText
             get => _T_NullableEntityMemberName_;
             set => _T_NullableEntityMemberName_ = IfNotFrozen(value);
         }
-        T_MemberTypeNameSpace_.IT_MemberTypeIntfName_? IT_EntityIntfName_.T_NullableEntityMemberName_
+        T_MemberTypeNameSpace_.IT_MemberTypeIntfName_? T_IntfNameSpace_.IT_EntityIntfName_.T_NullableEntityMemberName_
         {
             get => _T_NullableEntityMemberName_;
             set => _T_NullableEntityMemberName_ = IfNotFrozen(value is null ? null : T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_.CreateFrom(value));
@@ -406,7 +406,7 @@ namespace T_NameSpace_.JsonSystemText
             get => _T_RequiredEntityMemberName_;
             set => _T_RequiredEntityMemberName_ = IfNotFrozen(value);
         }
-        T_MemberTypeNameSpace_.IT_MemberTypeIntfName_ IT_EntityIntfName_.T_RequiredEntityMemberName_
+        T_MemberTypeNameSpace_.IT_MemberTypeIntfName_ T_IntfNameSpace_.IT_EntityIntfName_.T_RequiredEntityMemberName_
         {
             get => _T_RequiredEntityMemberName_;
             set => _T_RequiredEntityMemberName_ = IfNotFrozen(T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_.CreateFrom(value));
@@ -422,7 +422,7 @@ namespace T_NameSpace_.JsonSystemText
             get => _T_NullableBinaryMemberName_;
             set => _T_NullableBinaryMemberName_ = IfNotFrozen(value);
         }
-        Octets? IT_EntityIntfName_.T_NullableBinaryMemberName_
+        Octets? T_IntfNameSpace_.IT_EntityIntfName_.T_NullableBinaryMemberName_
         {
             get => _T_NullableBinaryMemberName_ is null ? null : _T_NullableBinaryMemberName_.Length == 0 ? Octets.Empty : new Octets(_T_NullableBinaryMemberName_);
             set => _T_NullableBinaryMemberName_ = IfNotFrozen(value is null ? null : value.ToByteArray());
@@ -435,7 +435,7 @@ namespace T_NameSpace_.JsonSystemText
             get => _T_RequiredBinaryMemberName_;
             set => _T_RequiredBinaryMemberName_ = IfNotFrozen(value);
         }
-        Octets IT_EntityIntfName_.T_RequiredBinaryMemberName_
+        Octets T_IntfNameSpace_.IT_EntityIntfName_.T_RequiredBinaryMemberName_
         {
             get => _T_RequiredBinaryMemberName_.Length == 0 ? Octets.Empty : new Octets(_T_RequiredBinaryMemberName_);
             set => _T_RequiredBinaryMemberName_ = IfNotFrozen(value.ToByteArray());

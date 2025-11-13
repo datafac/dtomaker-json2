@@ -174,8 +174,28 @@ namespace DTOMaker.SrcGen.Core
             return _tokenStack.NewScope(tokens);
         }
 
-        protected abstract void OnGenerate(ModelScopeEntity scope);
-        public string GenerateSourceText(ModelScopeEntity scope)
+        protected IDisposable NewScope(OutputEntity entity)
+        {
+            var tokens = new Dictionary<string, object?>()
+            {
+                ["IntfNameSpace"] = entity.Intf.Space,
+                ["ImplNameSpace"] = entity.Impl.Space,
+                ["AbstractEntity"] = entity.Impl.Name,
+                ["ConcreteEntity"] = entity.Impl.Name,
+                ["EntityImplName"] = entity.Impl.Name,
+                ["EntityIntfName"] = entity.Intf.Name,
+                ["EntityId"] = entity.EntityId,
+                ["ClassHeight"] = entity.ClassHeight,
+                ["BaseIntfNameSpace"] = entity.BaseEntity is null ? "DTOMaker.Runtime" : entity.BaseEntity.Intf.Space,
+                ["BaseIntfName"] = entity.BaseEntity is null ? "IEntityBase" : entity.BaseEntity.Intf.Name,
+                ["BaseImplNameSpace"] = entity.BaseEntity is null ? "System" : entity.BaseEntity.Impl.Space,
+                ["BaseImplName"] = entity.BaseEntity is null ? "Object" : entity.BaseEntity.Impl.Name,
+            };
+            return _tokenStack.NewScope(tokens);
+        }
+
+        protected abstract void OnGenerate(OutputEntity scope);
+        public string GenerateSourceText(OutputEntity scope)
         {
             using var _ = NewScope(scope);
             _builder.Clear();

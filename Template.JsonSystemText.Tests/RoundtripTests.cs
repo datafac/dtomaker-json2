@@ -2,7 +2,7 @@ using DTOMaker.Runtime.JsonSystemText;
 using Shouldly;
 using System;
 using System.Linq;
-using T_NameSpace_.JsonSystemText;
+using T_ImplNameSpace_;
 using Xunit;
 
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -55,8 +55,8 @@ namespace Template.JsonSystemText.Tests
             orig.T_NullableBinaryMemberName_ = smallBinary;
             orig.Freeze();
 
-            string buffer = orig.SerializeToJson<T_BaseNameSpace_.JsonSystemText.T_BaseName_>();
-            var recd = buffer.DeserializeFromJson<T_BaseNameSpace_.JsonSystemText.T_BaseName_>();
+            string buffer = orig.SerializeToJson<T_BaseImplNameSpace_.T_BaseName_>();
+            var recd = buffer.DeserializeFromJson<T_BaseImplNameSpace_.T_BaseName_>();
 
             recd.ShouldNotBeNull();
             recd.ShouldBeOfType<T_EntityImplName_>();
