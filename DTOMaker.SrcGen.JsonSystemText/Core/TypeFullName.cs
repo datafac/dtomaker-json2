@@ -3,7 +3,6 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
 
 namespace DTOMaker.SrcGen.Core
 {
@@ -17,49 +16,82 @@ namespace DTOMaker.SrcGen.Core
         private readonly int _syntheticId;
         private readonly MemberKind _memberKind;
 
-        private static readonly TypeFullName _defaultBase = new TypeFullName("DTOMaker.Runtime", "EntityBase",
+        private static readonly TypeFullName _defaultBase = 
+            new TypeFullName("DTOMaker.Runtime", "EntityBase", MemberKind.Entity,
             ImmutableArray<ITypeParameterSymbol>.Empty, ImmutableArray<ITypeSymbol>.Empty);
         public static TypeFullName DefaultBase => _defaultBase;
 
-        private static (int syntheticId, MemberKind kind) GetSyntheticId(string fullname)
+        private static int GetSyntheticId(string fullname)
         {
             return fullname switch
             {
-                KnownType.SystemBoolean => (9001, MemberKind.Native),
-                KnownType.SystemSByte => (9002, MemberKind.Native),
-                KnownType.SystemByte => (9003, MemberKind.Native),
-                KnownType.SystemInt16 => (9004, MemberKind.Native),
-                KnownType.SystemUInt16 => (9005, MemberKind.Native),
-                KnownType.SystemChar => (9006, MemberKind.Native),
-                KnownType.SystemHalf => (9007, MemberKind.Native),
-                KnownType.SystemInt32 => (9008, MemberKind.Native),
-                KnownType.SystemUInt32 => (9009, MemberKind.Native),
-                KnownType.SystemSingle => (9010, MemberKind.Native),
-                KnownType.SystemInt64 => (9011, MemberKind.Native),
-                KnownType.SystemUInt64 => (9012, MemberKind.Native),
-                KnownType.SystemDouble => (9013, MemberKind.Native),
-                KnownType.SystemInt128 => (9014, MemberKind.Native),
-                KnownType.SystemUInt128 => (9015, MemberKind.Native),
-                KnownType.SystemGuid => (9016, MemberKind.Native),
-                KnownType.SystemDecimal => (9017, MemberKind.Native),
-                KnownType.SystemString => (9018, MemberKind.String),
+                KnownType.SystemBoolean => 9001,
+                KnownType.SystemSByte => 9002,
+                KnownType.SystemByte => 9003,
+                KnownType.SystemInt16 => 9004,
+                KnownType.SystemUInt16 => 9005,
+                KnownType.SystemChar => 9006,
+                KnownType.SystemHalf => 9007,
+                KnownType.SystemInt32 => 9008,
+                KnownType.SystemUInt32 => 9009,
+                KnownType.SystemSingle => 9010,
+                KnownType.SystemInt64 => 9011,
+                KnownType.SystemUInt64 => 9012,
+                KnownType.SystemDouble => 9013,
+                KnownType.SystemInt128 => 9014,
+                KnownType.SystemUInt128 => 9015,
+                KnownType.SystemGuid => 9016,
+                KnownType.SystemDecimal => 9017,
+                KnownType.SystemString => 9018,
                 // custom types
-                KnownType.PairOfInt16 => (9096, MemberKind.Native),
-                KnownType.PairOfInt32 => (9097, MemberKind.Native),
-                KnownType.PairOfInt64 => (9098, MemberKind.Native),
-                KnownType.MemoryOctets => (9099, MemberKind.Binary),
-                _ => (0, MemberKind.Unknown),
+                KnownType.PairOfInt16 => 9096,
+                KnownType.PairOfInt32 => 9097,
+                KnownType.PairOfInt64 => 9098,
+                KnownType.MemoryOctets => 9099,
+                _ => 0,
             };
         }
 
-        private TypeFullName(string nameSpace, string name, ImmutableArray<ITypeParameterSymbol> typeParameters, ImmutableArray<ITypeSymbol> typeArguments)
+        private static MemberKind GetMemberKind(string fullname)
+        {
+            return fullname switch
+            {
+                KnownType.SystemBoolean => MemberKind.Native,
+                KnownType.SystemSByte => MemberKind.Native,
+                KnownType.SystemByte => MemberKind.Native,
+                KnownType.SystemInt16 => MemberKind.Native,
+                KnownType.SystemUInt16 => MemberKind.Native,
+                KnownType.SystemChar => MemberKind.Native,
+                KnownType.SystemHalf => MemberKind.Native,
+                KnownType.SystemInt32 => MemberKind.Native,
+                KnownType.SystemUInt32 => MemberKind.Native,
+                KnownType.SystemSingle => MemberKind.Native,
+                KnownType.SystemInt64 => MemberKind.Native,
+                KnownType.SystemUInt64 => MemberKind.Native,
+                KnownType.SystemDouble => MemberKind.Native,
+                KnownType.SystemInt128 => MemberKind.Native,
+                KnownType.SystemUInt128 => MemberKind.Native,
+                KnownType.SystemGuid => MemberKind.Native,
+                KnownType.SystemDecimal => MemberKind.Native,
+                KnownType.SystemString => MemberKind.String,
+                // custom types
+                KnownType.PairOfInt16 => MemberKind.Native,
+                KnownType.PairOfInt32 => MemberKind.Native,
+                KnownType.PairOfInt64 => MemberKind.Native,
+                KnownType.MemoryOctets => MemberKind.Binary,
+                _ => MemberKind.Unknown,
+            };
+        }
+
+        private TypeFullName(string nameSpace, string name, MemberKind kind, ImmutableArray<ITypeParameterSymbol> typeParameters, ImmutableArray<ITypeSymbol> typeArguments)
         {
             _nameSpace = nameSpace;
             _name = name;
             _typeParameters = typeParameters;
             _typeArguments = typeArguments;
             _fullName = nameSpace + "." + MakeCSImplName(name, typeParameters, typeArguments);
-            (_syntheticId, _memberKind) = GetSyntheticId(_fullName);
+            _syntheticId = GetSyntheticId(_fullName);
+            _memberKind = kind;
         }
 
         public TypeFullName(ITypeSymbol ids)
@@ -80,7 +112,8 @@ namespace DTOMaker.SrcGen.Core
             _nameSpace = nameSpace;
             _name = entityName;
             _fullName = _nameSpace + "." + MakeCSImplName(_name, _typeParameters, _typeArguments);
-            (_syntheticId, _memberKind) = GetSyntheticId(_fullName);
+            _syntheticId = GetSyntheticId(_fullName);
+            _memberKind = GetMemberKind(_fullName);
             if (_memberKind == MemberKind.Unknown && ids.TypeKind == TypeKind.Interface)
             {
                 _memberKind = MemberKind.Entity;
@@ -101,11 +134,11 @@ namespace DTOMaker.SrcGen.Core
         public ImmutableArray<ITypeSymbol> TypeArguments => _typeArguments;
         public TypeFullName AsOpenGeneric()
         {
-            return new TypeFullName(_nameSpace, _name, _typeParameters, ImmutableArray<ITypeSymbol>.Empty);
+            return new TypeFullName(_nameSpace, _name, _memberKind, _typeParameters, ImmutableArray<ITypeSymbol>.Empty);
         }
         public TypeFullName AsClosedGeneric(ImmutableArray<ITypeSymbol> typeArguments)
         {
-            return new TypeFullName(_nameSpace, _name, _typeParameters, typeArguments);
+            return new TypeFullName(_nameSpace, _name, _memberKind, _typeParameters, typeArguments);
         }
 
         public bool Equals(TypeFullName other) => string.Equals(_fullName, other._fullName, StringComparison.Ordinal);
