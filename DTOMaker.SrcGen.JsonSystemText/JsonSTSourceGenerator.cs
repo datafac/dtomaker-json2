@@ -38,7 +38,7 @@ namespace DTOMaker.SrcGen.JsonSystemText
                 sb.AppendLine($"// Members: {ent.Members.Count}");
                 foreach (var member in ent.Members)
                 {
-                    sb.AppendLine($"//       {member.Sequence,3}: {member.Name} ({member.MemberType}{(member.IsNullable ? "?" : "")})");
+                    sb.AppendLine($"//       {member.Sequence,3}: {member.Name} ({member.MemberType}{(member.IsNullable ? "?" : "")}) [{member.Kind}]");
                 }
                 string hintName = $"{ent.Impl.Space}.JsonSystemText.{ent.Impl.Name}.g.cs";
                 spc.AddSource(hintName, SourceText.From(sb.ToString(), Encoding.UTF8));

@@ -5,5 +5,5 @@
 // Base   : MyOrg.Models.MyDTO (MyOrg.Models.IMyDTO)
 // Derived: 0
 // Members: 2
-//         1: Field11 (System.String)
-//         2: Field12 (System.String?)
+//         1: Field11 (System.String) [String]
+//         2: Field12 (System.String?) [String]

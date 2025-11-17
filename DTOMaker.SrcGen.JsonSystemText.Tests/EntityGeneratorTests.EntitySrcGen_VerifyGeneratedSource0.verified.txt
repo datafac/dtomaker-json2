@@ -3,8 +3,9 @@
 // Name   : MyOrg.Models.EntityBase (DTOMaker.Runtime.IEntityBase)
 // Height : 0
 // Base   : (null)
-// Derived: 3
+// Derived: 4
 //        - MyOrg.Models.Derived (MyOrg.Models.IDerived)
 //        - MyOrg.Models.MyDTO (MyOrg.Models.IMyDTO)
-//        - MyOrg.Models.Other (MyOrg.Models.IOther)
+//        - MyOrg.Models.Other3 (MyOrg.Models.IOther3)
+//        - MyOrg.Models.Other4 (MyOrg.Models.IOther4)
 // Members: 0

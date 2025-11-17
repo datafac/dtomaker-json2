@@ -6,5 +6,5 @@
 // Derived: 1
 //        - MyOrg.Models.Derived (MyOrg.Models.IDerived)
 // Members: 2
-//         1: Field1 (System.Int32)
-//         2: Field2 (System.Int32?)
+//         1: Field1 (System.Int32) [Native]
+//         2: Field2 (System.Int32?) [Native]

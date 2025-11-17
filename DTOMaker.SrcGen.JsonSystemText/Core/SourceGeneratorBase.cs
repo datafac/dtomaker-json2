@@ -178,7 +178,7 @@ namespace DTOMaker.SrcGen.Core
 
         private static (TypeFullName tfn, MemberKind kind, bool isNullable) GetTypeInfo(ITypeSymbol typeSymbol)
         {
-            TypeFullName tfn = TypeFullName.Create(typeSymbol);
+            TypeFullName tfn = new TypeFullName(typeSymbol);
             MemberKind kind = tfn.MemberKind;
             bool isNullable = false;
             if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
@@ -188,7 +188,7 @@ namespace DTOMaker.SrcGen.Core
                     // nullable value type
                     isNullable = true;
                     ITypeSymbol typeArg0 = namedTypeSymbol.TypeArguments[0];
-                    tfn = TypeFullName.Create(typeArg0);
+                    tfn = new TypeFullName(typeArg0);
                     kind = tfn.MemberKind;
                 }
             }

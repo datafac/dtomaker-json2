@@ -107,7 +107,7 @@ namespace DTOMaker.SrcGen.Core
             if (parentSymbol.Interfaces.Length == 1)
             {
                 INamedTypeSymbol intf = parentSymbol.Interfaces[0];
-                TypeFullName bTFN = TypeFullName.Create(intf);
+                TypeFullName bTFN = new TypeFullName(intf);
                 if (bTFN.IsGeneric)
                 {
                     // recursively create open entities
@@ -139,7 +139,7 @@ namespace DTOMaker.SrcGen.Core
             {
                 Location ndsLocation = Location.Create(nds1.SyntaxTree, nds1.Span);
                 Location idsLocation = Location.Create(ids1.SyntaxTree, ids1.Span);
-                var eTFN = TypeFullName.Create(ids1Symbol);
+                var eTFN = new TypeFullName(ids1Symbol);
                 TargetEntity entity;
                 if (eTFN.IsClosed)
                     entity = Domain.ClosedEntities.GetOrAdd(eTFN.FullName, (n) => _factory.CreateEntity(Domain, eTFN, idsLocation));
@@ -192,7 +192,7 @@ namespace DTOMaker.SrcGen.Core
                 && pds.AttributeLists.Count > 0)
             {
                 Location pdsLocation = Location.Create(pds.SyntaxTree, pds.Span);
-                var eTFN = TypeFullName.Create(ids2Symbol);
+                var eTFN = new TypeFullName(ids2Symbol);
                 TargetEntity entity;
                 if ((eTFN.IsClosed && Domain.ClosedEntities.TryGetValue(eTFN.FullName, out entity)) ||
                     !eTFN.IsClosed && Domain.OpenEntities.TryGetValue(eTFN.FullName, out entity))
@@ -200,7 +200,7 @@ namespace DTOMaker.SrcGen.Core
                     var member = entity.Members.GetOrAdd(pds.Identifier.Text, (n) => _factory.CreateMember(entity, n, pdsLocation));
                     if (pdsSymbol.Type is INamedTypeSymbol pdsNamedType)
                     {
-                        var mTFN = TypeFullName.Create(pdsNamedType);
+                        var mTFN = new TypeFullName(pdsNamedType);
                         if (mTFN.IsGeneric)
                         {
                             TargetEntity mEntity;
@@ -232,14 +232,14 @@ namespace DTOMaker.SrcGen.Core
                         {
                             member.Kind = MemberKind.Vector;
                             ITypeSymbol typeArg0 = pdsNamedType.TypeArguments[0];
-                            member.MemberType = TypeFullName.Create(typeArg0);
+                            member.MemberType = new TypeFullName(typeArg0);
                         }
                         else if (pdsNamedType.IsGenericType && pdsNamedType.Name == "Nullable" && pdsNamedType.TypeArguments.Length == 1)
                         {
                             // nullable value type
                             member.MemberIsNullable = true;
                             ITypeSymbol typeArg0 = pdsNamedType.TypeArguments[0];
-                            member.MemberType = TypeFullName.Create(typeArg0);
+                            member.MemberType = new TypeFullName(typeArg0);
                             member.Kind = member.MemberType.MemberKind;
                         }
 
@@ -252,7 +252,7 @@ namespace DTOMaker.SrcGen.Core
                     else if (pdsSymbol.Type is ITypeSymbol pdsType)
                     {
                         // generic type parameter?
-                        var mTFN = TypeFullName.Create(pdsType);
+                        var mTFN = new TypeFullName(pdsType);
                         member.MemberType = mTFN;
                         if (pdsType.NullableAnnotation == NullableAnnotation.Annotated)
                         {

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace DTOMaker.SrcGen.Core
 {
@@ -19,34 +20,6 @@ namespace DTOMaker.SrcGen.Core
         private static readonly TypeFullName _defaultBase = new TypeFullName("DTOMaker.Runtime", "EntityBase",
             ImmutableArray<ITypeParameterSymbol>.Empty, ImmutableArray<ITypeSymbol>.Empty);
         public static TypeFullName DefaultBase => _defaultBase;
-
-        public static TypeFullName Create(ITypeSymbol ids)
-        {
-            string entityName;
-            if (ids.TypeKind == TypeKind.Interface)
-            {
-                entityName = ids.Name.Substring(1);
-            }
-            else
-            {
-                entityName = ids.Name;
-            }
-            return new TypeFullName(ids.ContainingNamespace.ToDisplayString(), entityName, ImmutableArray<ITypeParameterSymbol>.Empty, ImmutableArray<ITypeSymbol>.Empty);
-        }
-
-        public static TypeFullName Create(INamedTypeSymbol ids)
-        {
-            string nameSpace = ids.ContainingNamespace.ToDisplayString();
-            if (ids.TypeKind != TypeKind.Interface)
-            {
-                return new TypeFullName(nameSpace, ids.Name, ImmutableArray<ITypeParameterSymbol>.Empty, ImmutableArray<ITypeSymbol>.Empty);
-            }
-            else
-            {
-                string entityName = ids.Name.Substring(1);
-                return new TypeFullName(nameSpace, entityName, ids.TypeParameters, ids.TypeArguments);
-            }
-        }
 
         private static (int syntheticId, MemberKind kind) GetSyntheticId(string fullname)
         {
@@ -87,6 +60,31 @@ namespace DTOMaker.SrcGen.Core
             _typeArguments = typeArguments;
             _fullName = nameSpace + "." + MakeCSImplName(name, typeParameters, typeArguments);
             (_syntheticId, _memberKind) = GetSyntheticId(_fullName);
+        }
+
+        public TypeFullName(ITypeSymbol ids)
+        {
+            string nameSpace = ids.ContainingNamespace.ToDisplayString();
+            string entityName = ids.Name;
+            _typeParameters = ImmutableArray<ITypeParameterSymbol>.Empty;
+            _typeArguments = ImmutableArray<ITypeSymbol>.Empty;
+            if (ids.TypeKind == TypeKind.Interface)
+            {
+                entityName = ids.Name.Substring(1);
+                if (ids is INamedTypeSymbol nts)
+                {
+                    _typeParameters = nts.TypeParameters;
+                    _typeArguments = nts.TypeArguments;
+                }
+            }
+            _nameSpace = nameSpace;
+            _name = entityName;
+            _fullName = _nameSpace + "." + MakeCSImplName(_name, _typeParameters, _typeArguments);
+            (_syntheticId, _memberKind) = GetSyntheticId(_fullName);
+            if (_memberKind == MemberKind.Unknown && ids.TypeKind == TypeKind.Interface)
+            {
+                _memberKind = MemberKind.Entity;
+            }
         }
 
         public string NameSpace => _nameSpace;
@@ -137,7 +135,7 @@ namespace DTOMaker.SrcGen.Core
                 result.Append('_');
                 if (i < typeArguments.Length && typeArguments[i].Kind == SymbolKind.NamedType)
                 {
-                    var aTFN = TypeFullName.Create(typeArguments[i]);
+                    var aTFN = new TypeFullName(typeArguments[i]);
                     result.Append(aTFN.ShortImplName);
                 }
                 else
