@@ -12,22 +12,13 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using MyOrg.Models;
+using MyOrg.DomainA;
 
-namespace MyOrg.Models
+namespace MyOrg.DomainA
 {
-    [JsonPolymorphic]
-    [JsonDerivedType(typeof(Derived), 2)]
-    [JsonDerivedType(typeof(MyDTO), 1)]
-    [JsonDerivedType(typeof(Other3), 3)]
-    [JsonDerivedType(typeof(Other4), 4)]
     public partial class EntityBase : System.Object, DTOMaker.Runtime.IEntityBase, IEquatable<EntityBase>
     {
-        // Derived entities: 4
-        // - Derived
-        // - MyDTO
-        // - Other3
-        // - Other4
+        // Derived entities: 0
 
         protected override int OnGetEntityId() => 0;
 
@@ -45,11 +36,7 @@ namespace MyOrg.Models
             if (source.IsFrozen) return source;
             return source switch
             {
-                MyOrg.Models.Derived source2 => new MyOrg.Models.Derived(source2),
-                MyOrg.Models.MyDTO source2 => new MyOrg.Models.MyDTO(source2),
-                MyOrg.Models.Other3 source2 => new MyOrg.Models.Other3(source2),
-                MyOrg.Models.Other4 source2 => new MyOrg.Models.Other4(source2),
-                _ => new MyOrg.Models.EntityBase(source)
+                _ => new MyOrg.DomainA.EntityBase(source)
             };
         }
 
@@ -58,11 +45,7 @@ namespace MyOrg.Models
             if (source is EntityBase concrete && concrete.IsFrozen) return concrete;
             return source switch
             {
-                DTOMaker.Runtime.IDerived source2 => new MyOrg.Models.Derived(source2),
-                DTOMaker.Runtime.IMyDTO source2 => new MyOrg.Models.MyDTO(source2),
-                DTOMaker.Runtime.IOther3 source2 => new MyOrg.Models.Other3(source2),
-                DTOMaker.Runtime.IOther4 source2 => new MyOrg.Models.Other4(source2),
-                _ => new MyOrg.Models.EntityBase(source)
+                _ => new MyOrg.DomainA.EntityBase(source)
             };
         }
 

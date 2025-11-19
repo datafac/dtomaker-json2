@@ -11,7 +11,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
 {
     public class EntityMemberTests
     {
-        private readonly string inputSource1 =
+        private readonly string modelSource =
             """
             using DTOMaker.Models;
             namespace MyOrg.DomainA
@@ -38,54 +38,12 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             }
             """;
 
-        [Fact]
-        public void EntityMember00_GeneratedSourcesLengthShouldBe3()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(inputSource1, LanguageVersion.LatestMajor);
-            generatorResult.Exception.ShouldBeNull();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Info).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
-
-            // custom generation checks
-            generatorResult.GeneratedSources.Length.ShouldBe(3);
-            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.DomainA.MyDTO1.JsonSystemText.g.cs");
-            generatorResult.GeneratedSources[1].HintName.ShouldBe("MyOrg.DomainB.MyDTO1.JsonSystemText.g.cs");
-            generatorResult.GeneratedSources[2].HintName.ShouldBe("MyOrg.DomainC.MyDTO2.JsonSystemText.g.cs");
-        }
-
-        [Fact]
-        public async Task EntityMember01_VerifyGeneratedSourceA()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(inputSource1, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[0];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task EntityMember02_VerifyGeneratedSourceB()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(inputSource1, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[1];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task EntityMember03_VerifyGeneratedSourceC()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(inputSource1, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[2];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
+        [Fact] public void EntityMember_GeneratedSourcesLength() => modelSource.GenerateAndCheckLength(4);
+        //
+        [Fact] public async Task EntityMember_VerifyGeneratedSource0() => await Verifier.Verify(modelSource.GenerateAndGetOutput(0, "MyOrg.DomainA.JsonSystemText.EntityBase.g.cs"));
+        [Fact] public async Task EntityMember_VerifyGeneratedSource1() => await Verifier.Verify(modelSource.GenerateAndGetOutput(1, "MyOrg.DomainA.JsonSystemText.MyDTO1.g.cs"));
+        [Fact] public async Task EntityMember_VerifyGeneratedSource2() => await Verifier.Verify(modelSource.GenerateAndGetOutput(2, "MyOrg.DomainB.JsonSystemText.MyDTO1.g.cs"));
+        [Fact] public async Task EntityMember_VerifyGeneratedSource3() => await Verifier.Verify(modelSource.GenerateAndGetOutput(3, "MyOrg.DomainC.JsonSystemText.MyDTO2.g.cs"));
 
     }
 }

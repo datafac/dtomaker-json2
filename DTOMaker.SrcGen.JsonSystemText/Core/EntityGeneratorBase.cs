@@ -190,6 +190,7 @@ namespace DTOMaker.SrcGen.Core
                 ["BaseIntfName"] = entity.BaseEntity is null ? "IEntityBase" : entity.BaseEntity.Intf.Name,
                 ["BaseImplNameSpace"] = entity.BaseEntity is null ? "System" : entity.BaseEntity.Impl.Space,
                 ["BaseImplName"] = entity.BaseEntity is null ? "Object" : entity.BaseEntity.Impl.Name,
+                ["DerivedEntityCount"] = entity.DerivedEntities.Count,
             };
             return _tokenStack.NewScope(tokens);
         }
