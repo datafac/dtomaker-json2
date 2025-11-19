@@ -25,6 +25,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
         Emit("using DTOMaker.Runtime.JsonSystemText;");
         Emit("using System;");
         Emit("using System.Linq;");
+        Emit("using System.Runtime.CompilerServices;");
         Emit("using System.Text.Json.Serialization;");
         Emit("using T_ImplNameSpace_;");
         Emit("");
@@ -34,6 +35,53 @@ public sealed class EntityGenerator : EntityGeneratorBase
             Emit("namespace T_MemberTypeNameSpace_");
             Emit("{");
             Emit("    public interface IT_MemberTypeIntfName_ { }");
+            Emit("}");
+            Emit("namespace DTOMaker.Runtime.JsonSystemText");
+            Emit("{");
+            Emit("    public abstract class EntityBase : IEntityBase, IEquatable<EntityBase>");
+            Emit("    {");
+            Emit("        protected abstract int OnGetEntityId();");
+            Emit("        public int GetEntityId() => OnGetEntityId();");
+            Emit("");
+            Emit("        public EntityBase() { }");
+            Emit("        public EntityBase(IEntityBase notUsed) { }");
+            Emit("        public EntityBase(EntityBase notUsed) { }");
+            Emit("        private volatile bool _frozen;");
+            Emit("");
+            Emit("        [JsonIgnore]");
+            Emit("        public bool IsFrozen => _frozen;");
+            Emit("        protected virtual void OnFreeze() { }");
+            Emit("        public void Freeze()");
+            Emit("        {");
+            Emit("            if (_frozen) return;");
+            Emit("            OnFreeze();");
+            Emit("            _frozen = true;");
+            Emit("        }");
+            Emit("        protected abstract IEntityBase OnPartCopy();");
+            Emit("        public IEntityBase PartCopy() => OnPartCopy();");
+            Emit("");
+            Emit("        [MethodImpl(MethodImplOptions.NoInlining)]");
+            Emit("        private void ThrowIsFrozenException(string? methodName) => throw new InvalidOperationException($\"Cannot set {methodName} when frozen.\");");
+            Emit("");
+            Emit("        [MethodImpl(MethodImplOptions.AggressiveInlining)]");
+            Emit("        protected T IfNotFrozen<T>(T value, [CallerMemberName] string? methodName = null)");
+            Emit("        {");
+            Emit("            if (_frozen) ThrowIsFrozenException(methodName);");
+            Emit("            return value;");
+            Emit("        }");
+            Emit("");
+            Emit("        public bool Equals(EntityBase? other) => true;");
+            Emit("        public override bool Equals(object? obj) => obj is EntityBase;");
+            Emit("        public override int GetHashCode() => HashCode.Combine<Type>(typeof(EntityBase));");
+            Emit("");
+            Emit("        protected static bool BinaryValuesAreEqual(byte[]? left, byte[]? right)");
+            Emit("        {");
+            Emit("            if (left is null) return (right is null);");
+            Emit("            if (right is null) return false;");
+            Emit("            return left.AsSpan().SequenceEqual(right.AsSpan());");
+            Emit("        }");
+            Emit("");
+            Emit("    }");
             Emit("}");
             Emit("namespace T_MemberTypeNameSpace_.JsonSystemText");
             Emit("{");
@@ -68,7 +116,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
             Emit("        public static bool operator !=(T_MemberTypeImplName_? left, T_MemberTypeImplName_? right) => left is not null ? !left.Equals(right) : (right is not null);");
             Emit("    }");
             Emit("}");
-            Emit("namespace T_BaseNameSpace_");
+            Emit("namespace T_BaseIntfNameSpace_");
             Emit("{");
             Emit("    public interface IT_BaseName_ : IEntityBase { }");
             Emit("}");
@@ -76,7 +124,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
             Emit("{");
             Emit("    [JsonPolymorphic]");
             Emit("    [JsonDerivedType(typeof(T_ImplNameSpace_.T_EntityImplName_), 1)]");
-            Emit("    public class T_BaseName_ : EntityBase, IT_BaseName_, IEquatable<T_BaseName_>");
+            Emit("    public class T_BaseName_ : EntityBase, T_BaseIntfNameSpace_.IT_BaseName_, IEquatable<T_BaseName_>");
             Emit("    {");
             Emit("        protected override int OnGetEntityId() => 2;");
             Emit("");
@@ -90,7 +138,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
             Emit("        public static new T_BaseName_ Empty => _empty;");
             Emit("");
             Emit("        public T_BaseName_() { }");
-            Emit("        public T_BaseName_(IT_BaseName_ source) : base(source) { }");
+            Emit("        public T_BaseName_(T_BaseIntfNameSpace_.IT_BaseName_ source) : base(source) { }");
             Emit("        public T_BaseName_(T_BaseName_ source) : base(source) { }");
             Emit("");
             Emit("        protected override void OnFreeze() => base.OnFreeze();");
@@ -109,9 +157,9 @@ public sealed class EntityGenerator : EntityGeneratorBase
             Emit("        public override int GetHashCode() => base.GetHashCode();");
             Emit("    }");
             Emit("}");
-            Emit("namespace T_NameSpace_");
+            Emit("namespace T_IntfNameSpace_");
             Emit("{");
-            Emit("    public interface IT_EntityIntfName_ : T_BaseNameSpace_.IT_BaseName_");
+            Emit("    public interface IT_EntityIntfName_ : T_BaseIntfNameSpace_.IT_BaseName_");
             Emit("    {");
             Emit("        T_MemberType_? T_NullableScalarMemberName_ { get; set; }");
             Emit("        T_MemberType_ T_RequiredScalarMemberName_ { get; set; }");
@@ -136,7 +184,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
                 Emit("    [JsonDerivedType(typeof(T_EntityImplName_), T_EntityId_)]");
             }
         }
-        Emit("    public partial class T_EntityImplName_ : T_BaseImplNameSpace_.T_BaseName_, IT_EntityIntfName_, IEquatable<T_EntityImplName_>");
+        Emit("    public partial class T_EntityImplName_ : T_BaseImplNameSpace_.T_BaseName_, T_IntfNameSpace_.IT_EntityIntfName_, IEquatable<T_EntityImplName_>");
         Emit("    {");
         Emit("        // Derived entities: T_DerivedEntityCount_");
         foreach (var derived in entity.DerivedEntities)
@@ -177,7 +225,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
         Emit("            };");
         Emit("        }");
         Emit("");
-        Emit("        public new static T_EntityImplName_ CreateFrom(T_NameSpace_.IT_EntityIntfName_ source)");
+        Emit("        public new static T_EntityImplName_ CreateFrom(T_IntfNameSpace_.IT_EntityIntfName_ source)");
         Emit("        {");
         Emit("            if (source is T_EntityImplName_ concrete && concrete.IsFrozen) return concrete;");
         Emit("            return source switch");
@@ -185,7 +233,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
         foreach (var derived in entity.DerivedEntities.OrderByDescending(e => e.ClassHeight))
         {
             using var _ = NewScope(derived);
-            Emit("                T_NameSpace_.IT_EntityIntfName_ source2 => new T_ImplNameSpace_.T_EntityImplName_(source2),");
+            Emit("                T_IntfNameSpace_.IT_EntityIntfName_ source2 => new T_ImplNameSpace_.T_EntityImplName_(source2),");
         }
         Emit("                _ => new T_ImplNameSpace_.T_EntityImplName_(source)");
         Emit("            };");
@@ -227,7 +275,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
         Emit("        protected override IEntityBase OnPartCopy() => new T_EntityImplName_(this);");
         Emit("");
         Emit("        public T_EntityImplName_() { }");
-        Emit("        public T_EntityImplName_(IT_EntityIntfName_ source) : base(source)");
+        Emit("        public T_EntityImplName_(T_IntfNameSpace_.IT_EntityIntfName_ source) : base(source)");
         Emit("        {");
         foreach (var member in entity.Members)
         {
@@ -389,7 +437,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
                     Emit("            get => _T_VectorMemberName_;");
                     Emit("            set => _T_VectorMemberName_ = IfNotFrozen(value);");
                     Emit("        }");
-                    Emit("        ReadOnlyMemory<T_MemberType_> IT_EntityIntfName_.T_VectorMemberName_");
+                    Emit("        ReadOnlyMemory<T_MemberType_> T_IntfNameSpace_.IT_EntityIntfName_.T_VectorMemberName_");
                     Emit("        {");
                     Emit("            get => IsFrozen ? _T_VectorMemberName_ : _T_VectorMemberName_.ToArray().AsMemory();");
                     Emit("            set => _T_VectorMemberName_ = IfNotFrozen(value.ToArray());");
@@ -405,7 +453,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
                         Emit("            get => _T_NullableEntityMemberName_;");
                         Emit("            set => _T_NullableEntityMemberName_ = IfNotFrozen(value);");
                         Emit("        }");
-                        Emit("        T_MemberTypeNameSpace_.IT_MemberTypeIntfName_? IT_EntityIntfName_.T_NullableEntityMemberName_");
+                        Emit("        T_MemberTypeNameSpace_.IT_MemberTypeIntfName_? T_IntfNameSpace_.IT_EntityIntfName_.T_NullableEntityMemberName_");
                         Emit("        {");
                         Emit("            get => _T_NullableEntityMemberName_;");
                         Emit("            set => _T_NullableEntityMemberName_ = IfNotFrozen(value is null ? null : T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_.CreateFrom(value));");
@@ -420,7 +468,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
                         Emit("            get => _T_RequiredEntityMemberName_;");
                         Emit("            set => _T_RequiredEntityMemberName_ = IfNotFrozen(value);");
                         Emit("        }");
-                        Emit("        T_MemberTypeNameSpace_.IT_MemberTypeIntfName_ IT_EntityIntfName_.T_RequiredEntityMemberName_");
+                        Emit("        T_MemberTypeNameSpace_.IT_MemberTypeIntfName_ T_IntfNameSpace_.IT_EntityIntfName_.T_RequiredEntityMemberName_");
                         Emit("        {");
                         Emit("            get => _T_RequiredEntityMemberName_;");
                         Emit("            set => _T_RequiredEntityMemberName_ = IfNotFrozen(T_MemberTypeNameSpace_.JsonSystemText.T_MemberTypeImplName_.CreateFrom(value));");
@@ -437,7 +485,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
                         Emit("            get => _T_NullableBinaryMemberName_;");
                         Emit("            set => _T_NullableBinaryMemberName_ = IfNotFrozen(value);");
                         Emit("        }");
-                        Emit("        Octets? IT_EntityIntfName_.T_NullableBinaryMemberName_");
+                        Emit("        Octets? T_IntfNameSpace_.IT_EntityIntfName_.T_NullableBinaryMemberName_");
                         Emit("        {");
                         Emit("            get => _T_NullableBinaryMemberName_ is null ? null : _T_NullableBinaryMemberName_.Length == 0 ? Octets.Empty : new Octets(_T_NullableBinaryMemberName_);");
                         Emit("            set => _T_NullableBinaryMemberName_ = IfNotFrozen(value is null ? null : value.ToByteArray());");
@@ -452,7 +500,7 @@ public sealed class EntityGenerator : EntityGeneratorBase
                         Emit("            get => _T_RequiredBinaryMemberName_;");
                         Emit("            set => _T_RequiredBinaryMemberName_ = IfNotFrozen(value);");
                         Emit("        }");
-                        Emit("        Octets IT_EntityIntfName_.T_RequiredBinaryMemberName_");
+                        Emit("        Octets T_IntfNameSpace_.IT_EntityIntfName_.T_RequiredBinaryMemberName_");
                         Emit("        {");
                         Emit("            get => _T_RequiredBinaryMemberName_.Length == 0 ? Octets.Empty : new Octets(_T_RequiredBinaryMemberName_);");
                         Emit("            set => _T_RequiredBinaryMemberName_ = IfNotFrozen(value.ToByteArray());");
