@@ -11,101 +11,26 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
 {
     public class DeprecationTests
     {
-        [Fact]
-        public async Task ObsoleteMember01()
-        {
-            var inputSource =
-                """
+        private static readonly string modelSource =
+            """
                 using System;
                 using DTOMaker.Models;
+                using DTOMaker.Runtime;
                 namespace MyOrg.Models
                 {
-                    [Entity][Id(1)]
-                    public interface IMyDTO
+                    [Entity] [Id(1)]
+                    public interface IMyDTO : IEntityBase
                     {
-                        [Obsolete]
-                        [Member(1)] 
-                        double Field1 { get; set; }
+                        [Obsolete]                  [Member(1)] double Field1 { get; set; }
+                        [Obsolete("Removed")]       [Member(2)] double Field2 { get; set; }
+                        [Obsolete("Removed", true)] [Member(3)] double Field3 { get; set; }
                     }
                 }
                 """;
 
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(inputSource, LanguageVersion.LatestMajor);
-            generatorResult.Exception.ShouldBeNull();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Info).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
-            generatorResult.GeneratedSources.Length.ShouldBe(1);
-            GeneratedSourceResult entitySource = generatorResult.GeneratedSources[0];
-
-            // custom generation checks
-            string outputCode = string.Join(Environment.NewLine, entitySource.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task ObsoleteMember02()
-        {
-            var inputSource =
-                """
-                using System;
-                using DTOMaker.Models;
-                namespace MyOrg.Models
-                {
-                    [Entity][Id(1)]
-                    public interface IMyDTO
-                    {
-                        [Obsolete("Removed")]
-                        [Member(1)] 
-                        double Field1 { get; set; }
-                    }
-                }
-                """;
-
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(inputSource, LanguageVersion.LatestMajor);
-            generatorResult.Exception.ShouldBeNull();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Info).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
-            generatorResult.GeneratedSources.Length.ShouldBe(1);
-            GeneratedSourceResult entitySource = generatorResult.GeneratedSources[0];
-
-            // custom generation checks
-            string outputCode = string.Join(Environment.NewLine, entitySource.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task ObsoleteMember03()
-        {
-            var inputSource =
-                """
-                using System;
-                using DTOMaker.Models;
-                namespace MyOrg.Models
-                {
-                    [Entity][Id(1)]
-                    public interface IMyDTO
-                    {
-                        [Obsolete("Removed", true)]
-                        [Member(1)] 
-                        double Field1 { get; set; }
-                    }
-                }
-                """;
-
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(inputSource, LanguageVersion.LatestMajor);
-            generatorResult.Exception.ShouldBeNull();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Info).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
-            generatorResult.GeneratedSources.Length.ShouldBe(1);
-            GeneratedSourceResult entitySource = generatorResult.GeneratedSources[0];
-
-            // custom generation checks
-            string outputCode = string.Join(Environment.NewLine, entitySource.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
+        [Fact] public void Obsolete_GeneratedSourcesLength() => modelSource.GenerateAndCheckLength(2);
+        [Fact] public async Task Obsolete_VerifyGeneratedSource0() => await Verifier.Verify(modelSource.GenerateAndGetOutput(0, "MyOrg.Models.JsonSystemText.EntityBase.g.cs"));
+        [Fact] public async Task Obsolete_VerifyGeneratedSource1() => await Verifier.Verify(modelSource.GenerateAndGetOutput(1, "MyOrg.Models.JsonSystemText.MyDTO.g.cs"));
 
     }
 }
