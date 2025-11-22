@@ -12,46 +12,45 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using MyOrg.Models;
+using MyOrg.Model2;
 
-namespace MyOrg.Models
+namespace MyOrg.Model2
 {
-    public partial class Other3 : MyOrg.Models.EntityBase, MyOrg.Models.IOther3, IEquatable<Other3>
+    public partial class MyDTO : MyOrg.Models.EntityBase, MyOrg.Model2.IMyDTO, IEquatable<MyDTO>
     {
-        // Derived entities: 0
 
         protected override int OnGetEntityId() => 3;
 
-        private static Other3 CreateEmpty()
+        private static MyDTO CreateEmpty()
         {
-            var empty = new Other3();
+            var empty = new MyDTO();
             empty.Freeze();
             return empty;
         }
-        private static readonly Other3 _empty = CreateEmpty();
-        public static new Other3 Empty => _empty;
+        private static readonly MyDTO _empty = CreateEmpty();
+        public static new MyDTO Empty => _empty;
 
-        public new static Other3 CreateFrom(Other3 source)
+        public new static MyDTO CreateFrom(MyDTO source)
         {
             if (source.IsFrozen) return source;
             return source switch
             {
-                _ => new MyOrg.Models.Other3(source)
+                _ => new MyOrg.Model2.MyDTO(source)
             };
         }
 
-        public new static Other3 CreateFrom(MyOrg.Models.IOther3 source)
+        public new static MyDTO CreateFrom(MyOrg.Model2.IMyDTO source)
         {
-            if (source is Other3 concrete && concrete.IsFrozen) return concrete;
+            if (source is MyDTO concrete && concrete.IsFrozen) return concrete;
             return source switch
             {
-                _ => new MyOrg.Models.Other3(source)
+                _ => new MyOrg.Model2.MyDTO(source)
             };
         }
 
-        public new static Other3 CreateNewFromId(int entityId)
+        public new static MyDTO CreateNewFromId(int entityId)
         {
-            if (entityId == 3) return new Other3();
+            if (entityId == 3) return new MyDTO();
             return entityId switch
             {
                 _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
@@ -65,48 +64,48 @@ namespace MyOrg.Models
             _Field32?.Freeze();
         }
 
-        protected override IEntityBase OnPartCopy() => new Other3(this);
+        protected override IEntityBase OnPartCopy() => new MyDTO(this);
 
-        public Other3() { }
-        public Other3(MyOrg.Models.IOther3 source) : base(source)
+        public MyDTO() { }
+        public MyDTO(MyOrg.Model2.IMyDTO source) : base(source)
         {
-            _Field31 = MyOrg.Models.JsonSystemText.MyDTO.CreateFrom(source.Field31);
-            _Field32 = source.Field32 is null ? null : MyOrg.Models.JsonSystemText.MyDTO.CreateFrom(source.Field32);
+            _Field31 = MyOrg.Model2.JsonSystemText.MyDTO.CreateFrom(source.Field31);
+            _Field32 = source.Field32 is null ? null : MyOrg.Model2.JsonSystemText.MyDTO.CreateFrom(source.Field32);
         }
-        public Other3(Other3 source) : base(source)
+        public MyDTO(MyDTO source) : base(source)
         {
             _Field31 = source._Field31;
             _Field32 = source._Field32;
         }
 
         [JsonIgnore]
-        private MyOrg.Models.JsonSystemText.MyDTO _Field31 = MyOrg.Models.JsonSystemText.MyDTO.Empty;
-        public MyOrg.Models.JsonSystemText.MyDTO Field31
+        private MyOrg.Model2.JsonSystemText.MyDTO _Field31 = MyOrg.Model2.JsonSystemText.MyDTO.Empty;
+        public MyOrg.Model2.JsonSystemText.MyDTO Field31
         {
             get => _Field31;
             set => _Field31 = IfNotFrozen(value);
         }
-        MyOrg.Models.MyDTO MyOrg.Models.IOther3.Field31
+        MyOrg.Model2.MyDTO MyOrg.Model2.IMyDTO.Field31
         {
             get => _Field31;
-            set => _Field31 = IfNotFrozen(MyOrg.Models.JsonSystemText.MyDTO.CreateFrom(value));
+            set => _Field31 = IfNotFrozen(MyOrg.Model2.JsonSystemText.MyDTO.CreateFrom(value));
         }
 
         [JsonIgnore]
-        private MyOrg.Models.JsonSystemText.MyDTO? _Field32;
-        public MyOrg.Models.JsonSystemText.MyDTO? Field32
+        private MyOrg.Model2.JsonSystemText.MyDTO? _Field32;
+        public MyOrg.Model2.JsonSystemText.MyDTO? Field32
         {
             get => _Field32;
             set => _Field32 = IfNotFrozen(value);
         }
-        MyOrg.Models.MyDTO? MyOrg.Models.IOther3.Field32
+        MyOrg.Model2.MyDTO? MyOrg.Model2.IMyDTO.Field32
         {
             get => _Field32;
-            set => _Field32 = IfNotFrozen(value is null ? null : MyOrg.Models.JsonSystemText.MyDTO.CreateFrom(value));
+            set => _Field32 = IfNotFrozen(value is null ? null : MyOrg.Model2.JsonSystemText.MyDTO.CreateFrom(value));
         }
 
 
-        public bool Equals(Other3? other)
+        public bool Equals(MyDTO? other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other is null) return false;
@@ -116,9 +115,9 @@ namespace MyOrg.Models
             return true;
         }
 
-        public override bool Equals(object? obj) => obj is Other3 other && Equals(other);
-        public static bool operator ==(Other3? left, Other3? right) => left is not null ? left.Equals(right) : (right is null);
-        public static bool operator !=(Other3? left, Other3? right) => left is not null ? !left.Equals(right) : (right is not null);
+        public override bool Equals(object? obj) => obj is MyDTO other && Equals(other);
+        public static bool operator ==(MyDTO? left, MyDTO? right) => left is not null ? left.Equals(right) : (right is null);
+        public static bool operator !=(MyDTO? left, MyDTO? right) => left is not null ? !left.Equals(right) : (right is not null);
 
         private int CalcHashCode()
         {

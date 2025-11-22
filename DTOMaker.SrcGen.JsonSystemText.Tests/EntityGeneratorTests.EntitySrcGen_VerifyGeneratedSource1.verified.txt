@@ -17,11 +17,9 @@ using MyOrg.Models;
 namespace MyOrg.Models
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(Derived), 2)]
+    [JsonDerivedType(typeof(MyOrg.Models.Derived), 2)]
     public partial class MyDTO : MyOrg.Models.EntityBase, MyOrg.Models.IMyDTO, IEquatable<MyDTO>
     {
-        // Derived entities: 1
-        // - Derived
 
         protected override int OnGetEntityId() => 1;
 

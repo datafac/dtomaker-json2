@@ -18,7 +18,6 @@ namespace MyOrg.Models
 {
     public partial class Derived : MyOrg.Models.MyDTO, MyOrg.Models.IDerived, IEquatable<Derived>
     {
-        // Derived entities: 0
 
         protected override int OnGetEntityId() => 2;
 

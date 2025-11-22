@@ -132,16 +132,11 @@ namespace T_ImplNameSpace_
     [JsonPolymorphic]
     //##foreach (var derived in entity.DerivedEntities) {
     //##using var _ = NewScope(derived);
-    [JsonDerivedType(typeof(T_EntityImplName_), T_EntityId_)]
+    [JsonDerivedType(typeof(T_ImplNameSpace_.T_EntityImplName_), T_EntityId_)]
     //##}
     //##}
     public class EntityBase : IEntityBase, IEquatable<EntityBase>
     {
-        // Derived entities: T_DerivedEntityCount_
-        //##foreach (var derived in entity.DerivedEntities) {
-        //##using var _ = NewScope(derived);
-        // - T_EntityImplName_
-        //##}
         //##if (false) {
         private const int T_EntityId_ = 999;
         //##}
@@ -239,16 +234,11 @@ namespace T_ImplNameSpace_
     [JsonPolymorphic]
     //##foreach (var derived in entity.DerivedEntities) {
     //##using var _ = NewScope(derived);
-    [JsonDerivedType(typeof(T_EntityImplName_), T_EntityId_)]
+    [JsonDerivedType(typeof(T_ImplNameSpace_.T_EntityImplName_), T_EntityId_)]
     //##}
     //##}
     public partial class T_EntityImplName_ : T_BaseImplNameSpace_.T_BaseImplName_, T_IntfNameSpace_.T_EntityIntfName_, IEquatable<T_EntityImplName_>
     {
-        // Derived entities: T_DerivedEntityCount_
-        //##foreach (var derived in entity.DerivedEntities) {
-        //##using var _ = NewScope(derived);
-        // - T_EntityImplName_
-        //##}
         //##if (false) {
         private const string T_MemberObsoleteMessage_ = null;
         private const bool T_MemberObsoleteIsError_ = false;
@@ -328,7 +318,7 @@ namespace T_ImplNameSpace_
             //##case MemberKind.String:
             //##break;
             //##default:
-            //##Emit($"#error Implementation for MemberKind '{member.Kind}' is missing");
+            //##Emit($"#error Implementation for {member.Name}.MemberKind '{member.Kind}' is missing");
             //##break;
             //##} // switch
             //##}
@@ -374,7 +364,7 @@ namespace T_ImplNameSpace_
             //##}
             //##break;
             //##default:
-            //##Emit($"#error Implementation for MemberKind '{member.Kind}' is missing");
+            //##Emit($"#error Implementation for {member.Name}.MemberKind '{member.Kind}' is missing");
             //##break;
             //##} // switch
             //##} // foreach
@@ -416,7 +406,7 @@ namespace T_ImplNameSpace_
             //##}
             //##break;
             //##default:
-            //##Emit($"#error Implementation for MemberKind '{member.Kind}' is missing");
+            //##Emit($"#error Implementation for {member.Name}.MemberKind '{member.Kind}' is missing");
             //##break;
             //##} // switch
             //##} // foreach
@@ -505,6 +495,7 @@ namespace T_ImplNameSpace_
             get => _T_NullableBinaryMemberName_;
             set => _T_NullableBinaryMemberName_ = IfNotFrozen(value);
         }
+        [JsonIgnore]
         Octets? T_IntfNameSpace_.T_EntityIntfName_.T_NullableBinaryMemberName_
         {
             get => _T_NullableBinaryMemberName_ is null ? null : _T_NullableBinaryMemberName_.Length == 0 ? Octets.Empty : new Octets(_T_NullableBinaryMemberName_);
@@ -518,6 +509,7 @@ namespace T_ImplNameSpace_
             get => _T_RequiredBinaryMemberName_;
             set => _T_RequiredBinaryMemberName_ = IfNotFrozen(value);
         }
+        [JsonIgnore]
         Octets T_IntfNameSpace_.T_EntityIntfName_.T_RequiredBinaryMemberName_
         {
             get => _T_RequiredBinaryMemberName_.Length == 0 ? Octets.Empty : new Octets(_T_RequiredBinaryMemberName_);
@@ -545,7 +537,7 @@ namespace T_ImplNameSpace_
         //##}
         //##break;
         //##default:
-        //##Emit($"#error Implementation for MemberKind '{member.Kind}' is missing");
+        //##Emit($"#error Implementation for {member.Name}.MemberKind '{member.Kind}' is missing");
         //##break;
         //##} // switch
 
@@ -591,7 +583,7 @@ namespace T_ImplNameSpace_
             //##}
             //##break;
             //##default:
-            //##Emit($"#error Implementation for MemberKind '{member.Kind}' is missing");
+            //##Emit($"#error Implementation for {member.Name}.MemberKind '{member.Kind}' is missing");
             //##break;
             //##} // switch
             //##}
@@ -666,7 +658,7 @@ namespace T_ImplNameSpace_
             //##}
             //##break;
             //##default:
-            //##Emit($"#error Implementation for MemberKind '{member.Kind}' is missing");
+            //##Emit($"#error Implementation for {member.Name}.MemberKind '{member.Kind}' is missing");
             //##break;
             //##} // switch
             //##}

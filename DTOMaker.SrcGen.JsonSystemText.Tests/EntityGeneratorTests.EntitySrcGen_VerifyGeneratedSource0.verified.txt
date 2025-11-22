@@ -17,17 +17,12 @@ using MyOrg.Models;
 namespace MyOrg.Models
 {
     [JsonPolymorphic]
-    [JsonDerivedType(typeof(Derived), 2)]
-    [JsonDerivedType(typeof(MyDTO), 1)]
-    [JsonDerivedType(typeof(Other3), 3)]
-    [JsonDerivedType(typeof(Other4), 4)]
+    [JsonDerivedType(typeof(MyOrg.Model2.MyDTO), 3)]
+    [JsonDerivedType(typeof(MyOrg.Model3.MyDTO), 4)]
+    [JsonDerivedType(typeof(MyOrg.Models.Derived), 2)]
+    [JsonDerivedType(typeof(MyOrg.Models.MyDTO), 1)]
     public class EntityBase : IEntityBase, IEquatable<EntityBase>
     {
-        // Derived entities: 4
-        // - Derived
-        // - MyDTO
-        // - Other3
-        // - Other4
         protected virtual int OnGetEntityId() => 0;
         public int GetEntityId() => OnGetEntityId();
 
@@ -46,9 +41,9 @@ namespace MyOrg.Models
             return source switch
             {
                 MyOrg.Models.Derived source2 => new MyOrg.Models.Derived(source2),
+                MyOrg.Model2.MyDTO source2 => new MyOrg.Model2.MyDTO(source2),
+                MyOrg.Model3.MyDTO source2 => new MyOrg.Model3.MyDTO(source2),
                 MyOrg.Models.MyDTO source2 => new MyOrg.Models.MyDTO(source2),
-                MyOrg.Models.Other3 source2 => new MyOrg.Models.Other3(source2),
-                MyOrg.Models.Other4 source2 => new MyOrg.Models.Other4(source2),
                 _ => new EntityBase(source)
             };
         }
@@ -59,9 +54,9 @@ namespace MyOrg.Models
             return source switch
             {
                 MyOrg.Models.IDerived source2 => new MyOrg.Models.Derived(source2),
+                MyOrg.Model2.IMyDTO source2 => new MyOrg.Model2.MyDTO(source2),
+                MyOrg.Model3.IMyDTO source2 => new MyOrg.Model3.MyDTO(source2),
                 MyOrg.Models.IMyDTO source2 => new MyOrg.Models.MyDTO(source2),
-                MyOrg.Models.IOther3 source2 => new MyOrg.Models.Other3(source2),
-                MyOrg.Models.IOther4 source2 => new MyOrg.Models.Other4(source2),
                 _ => new EntityBase(source)
             };
         }
@@ -73,8 +68,8 @@ namespace MyOrg.Models
             {
                 1 => new MyOrg.Models.MyDTO(),
                 2 => new MyOrg.Models.Derived(),
-                3 => new MyOrg.Models.Other3(),
-                4 => new MyOrg.Models.Other4(),
+                3 => new MyOrg.Model2.MyDTO(),
+                4 => new MyOrg.Model3.MyDTO(),
                 _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
             };
         }

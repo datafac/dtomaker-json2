@@ -12,46 +12,45 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using MyOrg.Models;
+using MyOrg.Model3;
 
-namespace MyOrg.Models
+namespace MyOrg.Model3
 {
-    public partial class Other4 : MyOrg.Models.EntityBase, MyOrg.Models.IOther4, IEquatable<Other4>
+    public partial class MyDTO : MyOrg.Models.EntityBase, MyOrg.Model3.IMyDTO, IEquatable<MyDTO>
     {
-        // Derived entities: 0
 
         protected override int OnGetEntityId() => 4;
 
-        private static Other4 CreateEmpty()
+        private static MyDTO CreateEmpty()
         {
-            var empty = new Other4();
+            var empty = new MyDTO();
             empty.Freeze();
             return empty;
         }
-        private static readonly Other4 _empty = CreateEmpty();
-        public static new Other4 Empty => _empty;
+        private static readonly MyDTO _empty = CreateEmpty();
+        public static new MyDTO Empty => _empty;
 
-        public new static Other4 CreateFrom(Other4 source)
+        public new static MyDTO CreateFrom(MyDTO source)
         {
             if (source.IsFrozen) return source;
             return source switch
             {
-                _ => new MyOrg.Models.Other4(source)
+                _ => new MyOrg.Model3.MyDTO(source)
             };
         }
 
-        public new static Other4 CreateFrom(MyOrg.Models.IOther4 source)
+        public new static MyDTO CreateFrom(MyOrg.Model3.IMyDTO source)
         {
-            if (source is Other4 concrete && concrete.IsFrozen) return concrete;
+            if (source is MyDTO concrete && concrete.IsFrozen) return concrete;
             return source switch
             {
-                _ => new MyOrg.Models.Other4(source)
+                _ => new MyOrg.Model3.MyDTO(source)
             };
         }
 
-        public new static Other4 CreateNewFromId(int entityId)
+        public new static MyDTO CreateNewFromId(int entityId)
         {
-            if (entityId == 4) return new Other4();
+            if (entityId == 4) return new MyDTO();
             return entityId switch
             {
                 _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
@@ -63,15 +62,15 @@ namespace MyOrg.Models
             base.OnFreeze();
         }
 
-        protected override IEntityBase OnPartCopy() => new Other4(this);
+        protected override IEntityBase OnPartCopy() => new MyDTO(this);
 
-        public Other4() { }
-        public Other4(MyOrg.Models.IOther4 source) : base(source)
+        public MyDTO() { }
+        public MyDTO(MyOrg.Model3.IMyDTO source) : base(source)
         {
             _Field41 = source.Field41.ToByteArray();
             _Field42 = source.Field42 is null ? null : source.Field42.ToByteArray();
         }
-        public Other4(Other4 source) : base(source)
+        public MyDTO(MyDTO source) : base(source)
         {
             _Field41 = source._Field41;
             _Field42 = source._Field42;
@@ -84,7 +83,8 @@ namespace MyOrg.Models
             get => _Field41;
             set => _Field41 = IfNotFrozen(value);
         }
-        Octets MyOrg.Models.IOther4.Field41
+        [JsonIgnore]
+        Octets MyOrg.Model3.IMyDTO.Field41
         {
             get => _Field41.Length == 0 ? Octets.Empty : new Octets(_Field41);
             set => _Field41 = IfNotFrozen(value.ToByteArray());
@@ -97,14 +97,15 @@ namespace MyOrg.Models
             get => _Field42;
             set => _Field42 = IfNotFrozen(value);
         }
-        Octets? MyOrg.Models.IOther4.Field42
+        [JsonIgnore]
+        Octets? MyOrg.Model3.IMyDTO.Field42
         {
             get => _Field42 is null ? null : _Field42.Length == 0 ? Octets.Empty : new Octets(_Field42);
             set => _Field42 = IfNotFrozen(value is null ? null : value.ToByteArray());
         }
 
 
-        public bool Equals(Other4? other)
+        public bool Equals(MyDTO? other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other is null) return false;
@@ -114,9 +115,9 @@ namespace MyOrg.Models
             return true;
         }
 
-        public override bool Equals(object? obj) => obj is Other4 other && Equals(other);
-        public static bool operator ==(Other4? left, Other4? right) => left is not null ? left.Equals(right) : (right is null);
-        public static bool operator !=(Other4? left, Other4? right) => left is not null ? !left.Equals(right) : (right is not null);
+        public override bool Equals(object? obj) => obj is MyDTO other && Equals(other);
+        public static bool operator ==(MyDTO? left, MyDTO? right) => left is not null ? left.Equals(right) : (right is null);
+        public static bool operator !=(MyDTO? left, MyDTO? right) => left is not null ? !left.Equals(right) : (right is not null);
 
         private int CalcHashCode()
         {
