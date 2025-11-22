@@ -16,7 +16,7 @@ using MyOrg.Models;
 
 namespace MyOrg.Models
 {
-    public partial class MyDTO : System.Object, MyOrg.Models.IMyDTO, IEquatable<MyDTO>
+    public partial class MyDTO : MyOrg.Models.EntityBase, MyOrg.Models.IMyDTO, IEquatable<MyDTO>
     {
         // Derived entities: 0
 
@@ -47,6 +47,12 @@ namespace MyOrg.Models
             {
                 _ => new MyOrg.Models.MyDTO(source)
             };
+        }
+
+        public new static MyDTO CreateNewFromId(int entityId)
+        {
+            if (entityId == 1) return new MyOrg.Models.MyDTO();
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'MyDTO'.");
         }
 
         protected override void OnFreeze()

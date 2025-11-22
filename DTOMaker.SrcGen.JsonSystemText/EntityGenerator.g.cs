@@ -192,6 +192,17 @@ public sealed class EntityGenerator : EntityGeneratorBase
             Emit("            };");
             Emit("        }");
             Emit("");
+            Emit("        public new static EntityBase CreateNewFromId(int entityId)");
+            Emit("        {");
+            Emit("            if (entityId == T_EntityId_) return new EntityBase();");
+            foreach (var derived in entity.DerivedEntities.OrderBy(e => e.EntityId))
+            {
+                using var _ = NewScope(derived);
+                Emit("            if (entityId == T_EntityId_) return new T_ImplNameSpace_.T_EntityImplName_();");
+            }
+            Emit("            throw new InvalidOperationException($\"EntityId '{entityId}' is not valid.\");");
+            Emit("        }");
+            Emit("");
             Emit("        public EntityBase() { }");
             Emit("        public EntityBase(IEntityBase notUsed) { }");
             Emit("        public EntityBase(EntityBase notUsed) { }");
@@ -295,6 +306,17 @@ public sealed class EntityGenerator : EntityGeneratorBase
             }
             Emit("                _ => new T_ImplNameSpace_.T_EntityImplName_(source)");
             Emit("            };");
+            Emit("        }");
+            Emit("");
+            Emit("        public new static T_EntityImplName_ CreateNewFromId(int entityId)");
+            Emit("        {");
+            Emit("            if (entityId == T_EntityId_) return new T_ImplNameSpace_.T_EntityImplName_();");
+            foreach (var derived in entity.DerivedEntities.OrderBy(e => e.EntityId))
+            {
+                using var _ = NewScope(derived);
+                Emit("            if (entityId == T_EntityId_) return new T_ImplNameSpace_.T_EntityImplName_();");
+            }
+            Emit("            throw new InvalidOperationException($\"EntityId '{entityId}' is not valid for entity type 'T_EntityImplName_'.\");");
             Emit("        }");
             Emit("");
             Emit("        protected override void OnFreeze()");

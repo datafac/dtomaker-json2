@@ -49,6 +49,12 @@ namespace MyOrg.Models
             };
         }
 
+        public new static Derived CreateNewFromId(int entityId)
+        {
+            if (entityId == 2) return new MyOrg.Models.Derived();
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'Derived'.");
+        }
+
         protected override void OnFreeze()
         {
             base.OnFreeze();

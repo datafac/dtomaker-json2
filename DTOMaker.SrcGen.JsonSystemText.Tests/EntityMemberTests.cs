@@ -14,23 +14,24 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
         private readonly string modelSource =
             """
             using DTOMaker.Models;
+            using DTOMaker.Runtime;
             namespace MyOrg.DomainA
             {
-                [Entity][Id(1)] public interface IMyDTO1
+                [Entity][Id(1)] public interface IMyDTO1 : IEntityBase
                 {
                     [Member(1)] long Field1 { get; set; }
                 }
             }
             namespace MyOrg.DomainB
             {
-                [Entity][Id(2)] public interface IMyDTO1
+                [Entity][Id(2)] public interface IMyDTO1 : IEntityBase
                 {
                     [Member(1)] double Field1 { get; set; }
                 }
             }
             namespace MyOrg.DomainC
             {
-                [Entity][Id(3)] public interface IMyDTO2
+                [Entity][Id(3)] public interface IMyDTO2 : IEntityBase
                 {
                     [Member(1)] MyOrg.DomainA.IMyDTO1? Member1 { get; set; }
                     [Member(2)] MyOrg.DomainB.IMyDTO1  Member2 { get; set; }

@@ -16,7 +16,7 @@ using MyOrg.DomainC;
 
 namespace MyOrg.DomainC
 {
-    public partial class MyDTO2 : System.Object, MyOrg.DomainC.IMyDTO2, IEquatable<MyDTO2>
+    public partial class MyDTO2 : MyOrg.DomainA.EntityBase, MyOrg.DomainC.IMyDTO2, IEquatable<MyDTO2>
     {
         // Derived entities: 0
 
@@ -47,6 +47,12 @@ namespace MyOrg.DomainC
             {
                 _ => new MyOrg.DomainC.MyDTO2(source)
             };
+        }
+
+        public new static MyDTO2 CreateNewFromId(int entityId)
+        {
+            if (entityId == 3) return new MyOrg.DomainC.MyDTO2();
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'MyDTO2'.");
         }
 
         protected override void OnFreeze()

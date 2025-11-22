@@ -16,9 +16,16 @@ using MyOrg.DomainA;
 
 namespace MyOrg.DomainA
 {
+    [JsonPolymorphic]
+    [JsonDerivedType(typeof(MyDTO1), 1)]
+    [JsonDerivedType(typeof(MyDTO1), 2)]
+    [JsonDerivedType(typeof(MyDTO2), 3)]
     public class EntityBase : IEntityBase, IEquatable<EntityBase>
     {
-        // Derived entities: 0
+        // Derived entities: 3
+        // - MyDTO1
+        // - MyDTO1
+        // - MyDTO2
         protected virtual int OnGetEntityId() => 0;
         public int GetEntityId() => OnGetEntityId();
 
@@ -36,6 +43,9 @@ namespace MyOrg.DomainA
             if (source.IsFrozen) return source;
             return source switch
             {
+                MyOrg.DomainA.MyDTO1 source2 => new MyOrg.DomainA.MyDTO1(source2),
+                MyOrg.DomainB.MyDTO1 source2 => new MyOrg.DomainB.MyDTO1(source2),
+                MyOrg.DomainC.MyDTO2 source2 => new MyOrg.DomainC.MyDTO2(source2),
                 _ => new EntityBase(source)
             };
         }
@@ -45,8 +55,20 @@ namespace MyOrg.DomainA
             if (source is EntityBase concrete && concrete.IsFrozen) return concrete;
             return source switch
             {
+                MyOrg.DomainA.IMyDTO1 source2 => new MyOrg.DomainA.MyDTO1(source2),
+                MyOrg.DomainB.IMyDTO1 source2 => new MyOrg.DomainB.MyDTO1(source2),
+                MyOrg.DomainC.IMyDTO2 source2 => new MyOrg.DomainC.MyDTO2(source2),
                 _ => new EntityBase(source)
             };
+        }
+
+        public new static EntityBase CreateNewFromId(int entityId)
+        {
+            if (entityId == 0) return new EntityBase();
+            if (entityId == 1) return new MyOrg.DomainA.MyDTO1();
+            if (entityId == 2) return new MyOrg.DomainB.MyDTO1();
+            if (entityId == 3) return new MyOrg.DomainC.MyDTO2();
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid.");
         }
 
         public EntityBase() { }

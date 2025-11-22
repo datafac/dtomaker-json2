@@ -54,6 +54,13 @@ namespace MyOrg.Models
             };
         }
 
+        public new static MyDTO CreateNewFromId(int entityId)
+        {
+            if (entityId == 1) return new MyOrg.Models.MyDTO();
+            if (entityId == 2) return new MyOrg.Models.Derived();
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'MyDTO'.");
+        }
+
         protected override void OnFreeze()
         {
             base.OnFreeze();

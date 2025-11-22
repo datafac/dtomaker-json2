@@ -183,6 +183,16 @@ namespace T_ImplNameSpace_
             };
         }
 
+        public new static EntityBase CreateNewFromId(int entityId)
+        {
+            if (entityId == T_EntityId_) return new EntityBase();
+            //##foreach(var derived in entity.DerivedEntities.OrderBy(e => e.EntityId)) {
+            //##using var _ = NewScope(derived);
+            if (entityId == T_EntityId_) return new T_ImplNameSpace_.T_EntityImplName_();
+            //##}
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid.");
+        }
+
         public EntityBase() { }
         public EntityBase(IEntityBase notUsed) { }
         public EntityBase(EntityBase notUsed) { }
@@ -278,6 +288,16 @@ namespace T_ImplNameSpace_
                 //##}
                 _ => new T_ImplNameSpace_.T_EntityImplName_(source)
             };
+        }
+
+        public new static T_EntityImplName_ CreateNewFromId(int entityId)
+        {
+            if (entityId == T_EntityId_) return new T_ImplNameSpace_.T_EntityImplName_();
+            //##foreach(var derived in entity.DerivedEntities.OrderBy(e => e.EntityId)) {
+            //##using var _ = NewScope(derived);
+            if (entityId == T_EntityId_) return new T_ImplNameSpace_.T_EntityImplName_();
+            //##}
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'T_EntityImplName_'.");
         }
 
         protected override void OnFreeze()

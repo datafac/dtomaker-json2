@@ -49,6 +49,12 @@ namespace MyOrg.Models
             };
         }
 
+        public new static Other3 CreateNewFromId(int entityId)
+        {
+            if (entityId == 3) return new MyOrg.Models.Other3();
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'Other3'.");
+        }
+
         protected override void OnFreeze()
         {
             base.OnFreeze();

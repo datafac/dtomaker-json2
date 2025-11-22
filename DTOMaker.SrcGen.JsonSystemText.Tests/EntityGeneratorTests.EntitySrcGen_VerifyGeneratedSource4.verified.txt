@@ -49,6 +49,12 @@ namespace MyOrg.Models
             };
         }
 
+        public new static Other4 CreateNewFromId(int entityId)
+        {
+            if (entityId == 4) return new MyOrg.Models.Other4();
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'Other4'.");
+        }
+
         protected override void OnFreeze()
         {
             base.OnFreeze();

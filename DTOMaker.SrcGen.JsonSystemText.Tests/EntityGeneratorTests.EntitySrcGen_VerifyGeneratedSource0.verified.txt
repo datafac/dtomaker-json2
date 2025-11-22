@@ -66,6 +66,16 @@ namespace MyOrg.Models
             };
         }
 
+        public new static EntityBase CreateNewFromId(int entityId)
+        {
+            if (entityId == 0) return new EntityBase();
+            if (entityId == 1) return new MyOrg.Models.MyDTO();
+            if (entityId == 2) return new MyOrg.Models.Derived();
+            if (entityId == 3) return new MyOrg.Models.Other3();
+            if (entityId == 4) return new MyOrg.Models.Other4();
+            throw new InvalidOperationException($"EntityId '{entityId}' is not valid.");
+        }
+
         public EntityBase() { }
         public EntityBase(IEntityBase notUsed) { }
         public EntityBase(EntityBase notUsed) { }

@@ -16,6 +16,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             using System;
             using DataFac.Memory;
             using DTOMaker.Models;
+            using DTOMaker.Runtime;
             namespace MyOrg.Models
             {
                 [Entity][Id(1)] public interface IMyDTO : IEntityBase
