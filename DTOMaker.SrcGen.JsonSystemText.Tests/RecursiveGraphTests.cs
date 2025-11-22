@@ -15,12 +15,11 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             """
             using System;
             using DTOMaker.Models;
-            using DTOMaker.Models.MemBlocks;
-            using DTOMaker.Models.MessagePack;
+            using DTOMaker.Runtime;
             namespace MyOrg.Models
             {
                 [Entity][Id(1)]
-                public interface INode
+                public interface INode : IEntityBase
                 {
                     [Member(1)] String Key { get; set; }
                 }
@@ -55,7 +54,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
                 }
 
                 [Entity][Id(7)]
-                public interface ITree
+                public interface ITree : IEntityBase
                 {
                     [Member(1)] ITree? Left { get; set; }
                     [Member(2)] ITree? Right { get; set; }
