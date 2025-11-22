@@ -39,7 +39,6 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             """;
 
         [Fact] public void EntityMember_GeneratedSourcesLength() => modelSource.GenerateAndCheckLength(4);
-        //
         [Fact] public async Task EntityMember_VerifyGeneratedSource0() => await Verifier.Verify(modelSource.GenerateAndGetOutput(0, "MyOrg.DomainA.JsonSystemText.EntityBase.g.cs"));
         [Fact] public async Task EntityMember_VerifyGeneratedSource1() => await Verifier.Verify(modelSource.GenerateAndGetOutput(1, "MyOrg.DomainA.JsonSystemText.MyDTO1.g.cs"));
         [Fact] public async Task EntityMember_VerifyGeneratedSource2() => await Verifier.Verify(modelSource.GenerateAndGetOutput(2, "MyOrg.DomainB.JsonSystemText.MyDTO1.g.cs"));

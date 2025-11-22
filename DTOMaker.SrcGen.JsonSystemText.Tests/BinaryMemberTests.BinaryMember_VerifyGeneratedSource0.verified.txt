@@ -16,18 +16,9 @@ using MyOrg.Models;
 
 namespace MyOrg.Models
 {
-    [JsonPolymorphic]
-    [JsonDerivedType(typeof(Derived), 2)]
-    [JsonDerivedType(typeof(MyDTO), 1)]
-    [JsonDerivedType(typeof(Other3), 3)]
-    [JsonDerivedType(typeof(Other4), 4)]
     public class EntityBase : IEntityBase, IEquatable<EntityBase>
     {
-        // Derived entities: 4
-        // - Derived
-        // - MyDTO
-        // - Other3
-        // - Other4
+        // Derived entities: 0
         protected virtual int OnGetEntityId() => 0;
         public int GetEntityId() => OnGetEntityId();
 
@@ -45,10 +36,6 @@ namespace MyOrg.Models
             if (source.IsFrozen) return source;
             return source switch
             {
-                MyOrg.Models.Derived source2 => new MyOrg.Models.Derived(source2),
-                MyOrg.Models.MyDTO source2 => new MyOrg.Models.MyDTO(source2),
-                MyOrg.Models.Other3 source2 => new MyOrg.Models.Other3(source2),
-                MyOrg.Models.Other4 source2 => new MyOrg.Models.Other4(source2),
                 _ => new EntityBase(source)
             };
         }
@@ -58,10 +45,6 @@ namespace MyOrg.Models
             if (source is EntityBase concrete && concrete.IsFrozen) return concrete;
             return source switch
             {
-                MyOrg.Models.IDerived source2 => new MyOrg.Models.Derived(source2),
-                MyOrg.Models.IMyDTO source2 => new MyOrg.Models.MyDTO(source2),
-                MyOrg.Models.IOther3 source2 => new MyOrg.Models.Other3(source2),
-                MyOrg.Models.IOther4 source2 => new MyOrg.Models.Other4(source2),
                 _ => new EntityBase(source)
             };
         }

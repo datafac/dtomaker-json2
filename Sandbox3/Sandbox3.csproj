@@ -9,7 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="DataFac.Memory" Version="0.16.5" />
-		<PackageReference Include="DTOMaker.Models" Version="0.72.4" />
+		<PackageReference Include="DTOMaker.Models" Version="0.72.5" />
 	</ItemGroup>
 
 	<ItemGroup>

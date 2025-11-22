@@ -16,11 +16,11 @@ using MyOrg.DomainA;
 
 namespace MyOrg.DomainA
 {
-    public partial class EntityBase : System.Object, DTOMaker.Runtime.IEntityBase, IEquatable<EntityBase>
+    public class EntityBase : IEntityBase, IEquatable<EntityBase>
     {
         // Derived entities: 0
-
-        protected override int OnGetEntityId() => 0;
+        protected virtual int OnGetEntityId() => 0;
+        public int GetEntityId() => OnGetEntityId();
 
         private static EntityBase CreateEmpty()
         {
@@ -29,68 +29,61 @@ namespace MyOrg.DomainA
             return empty;
         }
         private static readonly EntityBase _empty = CreateEmpty();
-        public static new EntityBase Empty => _empty;
+        public static EntityBase Empty => _empty;
 
-        public new static EntityBase CreateFrom(EntityBase source)
+        public static EntityBase CreateFrom(EntityBase source)
         {
             if (source.IsFrozen) return source;
             return source switch
             {
-                _ => new MyOrg.DomainA.EntityBase(source)
+                _ => new EntityBase(source)
             };
         }
 
-        public new static EntityBase CreateFrom(DTOMaker.Runtime.IEntityBase source)
+        public new static EntityBase CreateFrom(IEntityBase source)
         {
             if (source is EntityBase concrete && concrete.IsFrozen) return concrete;
             return source switch
             {
-                _ => new MyOrg.DomainA.EntityBase(source)
+                _ => new EntityBase(source)
             };
         }
 
-        protected override void OnFreeze()
-        {
-            base.OnFreeze();
-        }
-
-        protected override IEntityBase OnPartCopy() => new EntityBase(this);
-
         public EntityBase() { }
-        public EntityBase(DTOMaker.Runtime.IEntityBase source) : base(source)
+        public EntityBase(IEntityBase notUsed) { }
+        public EntityBase(EntityBase notUsed) { }
+
+        private volatile bool _frozen;
+        [JsonIgnore] public bool IsFrozen => _frozen;
+        protected virtual void OnFreeze() { }
+        public void Freeze()
         {
+            if (_frozen) return;
+            OnFreeze();
+            _frozen = true;
         }
-        public EntityBase(EntityBase source) : base(source)
+        protected virtual IEntityBase OnPartCopy() => new EntityBase(this);
+        public IEntityBase PartCopy() => OnPartCopy();
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void ThrowIsFrozenException(string? methodName) => throw new InvalidOperationException($"Cannot set {methodName} when frozen.");
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected T IfNotFrozen<T>(T value, [CallerMemberName] string? methodName = null)
         {
-        }
-
-
-        public bool Equals(EntityBase? other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other is null) return false;
-            if (!base.Equals(other)) return false;
-            return true;
-        }
-
-        public override bool Equals(object? obj) => obj is EntityBase other && Equals(other);
-        public static bool operator ==(EntityBase? left, EntityBase? right) => left is not null ? left.Equals(right) : (right is null);
-        public static bool operator !=(EntityBase? left, EntityBase? right) => left is not null ? !left.Equals(right) : (right is not null);
-
-        private int CalcHashCode()
-        {
-            HashCode result = new HashCode();
-            result.Add(base.GetHashCode());
-            return result.ToHashCode();
+            if (_frozen) ThrowIsFrozenException(methodName);
+            return value;
         }
 
-        private int? _hashCode;
-        public override int GetHashCode()
+        public bool Equals(EntityBase? other) => true;
+        public override bool Equals(object? obj) => obj is EntityBase;
+        public override int GetHashCode() => HashCode.Combine<Type>(typeof(EntityBase));
+
+        protected static bool BinaryValuesAreEqual(byte[]? left, byte[]? right)
         {
-            if (!IsFrozen) return CalcHashCode();
-            if (_hashCode.HasValue) return _hashCode.Value;
-            _hashCode = CalcHashCode();
-            return _hashCode.Value;
+            if (left is null) return (right is null);
+            if (right is null) return false;
+            return left.AsSpan().SequenceEqual(right.AsSpan());
         }
 
     }

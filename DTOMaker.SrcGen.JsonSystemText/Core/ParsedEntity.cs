@@ -10,7 +10,7 @@ namespace DTOMaker.SrcGen.Core
         public readonly int EntityId;
         public readonly ParsedName? Base;
 
-        public bool IsValid => !string.IsNullOrWhiteSpace(Intf.Space) && !string.IsNullOrWhiteSpace(Intf.Name) && Intf.Name.StartsWith("I", StringComparison.Ordinal);
+        public bool IsValid => (Intf is not null) && !string.IsNullOrWhiteSpace(Intf.Space) && !string.IsNullOrWhiteSpace(Intf.Name) && Intf.Name.StartsWith("I", StringComparison.Ordinal);
 
         public ParsedEntity(string intfFullName, int entityId, string? baseFullName)
         {

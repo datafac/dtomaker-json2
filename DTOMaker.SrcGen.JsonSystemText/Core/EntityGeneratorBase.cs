@@ -144,32 +144,15 @@ namespace DTOMaker.SrcGen.Core
 
         protected IDisposable NewScope(Phase1Entity entity)
         {
-            /*
-            _tokens["NameSpace"] = entity.TFN.NameSpace;
-            _tokens["AbstractEntity"] = entity.TFN.ShortImplName;
-            _tokens["ConcreteEntity"] = entity.TFN.ShortImplName;
-            _tokens["EntityImplName"] = entity.TFN.ShortImplName;
-            _tokens["EntityIntfName"] = entity.TFN.ShortIntfName;
-
-            _tokens["EntityId"] = entity.EntityId;
-            _tokens["BaseName"] = entity.Base?.TFN.ShortImplName ?? TypeFullName.DefaultBase.ShortImplName;
-            _tokens["BaseNameSpace"] = entity.Base?.TFN.NameSpace ?? TypeFullName.DefaultBase.NameSpace;
-            _tokens["BaseFullName"] = entity.Base?.TFN.FullName ?? TypeFullName.DefaultBase.FullName;
-            _tokens["ClassHeight"] = ClassHeight;
-            _tokens["DerivedEntityCount"] = DerivedEntityCount;
-             */
             var tokens = new Dictionary<string, object?>()
             {
-                ["NameSpace"] = entity.Intf.Space,
+                ["IntfNameSpace"] = entity.Intf.Space,
+                ["EntityIntfName"] = entity.Intf.Name,
+                ["ImplNameSpace"] = entity.Impl.Space,
+                ["EntityImplName"] = entity.Impl.Name,
                 ["AbstractEntity"] = entity.Impl.Name,
                 ["ConcreteEntity"] = entity.Impl.Name,
-                ["EntityImplName"] = entity.Impl.Name,
-                ["EntityIntfName"] = entity.Intf.Name,
                 ["EntityId"] = entity.EntityId,
-                //["BaseName"] = entity.BaseFullName,
-                //["BaseNameSpace"] = entity.BaseFullName != null ? GetNameSpaceFromFullName(entity.BaseFullName) : TypeFullName.DefaultBase.NameSpace,
-                //["BaseFullName"] = entity.BaseFullName ?? TypeFullName.DefaultBase.FullName,
-                //["ClassHeight"] = entity.ClassHeight,
             };
             return _tokenStack.NewScope(tokens);
         }
@@ -179,11 +162,11 @@ namespace DTOMaker.SrcGen.Core
             var tokens = new Dictionary<string, object?>()
             {
                 ["IntfNameSpace"] = entity.Intf.Space,
+                ["EntityIntfName"] = entity.Intf.Name,
                 ["ImplNameSpace"] = entity.Impl.Space,
+                ["EntityImplName"] = entity.Impl.Name,
                 ["AbstractEntity"] = entity.Impl.Name,
                 ["ConcreteEntity"] = entity.Impl.Name,
-                ["EntityImplName"] = entity.Impl.Name,
-                ["EntityIntfName"] = entity.Intf.Name,
                 ["EntityId"] = entity.EntityId,
                 ["ClassHeight"] = entity.ClassHeight,
                 ["BaseIntfNameSpace"] = entity.BaseEntity is null ? "DTOMaker.Runtime" : entity.BaseEntity.Intf.Space,
