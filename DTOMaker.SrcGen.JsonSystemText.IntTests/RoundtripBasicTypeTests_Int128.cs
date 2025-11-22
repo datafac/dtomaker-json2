@@ -34,9 +34,8 @@ public class RoundtripBasicTypeTests_Int128
     }
 
     [Fact] public async Task Roundtrip_Int128_Defaults() => await Verifier.Verify(Roundtrip_Int128(default, default));
-    [Fact] public async Task Roundtrip_Int128_MaxValue() => await Verifier.Verify(Roundtrip_Int128(Int128.MaxValue, Int128.MaxValue));
-    [Fact] public async Task Roundtrip_Int128_MinValue() => await Verifier.Verify(Roundtrip_Int128(Int128.MinValue, Int128.MinValue));
-    [Fact] public async Task Roundtrip_Int128_UnitVals() => await Verifier.Verify(Roundtrip_Int128(1, -1));
+    [Fact] public async Task Roundtrip_Int128_Maximums() => await Verifier.Verify(Roundtrip_Int128(Int128.MaxValue, Int128.MinValue));
+    [Fact] public async Task Roundtrip_Int128_UnitVals() => await Verifier.Verify(Roundtrip_Int128(Int128.One, Int128.NegativeOne));
 
 }
 #endif
