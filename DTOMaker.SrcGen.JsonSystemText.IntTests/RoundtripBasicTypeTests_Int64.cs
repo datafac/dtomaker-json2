@@ -9,8 +9,7 @@ using Xunit;
 
 namespace DTOMaker.SrcGen.JsonSystemText.IntTests;
 
-[Entity]
-[Id(2)]
+[Entity][Id(2)]
 public interface ISimpleDTO_Int64 : IEntityBase
 {
     [Member(1)] Int64 Field1 { get; set; }
