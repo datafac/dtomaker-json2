@@ -1,0 +1,1 @@
+﻿{"left":{"node":{"$type":31,"value":"left-value","key":"left-key"}},"right":{"node":{"$type":32,"value":314,"key":"right-key"}},"node":{"$type":31,"value":"mid-value","key":"mid-key"}}

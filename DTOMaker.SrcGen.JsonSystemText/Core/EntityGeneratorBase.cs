@@ -79,11 +79,6 @@ namespace DTOMaker.SrcGen.Core
             _builder.AppendLine(ReplaceTokens(line));
         }
 
-        protected IDisposable NewScope(ModelScopeBase scope)
-        {
-            return _tokenStack.NewScope(scope.Tokens);
-        }
-
         private static string ToCamelCase(string value)
         {
             ReadOnlySpan<char> input = value.AsSpan();
@@ -110,7 +105,8 @@ namespace DTOMaker.SrcGen.Core
                 ["MemberType"] = _language.GetDataTypeToken(member.MemberType),
                 ["MemberTypeImplName"] = member.MemberType.ShortImplName,
                 ["MemberTypeIntfName"] = member.MemberType.ShortIntfName,
-                ["MemberTypeNameSpace"] = member.MemberType.NameSpace,
+                ["MemberTypeIntfSpace"] = member.MemberType.IntfNameSpace,
+                ["MemberTypeImplSpace"] = member.MemberType.ImplNameSpace,
                 ["MemberIsNullable"] = member.IsNullable,
                 ["MemberSequence"] = member.Sequence,
                 ["MemberName"] = member.Name,

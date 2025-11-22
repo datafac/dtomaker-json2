@@ -4,7 +4,7 @@
     {
         public string Name { get; init; } = string.Empty;
         public int Sequence { get; init; }
-        public TypeFullName MemberType { get; init; } = TypeFullName.DefaultBase;
+        public TypeFullName MemberType { get; init; }
         public MemberKind Kind { get; init; }
         public bool IsNullable { get; init; }
         public bool IsObsolete { get; init; }

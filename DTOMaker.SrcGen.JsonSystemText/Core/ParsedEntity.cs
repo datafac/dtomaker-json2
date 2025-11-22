@@ -15,14 +15,16 @@ namespace DTOMaker.SrcGen.Core
         public ParsedEntity(string intfFullName, int entityId, string? baseFullName)
         {
             Intf = new ParsedName(intfFullName);
-            Impl = new ParsedName(Intf.Space, Intf.Name.StartsWith("I", StringComparison.Ordinal) ? Intf.Name.Substring(1) : Intf.Name);
+            string implName = Intf.Name.StartsWith("I", StringComparison.Ordinal) ? Intf.Name.Substring(1) : Intf.Name;
+            Impl = new ParsedName(Intf.Space + ".JsonSystemText", implName);
             EntityId = entityId;
             Base = baseFullName is null ? null : new ParsedName(baseFullName);
         }
         public ParsedEntity(string intfFullName, string implSpace, int entityId, string? baseFullName)
         {
             Intf = new ParsedName(intfFullName);
-            Impl = new ParsedName(implSpace, Intf.Name.StartsWith("I", StringComparison.Ordinal) ? Intf.Name.Substring(1) : Intf.Name);
+            string implName = Intf.Name.StartsWith("I", StringComparison.Ordinal) ? Intf.Name.Substring(1) : Intf.Name;
+            Impl = new ParsedName(implSpace, implName);
             EntityId = entityId;
             Base = baseFullName is null ? null : new ParsedName(baseFullName);
         }

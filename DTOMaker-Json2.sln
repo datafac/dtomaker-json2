@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35312.102
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11217.181 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6F72D2FC-3AC9-451F-B6B9-907E32B23B5C}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,18 +22,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.Runtime.JsonSystemText", "DTOMaker.Runtime.JsonSystemText\DTOMaker.Runtime.JsonSystemText.csproj", "{7689868B-20EE-A2C1-7280-CC002A2D8DAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.JsonSystemText.Tests", "DTOMaker.SrcGen.JsonSystemText.Tests\DTOMaker.SrcGen.JsonSystemText.Tests.csproj", "{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox1", "Sandbox1\Sandbox1.csproj", "{7F97DB8E-B396-4CE1-B927-0C96058DE423}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox1.Tests", "Sandbox1.Tests\Sandbox1.Tests.csproj", "{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox2", "Sandbox2\Sandbox2.csproj", "{A3927613-29BC-46B9-95BE-C5106BE18CC8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox2.Tests", "Sandbox2.Tests\Sandbox2.Tests.csproj", "{921F6CAD-3F55-4D54-A482-EE24662625C3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox3", "Sandbox3\Sandbox3.csproj", "{3D655131-F158-4E99-ACFC-B858B08305E7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox3.Tests", "Sandbox3.Tests\Sandbox3.Tests.csproj", "{D567E3BA-5400-40D1-B7C8-53E797E5B225}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMaker.SrcGen.JsonSystemText.IntTests", "DTOMaker.SrcGen.JsonSystemText.IntTests\DTOMaker.SrcGen.JsonSystemText.IntTests.csproj", "{715E8AD0-7C76-4B2A-BB66-4B2BEBBF27C8}"
 EndProject
@@ -63,30 +51,6 @@ Global
 		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFEA276B-6601-4EDF-9FA5-C05C21B72A25}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7F97DB8E-B396-4CE1-B927-0C96058DE423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F97DB8E-B396-4CE1-B927-0C96058DE423}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F97DB8E-B396-4CE1-B927-0C96058DE423}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F97DB8E-B396-4CE1-B927-0C96058DE423}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF64A843-7517-4A6A-9AFC-FAD5AB15F0CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A3927613-29BC-46B9-95BE-C5106BE18CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3927613-29BC-46B9-95BE-C5106BE18CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3927613-29BC-46B9-95BE-C5106BE18CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3927613-29BC-46B9-95BE-C5106BE18CC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{921F6CAD-3F55-4D54-A482-EE24662625C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{921F6CAD-3F55-4D54-A482-EE24662625C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{921F6CAD-3F55-4D54-A482-EE24662625C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{921F6CAD-3F55-4D54-A482-EE24662625C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D655131-F158-4E99-ACFC-B858B08305E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D655131-F158-4E99-ACFC-B858B08305E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D655131-F158-4E99-ACFC-B858B08305E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D655131-F158-4E99-ACFC-B858B08305E7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D567E3BA-5400-40D1-B7C8-53E797E5B225}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D567E3BA-5400-40D1-B7C8-53E797E5B225}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D567E3BA-5400-40D1-B7C8-53E797E5B225}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D567E3BA-5400-40D1-B7C8-53E797E5B225}.Release|Any CPU.Build.0 = Release|Any CPU
 		{715E8AD0-7C76-4B2A-BB66-4B2BEBBF27C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{715E8AD0-7C76-4B2A-BB66-4B2BEBBF27C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{715E8AD0-7C76-4B2A-BB66-4B2BEBBF27C8}.Release|Any CPU.ActiveCfg = Release|Any CPU

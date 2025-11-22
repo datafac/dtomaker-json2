@@ -1,6 +1,7 @@
 using DTOMaker.Models;
 using DTOMaker.Runtime;
 using DTOMaker.Runtime.JsonSystemText;
+using DTOMaker.SrcGen.JsonSystemText.IntTests.JsonSystemText;
 using Shouldly;
 using System;
 using System.Threading.Tasks;

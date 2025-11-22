@@ -11,7 +11,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
 {
     public class RecursiveGraphTests
     {
-        private readonly string models =
+        private static readonly string modelSource =
             """
             using System;
             using DTOMaker.Models;
@@ -19,147 +19,15 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             namespace MyOrg.Models
             {
                 [Entity][Id(1)]
-                public interface INode : IEntityBase
+                public interface IMyDTO : IEntityBase
                 {
-                    [Member(1)] String Key { get; set; }
-                }
-
-                [Entity][Id(2)]
-                public interface IStringNode : INode
-                {
-                    [Member(1)] String Value { get; set; }
-                }
-
-                [Entity][Id(3)]
-                public interface INumericNode : INode
-                {
-                }
-
-                [Entity][Id(5)]
-                public interface IInt64Node : INumericNode
-                {
-                    [Member(1)] Int64 Value { get; set; }
-                }
-
-                [Entity][Id(6)]
-                public interface IDoubleNode : INumericNode
-                {
-                    [Member(1)] Double Value { get; set; }
-                }
-
-                [Entity][Id(4)]
-                public interface IBooleanNode : INode
-                {
-                    [Member(1)] Boolean Value { get; set; }
-                }
-
-                [Entity][Id(7)]
-                public interface ITree : IEntityBase
-                {
-                    [Member(1)] ITree? Left { get; set; }
-                    [Member(2)] ITree? Right { get; set; }
-                    [Member(3)] INode? Node { get; set; }
+                    [Member(2)] IMyDTO? Field1 { get; set; }
                 }
             }
-            
             """;
 
-        [Fact]
-        public void RecursiveGraph00_GeneratedSourcesLengthShouldBe7()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(models, LanguageVersion.LatestMajor);
-            generatorResult.Exception.ShouldBeNull();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Info).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ShouldBeEmpty();
-            generatorResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
-
-            // custom generation checks
-            generatorResult.GeneratedSources.Length.ShouldBe(7);
-            generatorResult.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.BooleanNode.JsonSystemText.g.cs");
-            generatorResult.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.DoubleNode.JsonSystemText.g.cs");
-            generatorResult.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.Int64Node.JsonSystemText.g.cs");
-            generatorResult.GeneratedSources[3].HintName.ShouldBe("MyOrg.Models.Node.JsonSystemText.g.cs");
-            generatorResult.GeneratedSources[4].HintName.ShouldBe("MyOrg.Models.NumericNode.JsonSystemText.g.cs");
-            generatorResult.GeneratedSources[5].HintName.ShouldBe("MyOrg.Models.StringNode.JsonSystemText.g.cs");
-            generatorResult.GeneratedSources[6].HintName.ShouldBe("MyOrg.Models.Tree.JsonSystemText.g.cs");
-        }
-
-        [Fact]
-        public async Task RecursiveGraph01_VerifyGeneratedSource0()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(models, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[0];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task RecursiveGraph01_VerifyGeneratedSource1()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(models, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[1];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task RecursiveGraph01_VerifyGeneratedSource2()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(models, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[2];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task RecursiveGraph01_VerifyGeneratedSource3()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(models, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[3];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task RecursiveGraph01_VerifyGeneratedSource4()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(models, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[4];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task RecursiveGraph01_VerifyGeneratedSource5()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(models, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[5];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task RecursiveGraph01_VerifyGeneratedSource6()
-        {
-            var generatorResult = GeneratorTestHelper.RunSourceGenerator(models, LanguageVersion.LatestMajor);
-
-            // custom generation checks
-            var source = generatorResult.GeneratedSources[6];
-            string outputCode = string.Join(Environment.NewLine, source.SourceText.Lines.Select(tl => tl.ToString()));
-            await Verifier.Verify(outputCode);
-        }
-
+        [Fact] public void EntitySrcGen_GeneratedSourcesLength() => modelSource.GenerateAndCheckLength(2);
+        [Fact] public async Task EntitySrcGen_VerifyGeneratedSource0() => await Verifier.Verify(modelSource.GenerateAndGetOutput(0, "MyOrg.Models.JsonSystemText.EntityBase.g.cs"));
+        [Fact] public async Task EntitySrcGen_VerifyGeneratedSource1() => await Verifier.Verify(modelSource.GenerateAndGetOutput(1, "MyOrg.Models.JsonSystemText.MyDTO.g.cs"));
     }
 }
