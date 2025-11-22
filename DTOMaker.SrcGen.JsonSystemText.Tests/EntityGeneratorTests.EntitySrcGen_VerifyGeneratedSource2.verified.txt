@@ -51,8 +51,11 @@ namespace MyOrg.Models
 
         public new static Derived CreateNewFromId(int entityId)
         {
-            if (entityId == 2) return new MyOrg.Models.Derived();
-            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'Derived'.");
+            if (entityId == 2) return new Derived();
+            return entityId switch
+            {
+                _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
+            };
         }
 
         protected override void OnFreeze()

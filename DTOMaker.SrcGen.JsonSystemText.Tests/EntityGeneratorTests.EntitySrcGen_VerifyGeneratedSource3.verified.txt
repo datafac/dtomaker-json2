@@ -51,8 +51,11 @@ namespace MyOrg.Models
 
         public new static Other3 CreateNewFromId(int entityId)
         {
-            if (entityId == 3) return new MyOrg.Models.Other3();
-            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'Other3'.");
+            if (entityId == 3) return new Other3();
+            return entityId switch
+            {
+                _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
+            };
         }
 
         protected override void OnFreeze()

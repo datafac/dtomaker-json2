@@ -51,8 +51,11 @@ namespace MyOrg.DomainC
 
         public new static MyDTO2 CreateNewFromId(int entityId)
         {
-            if (entityId == 3) return new MyOrg.DomainC.MyDTO2();
-            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'MyDTO2'.");
+            if (entityId == 3) return new MyDTO2();
+            return entityId switch
+            {
+                _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
+            };
         }
 
         protected override void OnFreeze()

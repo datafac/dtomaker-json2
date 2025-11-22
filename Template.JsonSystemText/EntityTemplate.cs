@@ -186,11 +186,14 @@ namespace T_ImplNameSpace_
         public new static EntityBase CreateNewFromId(int entityId)
         {
             if (entityId == T_EntityId_) return new EntityBase();
-            //##foreach(var derived in entity.DerivedEntities.OrderBy(e => e.EntityId)) {
-            //##using var _ = NewScope(derived);
-            if (entityId == T_EntityId_) return new T_ImplNameSpace_.T_EntityImplName_();
-            //##}
-            throw new InvalidOperationException($"EntityId '{entityId}' is not valid.");
+            return entityId switch
+            {
+                //##foreach(var derived in entity.DerivedEntities.OrderBy(e => e.EntityId)) {
+                //##using var _ = NewScope(derived);
+                T_EntityId_ => new T_ImplNameSpace_.T_EntityImplName_(),
+                //##}
+                _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
+            };
         }
 
         public EntityBase() { }
@@ -292,12 +295,15 @@ namespace T_ImplNameSpace_
 
         public new static T_EntityImplName_ CreateNewFromId(int entityId)
         {
-            if (entityId == T_EntityId_) return new T_ImplNameSpace_.T_EntityImplName_();
-            //##foreach(var derived in entity.DerivedEntities.OrderBy(e => e.EntityId)) {
-            //##using var _ = NewScope(derived);
-            if (entityId == T_EntityId_) return new T_ImplNameSpace_.T_EntityImplName_();
-            //##}
-            throw new InvalidOperationException($"EntityId '{entityId}' is not valid for entity type 'T_EntityImplName_'.");
+            if (entityId == T_EntityId_) return new T_EntityImplName_();
+            return entityId switch
+            {
+                //##foreach(var derived in entity.DerivedEntities.OrderBy(e => e.EntityId)) {
+                //##using var _ = NewScope(derived);
+                T_EntityId_ => new T_ImplNameSpace_.T_EntityImplName_(),
+                //##}
+                _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
+            };
         }
 
         protected override void OnFreeze()

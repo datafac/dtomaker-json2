@@ -57,8 +57,11 @@ namespace MyOrg.Models
         public new static EntityBase CreateNewFromId(int entityId)
         {
             if (entityId == 0) return new EntityBase();
-            if (entityId == 1) return new MyOrg.Models.MyDTO();
-            throw new InvalidOperationException($"EntityId '{entityId}' is not valid.");
+            return entityId switch
+            {
+                1 => new MyOrg.Models.MyDTO(),
+                _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
+            };
         }
 
         public EntityBase() { }

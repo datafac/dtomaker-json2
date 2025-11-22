@@ -65,10 +65,13 @@ namespace MyOrg.DomainA
         public new static EntityBase CreateNewFromId(int entityId)
         {
             if (entityId == 0) return new EntityBase();
-            if (entityId == 1) return new MyOrg.DomainA.MyDTO1();
-            if (entityId == 2) return new MyOrg.DomainB.MyDTO1();
-            if (entityId == 3) return new MyOrg.DomainC.MyDTO2();
-            throw new InvalidOperationException($"EntityId '{entityId}' is not valid.");
+            return entityId switch
+            {
+                1 => new MyOrg.DomainA.MyDTO1(),
+                2 => new MyOrg.DomainB.MyDTO1(),
+                3 => new MyOrg.DomainC.MyDTO2(),
+                _ => throw new InvalidOperationException($"EntityId '{entityId}' is not valid.")
+            };
         }
 
         public EntityBase() { }
