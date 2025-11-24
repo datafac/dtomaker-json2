@@ -10,25 +10,29 @@ using Xunit;
 
 namespace DTOMaker.SrcGen.JsonSystemText.IntTests
 {
-    [Entity][Id(30)]
+    [Entity]
+    [Id(30)]
     public interface INode : IEntityBase
     {
         [Member(1)] String Key { get; set; }
     }
 
-    [Entity][Id(31)]
+    [Entity]
+    [Id(31)]
     public interface IStringNode : INode
     {
         [Member(1)] String Value { get; set; }
     }
 
-    [Entity][Id(32)]
+    [Entity]
+    [Id(32)]
     public interface INumberNode : INode
     {
         [Member(1)] Int64 Value { get; set; }
     }
 
-    [Entity][Id(33)]
+    [Entity]
+    [Id(33)]
     public interface ITree : IEntityBase
     {
         [Member(1)] ITree? Left { get; set; }

@@ -11,8 +11,9 @@ using Xunit;
 namespace DTOMaker.SrcGen.JsonSystemText.IntTests;
 
 #if NET7_0_OR_GREATER
-[Entity][Id(15)]
-public interface ISimpleDTO_Half: IEntityBase
+[Entity]
+[Id(15)]
+public interface ISimpleDTO_Half : IEntityBase
 {
     [Member(1)] Half Field1 { get; set; }
     [Member(2)] Half? Field2 { get; set; }

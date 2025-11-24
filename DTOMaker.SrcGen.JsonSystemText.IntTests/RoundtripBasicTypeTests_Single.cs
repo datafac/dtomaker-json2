@@ -10,8 +10,9 @@ using Xunit;
 
 namespace DTOMaker.SrcGen.JsonSystemText.IntTests;
 
-[Entity][Id(14)]
-public interface ISimpleDTO_Single: IEntityBase
+[Entity]
+[Id(14)]
+public interface ISimpleDTO_Single : IEntityBase
 {
     [Member(1)] Single Field1 { get; set; }
     [Member(2)] Single? Field2 { get; set; }

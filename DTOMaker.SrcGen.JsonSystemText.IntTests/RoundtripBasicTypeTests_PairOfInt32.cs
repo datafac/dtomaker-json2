@@ -11,7 +11,8 @@ using Xunit;
 
 namespace DTOMaker.SrcGen.JsonSystemText.IntTests;
 
-[Entity][Id(17)]
+[Entity]
+[Id(17)]
 public interface ISimpleDTO_PairOfInt32 : IEntityBase
 {
     [Member(1)] PairOfInt32 Field1 { get; set; }
@@ -35,8 +36,9 @@ public class RoundtripBasicTypeTests_PairOfInt32
     }
 
     [Fact] public async Task Roundtrip_PairOfInt32_Defaults() => await Verifier.Verify(Roundtrip_PairOfInt32(default, default));
-    [Fact] public async Task Roundtrip_PairOfInt32_Maximums() 
+    [Fact]
+    public async Task Roundtrip_PairOfInt32_Maximums()
         => await Verifier.Verify(Roundtrip_PairOfInt32(
-            new PairOfInt32(Int32.MaxValue, Int32.MaxValue), 
+            new PairOfInt32(Int32.MaxValue, Int32.MaxValue),
             new PairOfInt32(Int32.MinValue, Int32.MinValue)));
 }

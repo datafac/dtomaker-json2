@@ -10,7 +10,8 @@ using Xunit;
 
 namespace DTOMaker.SrcGen.JsonSystemText.IntTests;
 
-[Entity][Id(9)]
+[Entity]
+[Id(9)]
 public interface ISimpleDTO_Bool : IEntityBase
 {
     [Member(1)] bool Field1 { get; set; }

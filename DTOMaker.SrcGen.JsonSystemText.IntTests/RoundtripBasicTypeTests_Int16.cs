@@ -10,7 +10,8 @@ using Xunit;
 
 namespace DTOMaker.SrcGen.JsonSystemText.IntTests;
 
-[Entity][Id(3)]
+[Entity]
+[Id(3)]
 public interface ISimpleDTO_Int16 : IEntityBase
 {
     [Member(1)] Int16 Field1 { get; set; }

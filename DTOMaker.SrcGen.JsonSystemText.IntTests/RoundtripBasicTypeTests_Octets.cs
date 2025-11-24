@@ -12,7 +12,8 @@ using Xunit;
 
 namespace DTOMaker.SrcGen.JsonSystemText.IntTests;
 
-[Entity][Id(12)]
+[Entity]
+[Id(12)]
 public interface ISimpleDTO_Octets : IEntityBase
 {
     [Member(1)] Octets Field1 { get; set; }
@@ -36,7 +37,8 @@ public class RoundtripBasicTypeTests_Octets
     }
 
     [Fact] public async Task Roundtrip_Octets_Defaults() => await Verifier.Verify(Roundtrip_Octets([], null));
-    [Fact] public async Task Roundtrip_Octets_UnitVals() => await Verifier.Verify(Roundtrip_Octets(
+    [Fact]
+    public async Task Roundtrip_Octets_UnitVals() => await Verifier.Verify(Roundtrip_Octets(
             Encoding.UTF8.GetBytes("abc"), Encoding.UTF8.GetBytes("def")));
 
 }
