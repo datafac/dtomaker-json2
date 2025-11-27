@@ -14,30 +14,30 @@ namespace DTOMaker.SrcGen.JsonSystemText.IntTests
     [Id(30)]
     public interface INode : IEntityBase
     {
-        [Member(1)] String Key { get; set; }
+        [Member(1)] String K { get; set; }
     }
 
     [Entity]
     [Id(31)]
     public interface IStringNode : INode
     {
-        [Member(1)] String Value { get; set; }
+        [Member(1)] String V { get; set; }
     }
 
     [Entity]
     [Id(32)]
     public interface INumberNode : INode
     {
-        [Member(1)] Int64 Value { get; set; }
+        [Member(1)] Int64 V { get; set; }
     }
 
     [Entity]
     [Id(33)]
     public interface ITree : IEntityBase
     {
-        [Member(1)] ITree? Left { get; set; }
-        [Member(2)] ITree? Right { get; set; }
-        [Member(3)] INode? Node { get; set; }
+        [Member(1)] ITree? L { get; set; }
+        [Member(2)] ITree? R { get; set; }
+        [Member(3)] INode? N { get; set; }
     }
 
     public class RecursiveGraphTests
@@ -48,6 +48,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.IntTests
             var json = orig.SerializeToJson();
             var copy = json.DeserializeFromJson<Tree>();
             copy.ShouldNotBeNull();
+            copy.Freeze();
             copy.ShouldBe(orig);
             return json;
         }
@@ -57,26 +58,26 @@ namespace DTOMaker.SrcGen.JsonSystemText.IntTests
         {
             var tree = new Tree
             {
-                Left = new Tree
+                L = new Tree
                 {
-                    Node = new StringNode
+                    N = new StringNode
                     {
-                        Key = "left-key",
-                        Value = "left-value"
+                        K = "L",
+                        V = "LStr"
                     }
                 },
-                Right = new Tree
+                R = new Tree
                 {
-                    Node = new NumberNode
+                    N = new NumberNode
                     {
-                        Key = "right-key",
-                        Value = 314L
+                        K = "R",
+                        V = 314L
                     }
                 },
-                Node = new StringNode
+                N = new StringNode
                 {
-                    Key = "mid-key",
-                    Value = "mid-value"
+                    K = "M",
+                    V = "MStr"
                 }
             };
             string json = Roundtrip_Graph(tree);

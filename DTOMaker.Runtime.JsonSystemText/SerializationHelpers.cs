@@ -151,14 +151,7 @@ namespace DTOMaker.Runtime.JsonSystemText
             }
         };
 
-        public static string SerializeToJson<T>(this T value)
-        {
-            return JsonSerializer.Serialize<T>(value, _options);
-        }
-
-        public static T? DeserializeFromJson<T>(this string input)
-        {
-            return JsonSerializer.Deserialize<T>(input, _options);
-        }
+        public static string SerializeToJson<T>(this T value) => JsonSerializer.Serialize<T>(value, _options);
+        public static T? DeserializeFromJson<T>(this string input) => JsonSerializer.Deserialize<T>(input, _options);
     }
 }
