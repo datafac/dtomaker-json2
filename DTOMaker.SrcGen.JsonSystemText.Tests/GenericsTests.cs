@@ -12,10 +12,11 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             """
             using System;
             using DTOMaker.Models;
+            using DTOMaker.Runtime;
             namespace MyOrg.Models
             {
                 [Entity][Id(1)]
-                public interface IPair<T1, T2>
+                public interface IPair<T1, T2> : IEntityBase
                 {
                     [Member(1)] T1 Item1 {get;set;}
                     [Member(2)] T2 Item2 {get;set;}
@@ -26,7 +27,7 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
                     [Member(1)] int Id {get;set;}
                 }
                 [Entity][Id(3)]
-                public interface IMyDTO3
+                public interface IMyDTO3 : IEntityBase
                 {
                     [Member(1)] int Id {get;set;}
                     [Member(2)] IPair<long, string>? Pair {get;set;}

@@ -2,8 +2,9 @@
 {
     public record class OutputEntity
     {
-        public ParsedName Intf { get; init; } = new();
-        public ParsedName Impl { get; init; } = new();
+        public TypeFullName TFN { get; init; } = new();
+        public ParsedName Intf => TFN.Intf;
+        public ParsedName Impl => TFN.Impl;
         public int EntityId { get; init; }
         public int ClassHeight { get; init; }
         public EquatableArray<OutputMember> Members { get; init; } = EquatableArray<OutputMember>.Empty;

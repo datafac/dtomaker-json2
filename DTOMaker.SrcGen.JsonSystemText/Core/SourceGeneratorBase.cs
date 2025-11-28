@@ -299,24 +299,24 @@ namespace DTOMaker.SrcGen.Core
 
             // Get the full type name of the enum e.g. Colour, 
             // or OuterClass<T>.Colour if it was nested in a generic type (for example)
-            string fullname = intfSymbol.ToString();
+            //string fullname = intfSymbol.ToString();
 
             // Get all the members in the enum
             ImmutableArray<ISymbol> intfMembers = intfSymbol.GetMembers();
             var members = new List<string>(intfMembers.Length);
 
             // Get all the fields from the enum, and add their name to the list
-            foreach (ISymbol member in intfMembers)
-            {
-                if (member is IFieldSymbol field && field.ConstantValue is not null)
-                {
-                    members.Add(member.Name);
-                }
-            }
+            //foreach (ISymbol member in intfMembers)
+            //{
+            //    if (member is IFieldSymbol field && field.ConstantValue is not null)
+            //    {
+            //        members.Add(member.Name);
+            //    }
+            //}
 
             string? baseFullName = intfSymbol.Interfaces.FirstOrDefault()?.ToString();
 
-            return new ParsedEntity(fullname, entityId, baseFullName);
+            return new ParsedEntity(intfSymbol, entityId, baseFullName);
         }
 
         private static int GetClassHeight(string? baseFullName, ImmutableArray<ParsedEntity> entities)
@@ -362,7 +362,9 @@ namespace DTOMaker.SrcGen.Core
                 // add base entity into first namespace
                 if (list1.Length == 0) return list1;
                 string implSpace = list1.OrderBy(e => e.EntityId).First().Impl.Space;
-                var baseEntity = new ParsedEntity("DTOMaker.Runtime.IEntityBase", implSpace, 0, null);
+                var intf = new ParsedName("DTOMaker.Runtime.IEntityBase");
+                var impl = new ParsedName(implSpace, "EntityBase");
+                var baseEntity = new ParsedEntity(intf, impl, MemberKind.Entity, 0, null);
                 List<ParsedEntity> newList = [baseEntity];
                 return newList.Concat(list1).ToImmutableArray();
             }).SelectMany((list2, _) => list2.ToImmutableArray());
@@ -404,8 +406,7 @@ namespace DTOMaker.SrcGen.Core
                     int classHeight = GetClassHeight(parsed.Base?.FullName, pair.Right.Left);
                     return new Phase1Entity()
                     {
-                        Intf = parsed.Intf,
-                        Impl = parsed.Impl,
+                        TFN = parsed.TFN,
                         EntityId = parsed.EntityId,
                         ClassHeight = classHeight,
                         Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
@@ -422,15 +423,15 @@ namespace DTOMaker.SrcGen.Core
                     List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.Intf.FullName, pair.Right);
                     return new OutputEntity()
                     {
-                        Intf = entity.Intf,
-                        Impl = entity.Impl,
+                        TFN = entity.TFN,
                         EntityId = entity.EntityId,
                         ClassHeight = entity.ClassHeight,
                         Members = entity.Members,
                         BaseEntity = baseEntity,
                         DerivedEntities = new EquatableArray<Phase1Entity>(derivedEntities.OrderBy(e => e.Intf.FullName))
                     };
-                }); //.Where(e => e.IsClosed);
+                })
+                .Where(e => e.TFN.IsClosed);
 
             // generate summary
             //context.RegisterSourceOutput(outputEntities.Collect(), (spc, entities) =>

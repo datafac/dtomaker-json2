@@ -8,8 +8,8 @@ namespace DTOMaker.SrcGen.Core
 {
     public readonly struct TypeFullName : IEquatable<TypeFullName>
     {
-        private readonly ParsedName _intf;
-        private readonly ParsedName _impl;
+        public readonly ParsedName Intf;
+        public readonly ParsedName Impl;
 
         private readonly ImmutableArray<ITypeParameterSymbol> _typeParameters; // generics only
         private readonly ImmutableArray<ITypeSymbol> _typeArguments; // closed generics only
@@ -81,11 +81,22 @@ namespace DTOMaker.SrcGen.Core
 
         private TypeFullName(ParsedName intf, ParsedName impl, MemberKind kind, ImmutableArray<ITypeParameterSymbol> typeParameters, ImmutableArray<ITypeSymbol> typeArguments)
         {
-            _intf = intf;
-            _impl = impl;
+            Intf = intf;
+            Impl = impl;
             _typeParameters = typeParameters;
             _typeArguments = typeArguments;
-            _fullName = _impl.Space + "." + MakeCSImplName(_impl.Name, typeParameters, typeArguments);
+            _fullName = Impl.Space + "." + MakeCSImplName(Impl.Name, typeParameters, typeArguments);
+            _syntheticId = GetSyntheticId(_fullName);
+            _memberKind = kind;
+        }
+
+        public TypeFullName(ParsedName intf, ParsedName impl, MemberKind kind)
+        {
+            Intf = intf;
+            Impl = impl;
+            _typeParameters = ImmutableArray<ITypeParameterSymbol>.Empty;
+            _typeArguments = ImmutableArray<ITypeSymbol>.Empty;
+            _fullName = Impl.Space + "." + MakeCSImplName(Impl.Name, _typeParameters, _typeArguments);
             _syntheticId = GetSyntheticId(_fullName);
             _memberKind = kind;
         }
@@ -93,11 +104,11 @@ namespace DTOMaker.SrcGen.Core
         public TypeFullName(ITypeSymbol ids)
         {
             string nameSpace = ids.ContainingNamespace.ToDisplayString();
-            _intf = new ParsedName(nameSpace, ids.Name);
-            _impl = ids.TypeKind == TypeKind.Interface && ids.Name.StartsWith("I") ? new ParsedName(nameSpace + ".JsonSystemText", ids.Name.Substring(1)) : _intf;
+            Intf = new ParsedName(nameSpace, ids.Name);
+            Impl = ids.TypeKind == TypeKind.Interface && ids.Name.StartsWith("I") ? new ParsedName(nameSpace + ".JsonSystemText", ids.Name.Substring(1)) : Intf;
             _typeParameters = ids is INamedTypeSymbol nts1 ? nts1.TypeParameters : ImmutableArray<ITypeParameterSymbol>.Empty;
             _typeArguments = ids is INamedTypeSymbol nts2 ? nts2.TypeArguments : ImmutableArray<ITypeSymbol>.Empty;
-            _fullName = _impl.Space + "." + MakeCSImplName(_impl.Name, _typeParameters, _typeArguments);
+            _fullName = Impl.Space + "." + MakeCSImplName(Impl.Name, _typeParameters, _typeArguments);
             _syntheticId = GetSyntheticId(_fullName);
             _memberKind = GetMemberKind(_fullName);
             if (_memberKind == MemberKind.Unknown && ids.TypeKind == TypeKind.Interface)
@@ -106,10 +117,10 @@ namespace DTOMaker.SrcGen.Core
             }
         }
 
-        public string IntfNameSpace => _intf.Space;
-        public string ImplNameSpace => _impl.Space;
-        public string ShortImplName => MakeCSImplName(_impl.Name, _typeParameters, _typeArguments);
-        public string ShortIntfName => MakeCSIntfName(_intf.Name, _typeParameters, _typeArguments);
+        public string IntfNameSpace => Intf.Space;
+        public string ImplNameSpace => Impl.Space;
+        public string ShortImplName => MakeCSImplName(Impl.Name, _typeParameters, _typeArguments);
+        public string ShortIntfName => MakeCSIntfName(Intf.Name, _typeParameters, _typeArguments);
         public string FullName => _fullName;
         public int SyntheticId => _syntheticId;
         public MemberKind MemberKind => _memberKind;
@@ -121,11 +132,11 @@ namespace DTOMaker.SrcGen.Core
         public ImmutableArray<ITypeSymbol> TypeArguments => _typeArguments;
         public TypeFullName AsOpenGeneric()
         {
-            return new TypeFullName(_intf, _impl, _memberKind, _typeParameters, ImmutableArray<ITypeSymbol>.Empty);
+            return new TypeFullName(Intf, Impl, _memberKind, _typeParameters, ImmutableArray<ITypeSymbol>.Empty);
         }
         public TypeFullName AsClosedGeneric(ImmutableArray<ITypeSymbol> typeArguments)
         {
-            return new TypeFullName(_intf, _impl, _memberKind, _typeParameters, typeArguments);
+            return new TypeFullName(Intf, Impl, _memberKind, _typeParameters, typeArguments);
         }
 
         public bool Equals(TypeFullName other) => string.Equals(_fullName, other._fullName, StringComparison.Ordinal);
