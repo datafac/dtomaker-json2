@@ -232,7 +232,7 @@ namespace DTOMaker.SrcGen.Core
             };
         }
 
-        private static ParsedEntity GetParsedEntity(GeneratorAttributeSyntaxContext ctx)
+        private static ParsedEntity? GetParsedEntity(GeneratorAttributeSyntaxContext ctx)
         {
             //List<SyntaxDiagnostic> syntaxErrors = new();
             SemanticModel semanticModel = ctx.SemanticModel;
@@ -242,14 +242,14 @@ namespace DTOMaker.SrcGen.Core
             if (syntaxNode is not InterfaceDeclarationSyntax intfDeclarationSyntax)
             {
                 // something went wrong
-                return default;
+                return null;
             }
 
             // Get the semantic representation of the enum syntax
             if (semanticModel.GetDeclaredSymbol(intfDeclarationSyntax) is not INamedTypeSymbol intfSymbol)
             {
                 // something went wrong
-                return default;
+                return null;
             }
 
             // Get the namespace the enum is declared in, if any
@@ -323,7 +323,7 @@ namespace DTOMaker.SrcGen.Core
         {
             if (baseFullName is null) return 0;
             var parentEntity = entities.FirstOrDefault(e => e.Intf.FullName == baseFullName);
-            if (!parentEntity.IsValid) return 0;
+            if (parentEntity is null) return 0;
             return 1 + GetClassHeight(parentEntity.Base?.FullName, entities);
         }
 
@@ -354,7 +354,7 @@ namespace DTOMaker.SrcGen.Core
                     "DTOMaker.Models.EntityAttribute",
                     predicate: static (syntaxNode, _) => syntaxNode is InterfaceDeclarationSyntax,
                     transform: static (ctx, _) => GetParsedEntity(ctx))
-                .Where(static m => m.IsValid);
+                .Where(static e => e is not null)!;
 
             // add base entity
             parsedEntities = parsedEntities.Collect().Select((list1, _) =>
@@ -430,7 +430,7 @@ namespace DTOMaker.SrcGen.Core
                         BaseEntity = baseEntity,
                         DerivedEntities = new EquatableArray<Phase1Entity>(derivedEntities.OrderBy(e => e.Intf.FullName))
                     };
-                });
+                }); //.Where(e => e.IsClosed);
 
             // generate summary
             //context.RegisterSourceOutput(outputEntities.Collect(), (spc, entities) =>

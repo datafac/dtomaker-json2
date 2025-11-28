@@ -34,43 +34,11 @@ namespace DTOMaker.SrcGen.JsonSystemText.Tests
             }
             """;
 
-        [Fact]
-        public void Generic1_Pair1_CheckGeneratedSources()
-        {
-            var grr = GeneratorTestHelper.RunSourceGenerator(source1, LanguageVersion.LatestMajor);
-            grr.Exception.ShouldBeNull();
-            grr.Diagnostics.ShouldBeEmpty();
-
-            grr.GeneratedSources.Length.ShouldBe(3);
-            grr.GeneratedSources[0].HintName.ShouldBe("MyOrg.Models.MyDTO2.JsonSystemText.g.cs");
-            grr.GeneratedSources[1].HintName.ShouldBe("MyOrg.Models.MyDTO3.JsonSystemText.g.cs");
-            grr.GeneratedSources[2].HintName.ShouldBe("MyOrg.Models.Pair_2_Int64_String.JsonSystemText.g.cs");
-        }
-
-        [Fact]
-        public async Task Generic1_Pair2_VerifySource0()
-        {
-            var grr = GeneratorTestHelper.RunSourceGenerator(source1, LanguageVersion.LatestMajor);
-            string outputCode = grr.GeneratedSources[0].SourceText.ToString();
-            await Verifier.Verify(outputCode);
-
-        }
-
-        [Fact]
-        public async Task Generic1_Pair3_VerifySource1()
-        {
-            var grr = GeneratorTestHelper.RunSourceGenerator(source1, LanguageVersion.LatestMajor);
-            string outputCode = grr.GeneratedSources[1].SourceText.ToString();
-            await Verifier.Verify(outputCode);
-        }
-
-        [Fact]
-        public async Task Generic1_Pair4_VerifySource2()
-        {
-            var grr = GeneratorTestHelper.RunSourceGenerator(source1, LanguageVersion.LatestMajor);
-            string outputCode = grr.GeneratedSources[2].SourceText.ToString();
-            await Verifier.Verify(outputCode);
-        }
+        [Fact] public void Generic1_GeneratedSourcesLength() => source1.GenerateAndCheckLength(4);
+        [Fact] public async Task Generic1_VerifyGeneratedSource0() => await Verifier.Verify(source1.GenerateAndGetOutput(0, "MyOrg.Models.JsonSystemText.EntityBase.g.cs"));
+        [Fact] public async Task Generic1_VerifyGeneratedSource1() => await Verifier.Verify(source1.GenerateAndGetOutput(1, "MyOrg.Models.JsonSystemText.MyDTO2.g.cs"));
+        [Fact] public async Task Generic1_VerifyGeneratedSource2() => await Verifier.Verify(source1.GenerateAndGetOutput(2, "MyOrg.Models.JsonSystemText.MyDTO3.g.cs"));
+        [Fact] public async Task Generic1_VerifyGeneratedSource3() => await Verifier.Verify(source1.GenerateAndGetOutput(3, "MyOrg.Models.JsonSystemText.Pair_2_Int64_String.g.cs"));
 
         private readonly string source2 =
             """
