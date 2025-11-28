@@ -47,4 +47,6 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<Import Project="..\DTOMaker.SrcGen.Core\DTOMaker.SrcGen.Core.projitems" Label="Shared" />
+
 </Project>
