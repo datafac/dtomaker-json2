@@ -15,7 +15,7 @@ using MyOrg.Models.JsonSystemText;
 
 namespace MyOrg.Models.JsonSystemText
 {
-    public partial class MyDTO3 : MyOrg.Models.JsonSystemText.EntityBase, MyOrg.Models.IMyDTO3, IEquatable<MyDTO3>
+    public partial class MyDTO3 : DTOMaker.Runtime.JsonSystemText.EntityBase, MyOrg.Models.IMyDTO3, IEquatable<MyDTO3>
     {
 
         protected override int OnGetEntityId() => 3;

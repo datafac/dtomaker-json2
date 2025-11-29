@@ -1,1 +1,4 @@
-﻿{"field1":"Infinity","field2":"-Infinity"}
+﻿{
+  "field1": "Infinity",
+  "field2": "-Infinity"
+}

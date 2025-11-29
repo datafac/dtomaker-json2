@@ -17,17 +17,7 @@ namespace DTOMaker.SrcGen.Core
             EntityId = entityId;
             BaseTFN = baseTFN;
         }
-        //public ParsedEntity(ITypeSymbol ids, int entityId, TypeFullName? baseTFN)
-        //{
-        //    TFN = new TypeFullName(ids);
-        //    EntityId = entityId;
-        //    BaseTFN = baseTFN;
-        //}
-        //public ParsedEntity(ParsedName intf, ParsedName impl, MemberKind kind, int entityId, TypeFullName? baseTFN)
-        //{
-        //    TFN = new TypeFullName(intf, impl, kind);
-        //    EntityId = entityId;
-        //    BaseTFN = baseTFN;
-        //}
+
+        public override string ToString() => $"{TFN} [{EntityId}]";
     }
 }

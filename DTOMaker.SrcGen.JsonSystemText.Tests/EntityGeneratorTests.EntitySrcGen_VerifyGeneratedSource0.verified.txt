@@ -11,9 +11,9 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using MyOrg.Models.JsonSystemText;
+using DTOMaker.Runtime.JsonSystemText;
 
-namespace MyOrg.Models.JsonSystemText
+namespace DTOMaker.Runtime.JsonSystemText
 {
     [JsonPolymorphic]
     [JsonDerivedType(typeof(MyOrg.Model2.JsonSystemText.MyDTO), 3)]

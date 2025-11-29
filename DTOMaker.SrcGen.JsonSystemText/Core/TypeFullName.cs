@@ -144,7 +144,11 @@ namespace DTOMaker.SrcGen.Core
         public override int GetHashCode() => HashCode.Combine(_fullName);
         public static bool operator ==(TypeFullName left, TypeFullName right) => left.Equals(right);
         public static bool operator !=(TypeFullName left, TypeFullName right) => !left.Equals(right);
-        public override string ToString() => _fullName;
+        public override string ToString()
+        {
+            string intf = (Intf.Space == Impl.Space) ? Intf.Name : Intf.FullName;
+            return $"{Impl.FullName} : {intf}";
+        }
 
         /// <summary>
         /// Creates a unique entity name with closed generic arguments

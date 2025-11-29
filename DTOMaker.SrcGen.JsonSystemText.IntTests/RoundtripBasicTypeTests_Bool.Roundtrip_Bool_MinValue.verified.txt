@@ -1,1 +1,3 @@
-﻿{"field2":false}
+﻿{
+  "field2": false
+}

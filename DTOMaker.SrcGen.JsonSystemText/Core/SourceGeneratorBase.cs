@@ -319,12 +319,13 @@ namespace DTOMaker.SrcGen.Core
             return new ParsedEntity(new TypeFullName(intfSymbol), entityId, baseTFN);
         }
 
-        private static int GetClassHeight(TypeFullName? baseTFN, ImmutableArray<ParsedEntity> entities)
+        private static int GetClassHeight(ParsedEntity thisEntity, ImmutableArray<ParsedEntity> allEntities)
         {
-            if (baseTFN is null) return 0;
-            var parentEntity = entities.FirstOrDefault(e => e.TFN == baseTFN);
-            if (parentEntity is null) return 0;
-            return 1 + GetClassHeight(parentEntity.TFN, entities);
+            if (thisEntity.BaseTFN is null) return 0; //we are root
+            var parentEntity = allEntities.FirstOrDefault(e => e.TFN.Intf == thisEntity.BaseTFN?.Intf);
+            if (parentEntity is null) return 0; // parent not found
+            if (parentEntity.BaseTFN is null) return 1; // parent is root (shortcut)
+            return 1 + GetClassHeight(parentEntity, allEntities);
         }
 
         private static List<Phase1Entity> GetDerivedEntities(TypeFullName parentTFN, ImmutableArray<Phase1Entity> allEntities)
@@ -359,16 +360,16 @@ namespace DTOMaker.SrcGen.Core
             // add base entity
             parsedEntities = parsedEntities.Collect().Select((list1, _) =>
             {
-                // add base entity into first namespace
+                // add base entity
                 if (list1.Length == 0) return list1;
-                string implSpace = list1.OrderBy(e => e.EntityId).First().Impl.Space;
-                var intf = new ParsedName("DTOMaker.Runtime.IEntityBase");
-                var impl = new ParsedName(implSpace, "EntityBase");
-                var baseEntity = new ParsedEntity(new TypeFullName(intf, impl, MemberKind.Entity), 0, null);
+                var baseEntityIntf = new ParsedName("DTOMaker.Runtime.IEntityBase");
+                var baseEntityImpl = new ParsedName("DTOMaker.Runtime.JsonSystemText.EntityBase");
+                var baseEntityTFN = new TypeFullName(baseEntityIntf, baseEntityImpl, MemberKind.Entity);
+                var baseEntity = new ParsedEntity(baseEntityTFN, 0, null);
                 List<ParsedEntity> newList = [baseEntity];
                 newList.AddRange(list1);
                 // add closed generic entities
-                xxx;
+                // todo
                 return newList.ToImmutableArray();
             }).SelectMany((list2, _) => list2.ToImmutableArray());
 
@@ -406,7 +407,7 @@ namespace DTOMaker.SrcGen.Core
                             });
                         }
                     }
-                    int classHeight = GetClassHeight(parsed.BaseTFN, pair.Right.Left);
+                    int classHeight = GetClassHeight(parsed, pair.Right.Left);
                     return new Phase1Entity()
                     {
                         TFN = parsed.TFN,

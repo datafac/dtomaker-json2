@@ -1,1 +1,4 @@
-﻿{"field1":"NaN","field2":5E-324}
+﻿{
+  "field1": "NaN",
+  "field2": 5E-324
+}

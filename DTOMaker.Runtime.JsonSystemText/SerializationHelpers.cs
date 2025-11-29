@@ -141,6 +141,7 @@ namespace DTOMaker.Runtime.JsonSystemText
     {
         private static readonly JsonSerializerOptions _options = new JsonSerializerOptions(JsonSerializerDefaults.Web)
         {
+            WriteIndented = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
             NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
             Converters =

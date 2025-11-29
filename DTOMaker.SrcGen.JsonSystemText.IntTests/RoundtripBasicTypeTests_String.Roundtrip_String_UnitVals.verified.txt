@@ -1,1 +1,4 @@
-﻿{"field1":"abc","field2":"def"}
+﻿{
+  "field1": "abc",
+  "field2": "def"
+}

@@ -17,7 +17,7 @@ namespace MyOrg.Models.JsonSystemText
 {
     [JsonPolymorphic]
     [JsonDerivedType(typeof(MyOrg.Models.JsonSystemText.Derived), 2)]
-    public partial class MyDTO : MyOrg.Models.JsonSystemText.EntityBase, MyOrg.Models.IMyDTO, IEquatable<MyDTO>
+    public partial class MyDTO : DTOMaker.Runtime.JsonSystemText.EntityBase, MyOrg.Models.IMyDTO, IEquatable<MyDTO>
     {
 
         protected override int OnGetEntityId() => 1;

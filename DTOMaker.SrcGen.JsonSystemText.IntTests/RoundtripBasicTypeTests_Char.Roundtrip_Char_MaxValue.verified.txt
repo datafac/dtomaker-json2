@@ -1,1 +1,4 @@
-﻿{"field1":"\uFFFF","field2":"\uFFFF"}
+﻿{
+  "field1": "\uFFFF",
+  "field2": "\uFFFF"
+}

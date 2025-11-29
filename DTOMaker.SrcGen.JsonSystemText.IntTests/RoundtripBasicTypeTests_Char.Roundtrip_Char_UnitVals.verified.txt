@@ -1,1 +1,4 @@
-﻿{"field1":"A","field2":"z"}
+﻿{
+  "field1": "A",
+  "field2": "z"
+}
