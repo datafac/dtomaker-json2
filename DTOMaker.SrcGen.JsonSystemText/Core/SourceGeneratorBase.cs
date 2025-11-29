@@ -91,7 +91,7 @@ namespace DTOMaker.SrcGen.Core
                     $"Expected {attrData.AttributeClass?.Name} attribute to have {expectedCount} arguments, but it has {attrArgs.Length}.");
         }
 
-        private static ParsedMember GetParsedMember(GeneratorAttributeSyntaxContext ctx)
+        private static ParsedMember? GetParsedMember(GeneratorAttributeSyntaxContext ctx)
         {
             //List<SyntaxDiagnostic> syntaxErrors = new();
             SemanticModel semanticModel = ctx.SemanticModel;
@@ -101,7 +101,7 @@ namespace DTOMaker.SrcGen.Core
             if (syntaxNode is not PropertyDeclarationSyntax propDeclarationSyntax)
             {
                 // something went wrong
-                return default;
+                return null;
             }
 
             // Get the semantic representation of the enum syntax
@@ -109,7 +109,7 @@ namespace DTOMaker.SrcGen.Core
             if (declSynbol is not IPropertySymbol propSymbol)
             {
                 // something went wrong
-                return default;
+                return null;
             }
 
             // Get the namespace the enum is declared in, if any
@@ -379,12 +379,12 @@ namespace DTOMaker.SrcGen.Core
                     "DTOMaker.Models.MemberAttribute",
                     predicate: static (syntaxNode, _) => syntaxNode is PropertyDeclarationSyntax,
                     transform: static (ctx, _) => GetParsedMember(ctx))
-                .Where(static m => m.IsValid);
+                .Where(static m => m is not null)!;
 
             var parsedMatrix = parsedEntities.Collect().Combine(parsedMembers.Collect());
 
-            // resolve members
-            IncrementalValuesProvider<Phase1Entity> outputEntities1 = parsedEntities.Combine(parsedMatrix)
+            // resolve members and class height
+            IncrementalValuesProvider<Phase1Entity> phase1Entities = parsedEntities.Combine(parsedMatrix)
                 .Select((pair, _) =>
                 {
                     var parsed = pair.Left;
@@ -418,8 +418,25 @@ namespace DTOMaker.SrcGen.Core
                     };
                 });
 
-            // resolve derived entities and height
-            IncrementalValuesProvider<OutputEntity> outputEntities = outputEntities1.Combine(outputEntities1.Collect())
+            // generate closed generic entities
+            //IncrementalValuesProvider<Phase2Entity> phase2Entities = phase1Entities.Combine(phase1Entities.Where(e => e.TFN.IsGeneric && !e.TFN.IsClosed).Collect())
+            //    .Select((pair, _) =>
+            //    {
+            //        var entity = pair.Left;
+            //        var openGenericEntities = pair.Right;
+            //        return new Phase2Entity()
+            //        {
+            //            TFN = entity.TFN,
+            //            EntityId = entity.EntityId,
+            //            ClassHeight = entity.ClassHeight,
+            //            Members = entity.Members,
+            //            BaseEntity = baseEntity,
+            //            DerivedEntities = new EquatableArray<Phase1Entity>(derivedEntities.OrderBy(e => e.Intf.FullName))
+            //        };
+            //    });
+
+            // resolve base entity and derived entities
+            IncrementalValuesProvider<OutputEntity> outputEntities = phase1Entities.Combine(phase1Entities.Collect())
                 .Select((pair, _) =>
                 {
                     var entity = pair.Left;

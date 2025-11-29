@@ -2,19 +2,17 @@
 
 namespace DTOMaker.SrcGen.Core
 {
-    public readonly record struct ParsedMember
+    public record class ParsedMember
     {
-        public readonly string FullName;
-        public readonly string PropName;
-        public readonly int Sequence;
-        public readonly TypeFullName MemberType;
-        public readonly MemberKind Kind;
-        public readonly bool IsNullable;
-        public readonly bool IsObsolete;
-        public readonly string ObsoleteMessage;
-        public readonly bool ObsoleteIsError;
-
-        public bool IsValid => !string.IsNullOrWhiteSpace(PropName);
+        public string FullName { get; init; }
+        public string PropName { get; init; }
+        public int Sequence { get; init; }
+        public TypeFullName MemberType { get; init; }
+        public MemberKind Kind { get; init; }
+        public bool IsNullable { get; init; }
+        public bool IsObsolete { get; init; }
+        public string ObsoleteMessage { get; init; }
+        public bool ObsoleteIsError { get; init; }
 
         public ParsedMember(string fullname, int sequence, TypeFullName memberType, MemberKind kind, bool isNullable, bool isObsolete, string obsoleteMessage, bool obsoleteIsError)
         {
