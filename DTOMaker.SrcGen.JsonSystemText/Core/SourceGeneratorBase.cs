@@ -314,30 +314,30 @@ namespace DTOMaker.SrcGen.Core
             //    }
             //}
 
-            string? baseFullName = intfSymbol.Interfaces.FirstOrDefault()?.ToString();
-
-            return new ParsedEntity(intfSymbol, entityId, baseFullName);
+            var baseIntf = intfSymbol.Interfaces.FirstOrDefault();
+            TypeFullName? baseTFN = baseIntf is not null ? new TypeFullName(baseIntf) : null;
+            return new ParsedEntity(new TypeFullName(intfSymbol), entityId, baseTFN);
         }
 
-        private static int GetClassHeight(string? baseFullName, ImmutableArray<ParsedEntity> entities)
+        private static int GetClassHeight(TypeFullName? baseTFN, ImmutableArray<ParsedEntity> entities)
         {
-            if (baseFullName is null) return 0;
-            var parentEntity = entities.FirstOrDefault(e => e.Intf.FullName == baseFullName);
+            if (baseTFN is null) return 0;
+            var parentEntity = entities.FirstOrDefault(e => e.TFN == baseTFN);
             if (parentEntity is null) return 0;
-            return 1 + GetClassHeight(parentEntity.Base?.FullName, entities);
+            return 1 + GetClassHeight(parentEntity.TFN, entities);
         }
 
-        private static List<Phase1Entity> GetDerivedEntities(string parentEntity, ImmutableArray<Phase1Entity> allEntities)
+        private static List<Phase1Entity> GetDerivedEntities(TypeFullName parentTFN, ImmutableArray<Phase1Entity> allEntities)
         {
             var derivedEntities = new List<Phase1Entity>();
             foreach (var entity in allEntities)
             {
-                if (entity.Base?.FullName == parentEntity)
+                if (entity.BaseTFN == parentTFN)
                 {
                     // found derived
                     derivedEntities.Add(entity);
                     // now recurse
-                    derivedEntities.AddRange(GetDerivedEntities(entity.Intf.FullName, allEntities));
+                    derivedEntities.AddRange(GetDerivedEntities(entity.TFN, allEntities));
                 }
             }
             return derivedEntities;
@@ -364,9 +364,12 @@ namespace DTOMaker.SrcGen.Core
                 string implSpace = list1.OrderBy(e => e.EntityId).First().Impl.Space;
                 var intf = new ParsedName("DTOMaker.Runtime.IEntityBase");
                 var impl = new ParsedName(implSpace, "EntityBase");
-                var baseEntity = new ParsedEntity(intf, impl, MemberKind.Entity, 0, null);
+                var baseEntity = new ParsedEntity(new TypeFullName(intf, impl, MemberKind.Entity), 0, null);
                 List<ParsedEntity> newList = [baseEntity];
-                return newList.Concat(list1).ToImmutableArray();
+                newList.AddRange(list1);
+                // add closed generic entities
+                xxx;
+                return newList.ToImmutableArray();
             }).SelectMany((list2, _) => list2.ToImmutableArray());
 
             // filter for Members
@@ -403,14 +406,14 @@ namespace DTOMaker.SrcGen.Core
                             });
                         }
                     }
-                    int classHeight = GetClassHeight(parsed.Base?.FullName, pair.Right.Left);
+                    int classHeight = GetClassHeight(parsed.BaseTFN, pair.Right.Left);
                     return new Phase1Entity()
                     {
                         TFN = parsed.TFN,
                         EntityId = parsed.EntityId,
                         ClassHeight = classHeight,
                         Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
-                        Base = parsed.Base,
+                        BaseTFN = parsed.BaseTFN,
                     };
                 });
 
@@ -419,8 +422,8 @@ namespace DTOMaker.SrcGen.Core
                 .Select((pair, _) =>
                 {
                     var entity = pair.Left;
-                    var baseEntity = pair.Right.FirstOrDefault(e => e.Intf.FullName == entity.Base?.FullName);
-                    List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.Intf.FullName, pair.Right);
+                    var baseEntity = pair.Right.FirstOrDefault(e => e.TFN == entity.BaseTFN);
+                    List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.TFN, pair.Right);
                     return new OutputEntity()
                     {
                         TFN = entity.TFN,

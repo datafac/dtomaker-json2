@@ -9,22 +9,25 @@ namespace DTOMaker.SrcGen.Core
         public ParsedName Intf => TFN.Intf;
         public ParsedName Impl => TFN.Impl;
         public int EntityId { get; init; } = 0;
-        public ParsedName? Base { get; init; } = null;
+        public TypeFullName? BaseTFN { get; init; } = null;
 
-        public ParsedEntity(ITypeSymbol ids, int entityId, string? baseFullName)
+        public ParsedEntity(TypeFullName tfn, int entityId, TypeFullName? baseTFN)
         {
-            TFN = new TypeFullName(ids);
-            //Intf = new ParsedName(intfFullName);
-            //string implName = Intf.Name.StartsWith("I", StringComparison.Ordinal) ? Intf.Name.Substring(1) : Intf.Name;
-            //Impl = new ParsedName(Intf.Space + ".JsonSystemText", implName);
+            TFN = tfn;
             EntityId = entityId;
-            Base = baseFullName is null ? null : new ParsedName(baseFullName);
+            BaseTFN = baseTFN;
         }
-        public ParsedEntity(ParsedName intf, ParsedName impl, MemberKind kind, int entityId, string? baseFullName)
-        {
-            TFN = new TypeFullName(intf, impl, kind);
-            EntityId = entityId;
-            Base = baseFullName is null ? null : new ParsedName(baseFullName);
-        }
+        //public ParsedEntity(ITypeSymbol ids, int entityId, TypeFullName? baseTFN)
+        //{
+        //    TFN = new TypeFullName(ids);
+        //    EntityId = entityId;
+        //    BaseTFN = baseTFN;
+        //}
+        //public ParsedEntity(ParsedName intf, ParsedName impl, MemberKind kind, int entityId, TypeFullName? baseTFN)
+        //{
+        //    TFN = new TypeFullName(intf, impl, kind);
+        //    EntityId = entityId;
+        //    BaseTFN = baseTFN;
+        //}
     }
 }

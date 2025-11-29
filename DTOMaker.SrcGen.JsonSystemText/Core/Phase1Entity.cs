@@ -8,6 +8,6 @@
         public int EntityId { get; init; }
         public int ClassHeight { get; init; }
         public EquatableArray<OutputMember> Members { get; init; } = EquatableArray<OutputMember>.Empty;
-        public ParsedName? Base { get; init; }
+        public TypeFullName? BaseTFN { get; init; }
     }
 }
