@@ -10,5 +10,8 @@
         public EquatableArray<OutputMember> Members { get; init; } = EquatableArray<OutputMember>.Empty;
         public Phase1Entity? BaseEntity { get; init; }
         public EquatableArray<Phase1Entity> DerivedEntities { get; init; } = EquatableArray<Phase1Entity>.Empty;
+
+        public override string ToString() => $"{TFN} [{EntityId}] ({Members.Count} members)";
+
     }
 }

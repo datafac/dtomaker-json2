@@ -9,5 +9,7 @@
         public int ClassHeight { get; init; }
         public EquatableArray<OutputMember> Members { get; init; } = EquatableArray<OutputMember>.Empty;
         public TypeFullName? BaseTFN { get; init; }
+
+        public override string ToString() => $"{TFN} [{EntityId}] ({Members.Count} members)";
     }
 }

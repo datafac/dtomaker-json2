@@ -103,9 +103,10 @@ namespace DTOMaker.SrcGen.Core
 
         public TypeFullName(ITypeSymbol ids)
         {
+            const string implSpaceSuffix = "JsonSystemText"; // todo: get from generator
             string nameSpace = ids.ContainingNamespace.ToDisplayString();
             Intf = new ParsedName(nameSpace, ids.Name);
-            Impl = ids.TypeKind == TypeKind.Interface && ids.Name.StartsWith("I") ? new ParsedName(nameSpace + ".JsonSystemText", ids.Name.Substring(1)) : Intf;
+            Impl = ids.TypeKind == TypeKind.Interface && ids.Name.StartsWith("I") ? new ParsedName(nameSpace + "." + implSpaceSuffix, ids.Name.Substring(1)) : Intf;
             _typeParameters = ids is INamedTypeSymbol nts1 ? nts1.TypeParameters : ImmutableArray<ITypeParameterSymbol>.Empty;
             _typeArguments = ids is INamedTypeSymbol nts2 ? nts2.TypeArguments : ImmutableArray<ITypeSymbol>.Empty;
             _fullName = Impl.Space + "." + MakeCSImplName(Impl.Name, _typeParameters, _typeArguments);

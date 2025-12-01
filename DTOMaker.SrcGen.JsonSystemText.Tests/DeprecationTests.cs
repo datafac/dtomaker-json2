@@ -1,3 +1,6 @@
+using DTOMaker.SrcGen.Core;
+using Shouldly;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;

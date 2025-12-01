@@ -344,6 +344,68 @@ namespace DTOMaker.SrcGen.Core
             return derivedEntities;
         }
 
+        public static ImmutableArray<ParsedEntity> AddEntityBase(ImmutableArray<ParsedEntity> parsedEntities)
+        {
+            // add base entity
+            var baseEntityIntf = new ParsedName("DTOMaker.Runtime.IEntityBase");
+            var baseEntityImpl = new ParsedName("DTOMaker.Runtime.JsonSystemText.EntityBase");
+            var baseEntityTFN = new TypeFullName(baseEntityIntf, baseEntityImpl, MemberKind.Entity);
+            var baseEntity = new ParsedEntity(baseEntityTFN, 0, null);
+            var builder = ImmutableArray<ParsedEntity>.Empty.ToBuilder();
+            builder.Add(baseEntity);
+            builder.AddRange(parsedEntities);
+            // add closed generic entities
+            // todo
+            return builder.ToImmutable();
+        }
+
+        public static Phase1Entity ResolveMembers(ParsedEntity entity, ImmutableArray<ParsedMember> members, ImmutableArray<ParsedEntity> entities)
+        {
+            string prefix = entity.Intf.FullName + ".";
+            var outputMembers = new List<OutputMember>();
+            foreach (ParsedMember member in members)
+            {
+                if (member.FullName.StartsWith(prefix, StringComparison.Ordinal))
+                {
+                    outputMembers.Add(new OutputMember()
+                    {
+                        Name = member.PropName,
+                        Sequence = member.Sequence,
+                        MemberType = member.MemberType,
+                        Kind = member.Kind,
+                        IsNullable = member.IsNullable,
+                        IsObsolete = member.IsObsolete,
+                        ObsoleteMessage = member.ObsoleteMessage,
+                        ObsoleteIsError = member.ObsoleteIsError,
+                    });
+                }
+            }
+            int classHeight = GetClassHeight(entity, entities);
+            return new Phase1Entity()
+            {
+                TFN = entity.TFN,
+                EntityId = entity.EntityId,
+                ClassHeight = classHeight,
+                Members = new EquatableArray<OutputMember>(outputMembers.OrderBy(m => m.Sequence)),
+                BaseTFN = entity.BaseTFN,
+            };
+        }
+
+        public static OutputEntity ResolveEntities(Phase1Entity entity, ImmutableArray<Phase1Entity> allEnts)
+        {
+            var baseEntity = allEnts.FirstOrDefault(e => e.TFN == entity.BaseTFN);
+            List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.TFN, allEnts);
+            return new OutputEntity()
+            {
+                TFN = entity.TFN,
+                EntityId = entity.EntityId,
+                ClassHeight = entity.ClassHeight,
+                Members = entity.Members,
+                BaseEntity = baseEntity,
+                DerivedEntities = new EquatableArray<Phase1Entity>(derivedEntities.OrderBy(e => e.Intf.FullName))
+            };
+        }
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             // do derived stuff
@@ -357,22 +419,6 @@ namespace DTOMaker.SrcGen.Core
                     transform: static (ctx, _) => GetParsedEntity(ctx))
                 .Where(static e => e is not null)!;
 
-            // add base entity
-            parsedEntities = parsedEntities.Collect().Select((list1, _) =>
-            {
-                // add base entity
-                if (list1.Length == 0) return list1;
-                var baseEntityIntf = new ParsedName("DTOMaker.Runtime.IEntityBase");
-                var baseEntityImpl = new ParsedName("DTOMaker.Runtime.JsonSystemText.EntityBase");
-                var baseEntityTFN = new TypeFullName(baseEntityIntf, baseEntityImpl, MemberKind.Entity);
-                var baseEntity = new ParsedEntity(baseEntityTFN, 0, null);
-                List<ParsedEntity> newList = [baseEntity];
-                newList.AddRange(list1);
-                // add closed generic entities
-                // todo
-                return newList.ToImmutableArray();
-            }).SelectMany((list2, _) => list2.ToImmutableArray());
-
             // filter for Members
             IncrementalValuesProvider<ParsedMember> parsedMembers = context.SyntaxProvider
                 .ForAttributeWithMetadataName(
@@ -381,41 +427,19 @@ namespace DTOMaker.SrcGen.Core
                     transform: static (ctx, _) => GetParsedMember(ctx))
                 .Where(static m => m is not null)!;
 
+            // add base entity
+            parsedEntities = parsedEntities.Collect().Select((list1, _) => AddEntityBase(list1)).SelectMany((list2, _) => list2.ToImmutableArray());
+
             var parsedMatrix = parsedEntities.Collect().Combine(parsedMembers.Collect());
 
             // resolve members and class height
             IncrementalValuesProvider<Phase1Entity> phase1Entities = parsedEntities.Combine(parsedMatrix)
                 .Select((pair, _) =>
                 {
-                    var parsed = pair.Left;
-                    string prefix = parsed.Intf.FullName + ".";
-                    var members = new List<OutputMember>();
-                    foreach (ParsedMember member in pair.Right.Right)
-                    {
-                        if (member.FullName.StartsWith(prefix, StringComparison.Ordinal))
-                        {
-                            members.Add(new OutputMember()
-                            {
-                                Name = member.PropName,
-                                Sequence = member.Sequence,
-                                MemberType = member.MemberType,
-                                Kind = member.Kind,
-                                IsNullable = member.IsNullable,
-                                IsObsolete = member.IsObsolete,
-                                ObsoleteMessage = member.ObsoleteMessage,
-                                ObsoleteIsError = member.ObsoleteIsError,
-                            });
-                        }
-                    }
-                    int classHeight = GetClassHeight(parsed, pair.Right.Left);
-                    return new Phase1Entity()
-                    {
-                        TFN = parsed.TFN,
-                        EntityId = parsed.EntityId,
-                        ClassHeight = classHeight,
-                        Members = new EquatableArray<OutputMember>(members.OrderBy(m => m.Sequence)),
-                        BaseTFN = parsed.BaseTFN,
-                    };
+                    var entity = pair.Left;
+                    var members = pair.Right.Right;
+                    var allents = pair.Right.Left;
+                    return ResolveMembers(entity, members, allents);
                 });
 
             // generate closed generic entities
@@ -440,17 +464,8 @@ namespace DTOMaker.SrcGen.Core
                 .Select((pair, _) =>
                 {
                     var entity = pair.Left;
-                    var baseEntity = pair.Right.FirstOrDefault(e => e.TFN == entity.BaseTFN);
-                    List<Phase1Entity> derivedEntities = GetDerivedEntities(entity.TFN, pair.Right);
-                    return new OutputEntity()
-                    {
-                        TFN = entity.TFN,
-                        EntityId = entity.EntityId,
-                        ClassHeight = entity.ClassHeight,
-                        Members = entity.Members,
-                        BaseEntity = baseEntity,
-                        DerivedEntities = new EquatableArray<Phase1Entity>(derivedEntities.OrderBy(e => e.Intf.FullName))
-                    };
+                    var allEnts = pair.Right;
+                    return ResolveEntities(entity, allEnts);
                 })
                 .Where(e => e.TFN.IsClosed);
 
