@@ -33,21 +33,5 @@ namespace Template.JsonSystemText.Tests
             copy.ShouldBe(orig);
             copy.Equals(orig).ShouldBeTrue();
         }
-
-        [Fact]
-        public void Equality03_VectorData()
-        {
-            var orig = new T_ImplNameSpace_.T_EntityImplName_() { T_VectorMemberName_ = new int[] { 123, 456, 789 } };
-            orig.Freeze();
-            int origHash = orig.GetHashCode();
-
-            var copy = new T_ImplNameSpace_.T_EntityImplName_() { T_VectorMemberName_ = new int[] { 123, 456, 789 } };
-            copy.Freeze();
-            int copyHash = copy.GetHashCode();
-
-            copyHash.ShouldBe(origHash);
-            copy.ShouldBe(orig);
-            copy.Equals(orig).ShouldBeTrue();
-        }
     }
 }

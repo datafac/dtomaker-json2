@@ -121,10 +121,6 @@ namespace DTOMaker.SrcGen.Core
                     tokens["ScalarMemberName"] = member.Name;
                     tokens[(member.IsNullable ? "Nullable" : "Required") + "ScalarMemberName"] = member.Name;
                     break;
-                case MemberKind.Vector:
-                    tokens["VectorMemberSequence"] = member.Sequence;
-                    tokens["VectorMemberName"] = member.Name;
-                    break;
                 case MemberKind.Entity:
                     tokens[(member.IsNullable ? "Nullable" : "Required") + "EntityMemberName"] = member.Name;
                     break;

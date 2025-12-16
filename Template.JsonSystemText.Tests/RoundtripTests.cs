@@ -20,7 +20,6 @@ namespace Template.JsonSystemText.Tests
             var orig = new T_EntityImplName_();
             orig.BaseField1 = 321;
             orig.T_RequiredScalarMemberName_ = 123;
-            orig.T_VectorMemberName_ = new int[] { 1, 2, 3 };
             //todo orig.T_RequiredEntityMemberName_ = new T_MemberTypeImplSpace_.T_MemberTypeImplName_() { Field1 = 456L };
             orig.T_RequiredBinaryMemberName_ = largeBinary;
             orig.T_NullableBinaryMemberName_ = smallBinary;
@@ -34,7 +33,6 @@ namespace Template.JsonSystemText.Tests
             copy.IsFrozen.ShouldBeTrue();
             copy.BaseField1!.ShouldBe(orig.BaseField1);
             copy.T_RequiredScalarMemberName_.ShouldBe(orig.T_RequiredScalarMemberName_);
-            copy.T_VectorMemberName_.AsSpan().SequenceEqual(orig.T_VectorMemberName_.AsSpan()).ShouldBeTrue();
             copy.T_RequiredBinaryMemberName_.AsSpan().SequenceEqual(orig.T_RequiredBinaryMemberName_.AsSpan()).ShouldBeTrue();
             copy.Equals(orig).ShouldBeTrue();
             //copy.ShouldBe(orig);
@@ -50,7 +48,6 @@ namespace Template.JsonSystemText.Tests
             var orig = new T_EntityImplName_();
             orig.BaseField1 = 321;
             orig.T_RequiredScalarMemberName_ = 123;
-            orig.T_VectorMemberName_ = new int[] { 1, 2, 3 };
             orig.T_RequiredBinaryMemberName_ = largeBinary;
             orig.T_NullableBinaryMemberName_ = smallBinary;
             orig.Freeze();
@@ -66,7 +63,6 @@ namespace Template.JsonSystemText.Tests
             copy!.IsFrozen.ShouldBeTrue();
             copy.BaseField1!.ShouldBe(orig.BaseField1);
             copy.T_RequiredScalarMemberName_.ShouldBe(orig.T_RequiredScalarMemberName_);
-            copy.T_VectorMemberName_.AsSpan().SequenceEqual(orig.T_VectorMemberName_.AsSpan()).ShouldBeTrue();
             copy.T_RequiredBinaryMemberName_.AsSpan().SequenceEqual(orig.T_RequiredBinaryMemberName_.AsSpan()).ShouldBeTrue();
             copy.ShouldBe(orig);
             copy.GetHashCode().ShouldBe(orig.GetHashCode());

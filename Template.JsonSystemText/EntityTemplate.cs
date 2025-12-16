@@ -114,7 +114,6 @@ namespace T_IntfNameSpace_
     {
         T_MemberType_? T_NullableScalarMemberName_ { get; set; }
         T_MemberType_ T_RequiredScalarMemberName_ { get; set; }
-        ReadOnlyMemory<T_MemberType_> T_VectorMemberName_ { get; set; }
         T_MemberTypeIntfSpace_.T_MemberTypeIntfName_? T_NullableEntityMemberName_ { get; set; }
         T_MemberTypeIntfSpace_.T_MemberTypeIntfName_ T_RequiredEntityMemberName_ { get; set; }
         Octets? T_NullableBinaryMemberName_ { get; set; }
@@ -303,8 +302,6 @@ namespace T_ImplNameSpace_
             //##switch(member.Kind) {
             //##case MemberKind.Native:
             //##break;
-            //##case MemberKind.Vector:
-            //##break;
             //##case MemberKind.Entity:
             //##if (member.IsNullable) {
             _T_NullableEntityMemberName_?.Freeze();
@@ -337,9 +334,6 @@ namespace T_ImplNameSpace_
             //##} else {
             _T_RequiredScalarMemberName_ = source.T_RequiredScalarMemberName_;
             //##}
-            //##break;
-            //##case MemberKind.Vector:
-            _T_VectorMemberName_ = source.T_VectorMemberName_.ToArray();
             //##break;
             //##case MemberKind.Entity:
             //##if (member.IsNullable) {
@@ -379,9 +373,6 @@ namespace T_ImplNameSpace_
             //##} else {
             _T_RequiredScalarMemberName_ = source._T_RequiredScalarMemberName_;
             //##}
-            //##break;
-            //##case MemberKind.Vector:
-            _T_VectorMemberName_ = source._T_VectorMemberName_;
             //##break;
             //##case MemberKind.Entity:
             //##if (member.IsNullable) {
@@ -438,23 +429,6 @@ namespace T_ImplNameSpace_
             set => _T_RequiredScalarMemberName_ = IfNotFrozen(value);
         }
         //##}
-        //##break;
-        //##case MemberKind.Vector:
-        [JsonIgnore]
-        private T_MemberType_[] _T_VectorMemberName_ = Array.Empty<T_MemberType_>();
-        //##if (member.IsObsolete) {
-        [Obsolete("T_MemberObsoleteMessage_", T_MemberObsoleteIsError_)]
-        //##}
-        public T_MemberType_[] T_VectorMemberName_
-        {
-            get => _T_VectorMemberName_;
-            set => _T_VectorMemberName_ = IfNotFrozen(value);
-        }
-        ReadOnlyMemory<T_MemberType_> T_IntfNameSpace_.T_EntityIntfName_.T_VectorMemberName_
-        {
-            get => IsFrozen ? _T_VectorMemberName_ : _T_VectorMemberName_.ToArray().AsMemory();
-            set => _T_VectorMemberName_ = IfNotFrozen(value.ToArray());
-        }
         //##break;
         //##case MemberKind.Entity:
         //##if (member.IsNullable) {
@@ -557,9 +531,6 @@ namespace T_ImplNameSpace_
             if (_T_RequiredScalarMemberName_ != other.T_RequiredScalarMemberName_) return false;
             //##}
             //##break;
-            //##case MemberKind.Vector:
-            if (!_T_VectorMemberName_.AsSpan().SequenceEqual(other.T_VectorMemberName_.AsSpan())) return false;
-            //##break;
             //##case MemberKind.Entity:
             //##if (member.IsNullable) {
             if (_T_NullableEntityMemberName_ != other.T_NullableEntityMemberName_) return false;
@@ -606,13 +577,6 @@ namespace T_ImplNameSpace_
             //##} else {
             result.Add(_T_RequiredScalarMemberName_);
             //##}
-            //##break;
-            //##case MemberKind.Vector:
-            result.Add(_T_VectorMemberName_.Length);
-            for (int i = 0; i < _T_VectorMemberName_.Length; i++)
-            {
-                result.Add(_T_VectorMemberName_[i]);
-            }
             //##break;
             //##case MemberKind.Entity:
             //##if (member.IsNullable) {
