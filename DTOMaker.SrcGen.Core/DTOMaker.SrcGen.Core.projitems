@@ -12,14 +12,23 @@
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticCategory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticId.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticsEN.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EntityGeneratorBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquatableArray.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ILanguage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IsExternalInit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KnownType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Language_CSharp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MemberKind.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OutputEntity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OutputMember.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ParsedEntity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ParsedMember.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ParsedName.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Phase1Entity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SourceGeneratorBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SyntaxDiagnostic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SyntheticId.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TokenStack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TypeFullName.cs" />
   </ItemGroup>
 </Project>
