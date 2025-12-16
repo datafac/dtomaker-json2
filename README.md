@@ -8,8 +8,12 @@
 
 *Warning: This is pre-release software under active development. Breaking changes may occur.*
 
-A model-driven compile-time source generator for quickly creating polymorphic, freezable DTOs (Data Transport Objects) 
-supporting JSON serialization.
+Model-driven compile-time source generators for quickly creating polymorphic, freezable DTOs (Data Transport Objects) 
+supporting various serialization protocols:
+- JSON (System.Text.Json)
+- JSON (Newtonsoft.Json) [coming soon]
+- MessagePack [coming soon]
+- MemBlocks [coming soon]
 
 ## Workflow
 ```mermaid
@@ -89,7 +93,6 @@ public partial class MyTree : Tree_2_String_Octets, IMyTree, IEquatable<MyTree>
 ```
 # Development
 ## In progress
-- upgrade to IIncrementalGenerator
 
 ## Coming soon
 - custom struct members (to avoid primitive obsession)

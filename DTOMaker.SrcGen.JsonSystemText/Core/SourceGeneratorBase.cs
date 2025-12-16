@@ -412,7 +412,7 @@ namespace DTOMaker.SrcGen.Core
             OnBeginInitialize(context);
 
             // filter for entities
-            IncrementalValuesProvider<ParsedEntity> parsedEntities = context.SyntaxProvider
+            IncrementalValuesProvider<ParsedEntity> parsedEntities1 = context.SyntaxProvider
                 .ForAttributeWithMetadataName(
                     "DTOMaker.Models.EntityAttribute",
                     predicate: static (syntaxNode, _) => syntaxNode is InterfaceDeclarationSyntax,
@@ -428,12 +428,12 @@ namespace DTOMaker.SrcGen.Core
                 .Where(static m => m is not null)!;
 
             // add base entity
-            parsedEntities = parsedEntities.Collect().Select((list1, _) => AddEntityBase(list1)).SelectMany((list2, _) => list2.ToImmutableArray());
+            IncrementalValuesProvider<ParsedEntity> parsedEntities2 = parsedEntities1.Collect().Select((list1, _) => AddEntityBase(list1)).SelectMany((list2, _) => list2.ToImmutableArray());
 
-            var parsedMatrix = parsedEntities.Collect().Combine(parsedMembers.Collect());
+            var parsedMatrix = parsedEntities2.Collect().Combine(parsedMembers.Collect());
 
             // resolve members and class height
-            IncrementalValuesProvider<Phase1Entity> phase1Entities = parsedEntities.Combine(parsedMatrix)
+            IncrementalValuesProvider<Phase1Entity> phase1Entities = parsedEntities2.Combine(parsedMatrix)
                 .Select((pair, _) =>
                 {
                     var entity = pair.Left;
